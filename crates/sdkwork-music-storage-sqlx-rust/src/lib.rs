@@ -1,4 +1,19 @@
+use sdkwork_drive_product::{
+    ports::uploader_store::DriveUploaderStore,
+    uploader::{
+        CompleteStoredUploaderUploadCommand, DriveUploaderService, PrepareUploaderUploadCommand,
+        UploaderActor, UploaderRetention, UploaderTarget,
+    },
+    DriveProductError,
+};
+use sdkwork_drive_storage_contract::{
+    DriveObjectLocator, DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind,
+    PutObjectRequest,
+};
+use serde_json::{Map, Value};
+use sha2::{Digest, Sha256};
 use sqlx::{Row, SqlitePool};
+use std::collections::BTreeMap;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MusicRepositoryBinding {
@@ -397,6 +412,275 @@ pub struct NewMusicAiGenerationVariant {
     pub duration_seconds: i64,
     pub moderation_status: String,
     pub now: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MusicGeneratedProviderArtifact {
+    pub id: Option<String>,
+    pub title: String,
+    pub kind: String,
+    pub content_type: String,
+    pub content_length: i64,
+    pub file_name: String,
+    pub checksum_sha256_hex: Option<String>,
+    pub duration_seconds: i64,
+    pub provider_asset_id: Option<String>,
+    pub provider_asset_url: Option<String>,
+    pub metadata_json: Option<String>,
+    pub content: Option<Vec<u8>>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ArchiveMusicGeneratedArtifactsCommand {
+    pub tenant_id: String,
+    pub user_id: Option<String>,
+    pub anonymous_id: Option<String>,
+    pub task_id: String,
+    pub provider_code: String,
+    pub provider_model: String,
+    pub provider_task_id: Option<String>,
+    pub now: String,
+    pub now_epoch_ms: i64,
+    pub artifacts: Vec<MusicGeneratedProviderArtifact>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ArchivedMusicGeneratedArtifacts {
+    pub variants: Vec<NewMusicAiGenerationVariant>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct StoredMusicGeneratedArtifactObject {
+    bucket: String,
+    object_key: String,
+    etag: Option<String>,
+    version_id: Option<String>,
+    checksum_sha256_hex: String,
+}
+
+pub struct MusicGeneratedArtifactArchiveService<S>
+where
+    S: DriveUploaderStore,
+{
+    drive_uploader: DriveUploaderService<S>,
+    object_store: Option<Box<dyn DriveObjectStore>>,
+}
+
+impl<S> MusicGeneratedArtifactArchiveService<S>
+where
+    S: DriveUploaderStore,
+{
+    pub fn new(store: S) -> Self {
+        Self {
+            drive_uploader: DriveUploaderService::new(store),
+            object_store: None,
+        }
+    }
+
+    pub fn with_object_store(store: S, object_store: impl DriveObjectStore + 'static) -> Self {
+        Self {
+            drive_uploader: DriveUploaderService::new(store),
+            object_store: Some(Box::new(object_store)),
+        }
+    }
+
+    pub async fn archive_generated_artifacts(
+        &self,
+        command: ArchiveMusicGeneratedArtifactsCommand,
+    ) -> Result<ArchivedMusicGeneratedArtifacts, DriveProductError> {
+        let tenant_id = require_archive_identifier(&command.tenant_id, "tenant_id")?;
+        let task_id = require_archive_identifier(&command.task_id, "task_id")?;
+        let provider_code = require_archive_identifier(&command.provider_code, "provider_code")?;
+        let provider_model = require_archive_identifier(&command.provider_model, "provider_model")?;
+        let now = require_archive_text(&command.now, "now")?;
+        if command.now_epoch_ms <= 0 {
+            return Err(DriveProductError::Validation(
+                "now_epoch_ms must be greater than zero".to_string(),
+            ));
+        }
+        if command.artifacts.is_empty() {
+            return Err(DriveProductError::Validation(
+                "artifacts are required".to_string(),
+            ));
+        }
+
+        let actor = archive_actor(command.user_id.as_deref(), command.anonymous_id.as_deref())?;
+        let mut variants = Vec::with_capacity(command.artifacts.len());
+        for (index, artifact) in command.artifacts.iter().enumerate() {
+            let ordinal = index + 1;
+            let upload_item_id = format!("music-ai-{task_id}-{ordinal:04}");
+            let mut upload_item = self
+                .drive_uploader
+                .prepare_upload(PrepareUploaderUploadCommand {
+                    id: upload_item_id.clone(),
+                    task_id: upload_item_id.clone(),
+                    tenant_id: tenant_id.clone(),
+                    organization_id: None,
+                    actor: actor.clone(),
+                    app_id: "sdkwork-music".to_string(),
+                    app_resource_type: "music_ai_generation_variant".to_string(),
+                    app_resource_id: format!("{task_id}-{ordinal:04}"),
+                    scene: Some("music_ai_generation".to_string()),
+                    source: Some("ai_generated".to_string()),
+                    upload_profile_code: upload_profile_for_kind(
+                        &artifact.kind,
+                        &artifact.content_type,
+                    ),
+                    file_fingerprint: artifact_fingerprint(artifact, &upload_item_id)?,
+                    original_file_name: require_archive_text(&artifact.file_name, "file_name")?,
+                    content_type: require_archive_text(&artifact.content_type, "content_type")?,
+                    content_length: artifact.content_length,
+                    chunk_size_bytes: 8 * 1024 * 1024,
+                    target: UploaderTarget::AiGeneratedSpace {
+                        parent_node_id: None,
+                    },
+                    retention: UploaderRetention::LongTerm,
+                    operator_id: archive_operator_id(&actor),
+                    now_epoch_ms: command.now_epoch_ms,
+                })
+                .await?;
+
+            let stored_object = self
+                .store_generated_artifact_object(
+                    &tenant_id,
+                    &task_id,
+                    ordinal,
+                    artifact,
+                    &upload_item,
+                )
+                .await?;
+            if let Some(stored_object) = stored_object.as_ref() {
+                let upload_session_id = upload_item.upload_session_id.clone().ok_or_else(|| {
+                    DriveProductError::Internal(
+                        "drive upload item is missing upload session id".to_string(),
+                    )
+                })?;
+                upload_item = self
+                    .drive_uploader
+                    .complete_stored_upload(CompleteStoredUploaderUploadCommand {
+                        tenant_id: tenant_id.clone(),
+                        upload_item_id: upload_item.id.clone(),
+                        upload_session_id,
+                        content_type: upload_item.content_type.clone(),
+                        content_length: artifact.content_length,
+                        checksum_sha256_hex: stored_object.checksum_sha256_hex.clone(),
+                        uploaded_parts_count: 1,
+                        operator_id: archive_operator_id(&actor),
+                    })
+                    .await?;
+            }
+
+            let drive_uri = format!(
+                "drive://spaces/{}/nodes/{}",
+                upload_item.space_id, upload_item.node_id
+            );
+            variants.push(NewMusicAiGenerationVariant {
+                id: format!("variant_{task_id}_{ordinal:04}"),
+                tenant_id: tenant_id.clone(),
+                task_id: task_id.clone(),
+                audio_asset_id: None,
+                title: require_archive_text(&artifact.title, "title")?,
+                drive_uri: drive_uri.clone(),
+                media_resource_snapshot: Some(generated_artifact_snapshot(
+                    artifact,
+                    &upload_item,
+                    &drive_uri,
+                    &provider_code,
+                    &provider_model,
+                    command.provider_task_id.as_deref(),
+                    ordinal,
+                    &task_id,
+                    stored_object.as_ref(),
+                )?),
+                duration_seconds: artifact.duration_seconds.max(0),
+                moderation_status: "approved".to_string(),
+                now: now.clone(),
+            });
+        }
+
+        Ok(ArchivedMusicGeneratedArtifacts { variants })
+    }
+
+    async fn store_generated_artifact_object(
+        &self,
+        tenant_id: &str,
+        task_id: &str,
+        ordinal: usize,
+        artifact: &MusicGeneratedProviderArtifact,
+        upload_item: &sdkwork_drive_product::uploader::DriveUploadItem,
+    ) -> Result<Option<StoredMusicGeneratedArtifactObject>, DriveProductError> {
+        let Some(content) = artifact.content.as_ref() else {
+            return Ok(None);
+        };
+        let Some(object_store) = self.object_store.as_ref() else {
+            return Err(DriveProductError::Validation(
+                "generated artifact content requires a drive object store".to_string(),
+            ));
+        };
+        let bucket = upload_item.object_bucket.as_deref().ok_or_else(|| {
+            DriveProductError::Internal("drive upload item is missing object bucket".to_string())
+        })?;
+        let object_key = upload_item.object_key.as_deref().ok_or_else(|| {
+            DriveProductError::Internal("drive upload item is missing object key".to_string())
+        })?;
+        if artifact.content_length >= 0 && artifact.content_length != content.len() as i64 {
+            return Err(DriveProductError::Validation(
+                "content_length must match generated artifact content bytes".to_string(),
+            ));
+        }
+        let checksum_sha256_hex = generated_artifact_checksum(artifact, content)?;
+
+        let mut metadata = BTreeMap::new();
+        metadata.insert("sdkwork.app".to_string(), "sdkwork-music".to_string());
+        metadata.insert("sdkwork.ai.provenance".to_string(), "generated".to_string());
+        metadata.insert(
+            "sdkwork.ai.space_type".to_string(),
+            "ai_generated".to_string(),
+        );
+        metadata.insert("sdkwork.music.tenant_id".to_string(), tenant_id.to_string());
+        metadata.insert("sdkwork.music.task_id".to_string(), task_id.to_string());
+        metadata.insert(
+            "sdkwork.music.artifact_index".to_string(),
+            ordinal.to_string(),
+        );
+        metadata.insert(
+            "sdkwork.music.artifact_kind".to_string(),
+            artifact.kind.trim().to_ascii_lowercase(),
+        );
+        if let Some(provider_asset_id) = artifact
+            .provider_asset_id
+            .as_deref()
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+        {
+            metadata.insert(
+                "sdkwork.music.provider_asset_id".to_string(),
+                provider_asset_id.to_string(),
+            );
+        }
+
+        let response = object_store
+            .put_object(PutObjectRequest {
+                locator: DriveObjectLocator {
+                    bucket: bucket.to_string(),
+                    object_key: object_key.to_string(),
+                },
+                content_type: Some(artifact.content_type.trim().to_ascii_lowercase()),
+                metadata,
+                body: content.clone(),
+                checksum_sha256_hex: Some(checksum_sha256_hex.clone()),
+            })
+            .await
+            .map_err(drive_object_store_error)?;
+
+        Ok(Some(StoredMusicGeneratedArtifactObject {
+            bucket: response.locator.bucket,
+            object_key: response.locator.object_key,
+            etag: response.etag,
+            version_id: response.version_id,
+            checksum_sha256_hex,
+        }))
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -1593,45 +1877,64 @@ impl SqliteMusicStore {
         &self,
         input: NewMusicAiGenerationVariant,
     ) -> Result<(), sqlx::Error> {
+        self.complete_ai_generation_task_with_variants(vec![input]).await
+    }
+
+    pub async fn complete_ai_generation_task_with_variants(
+        &self,
+        inputs: Vec<NewMusicAiGenerationVariant>,
+    ) -> Result<(), sqlx::Error> {
+        let Some(first) = inputs.first() else {
+            return Ok(());
+        };
         let mut tx = self.pool.begin().await?;
-        sqlx::query(
-            r#"
-            INSERT INTO music_ai_generation_variant
-                (id, tenant_id, task_id, audio_asset_id, title, drive_uri,
-                 media_resource_snapshot, duration_seconds, moderation_status, created_at, updated_at)
-            VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            "#,
-        )
-        .bind(&input.id)
-        .bind(&input.tenant_id)
-        .bind(&input.task_id)
-        .bind(&input.audio_asset_id)
-        .bind(&input.title)
-        .bind(&input.drive_uri)
-        .bind(&input.media_resource_snapshot)
-        .bind(input.duration_seconds)
-        .bind(&input.moderation_status)
-        .bind(&input.now)
-        .bind(&input.now)
-        .execute(&mut *tx)
-        .await?;
+        for input in &inputs {
+            if input.tenant_id != first.tenant_id || input.task_id != first.task_id {
+                return Err(sqlx::Error::Protocol(
+                    "AI generation variants must belong to the same tenant task".to_string(),
+                ));
+            }
+            sqlx::query(
+                r#"
+                INSERT OR IGNORE INTO music_ai_generation_variant
+                    (id, tenant_id, task_id, audio_asset_id, title, drive_uri,
+                     media_resource_snapshot, duration_seconds, moderation_status, created_at, updated_at)
+                VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                "#,
+            )
+            .bind(&input.id)
+            .bind(&input.tenant_id)
+            .bind(&input.task_id)
+            .bind(&input.audio_asset_id)
+            .bind(&input.title)
+            .bind(&input.drive_uri)
+            .bind(&input.media_resource_snapshot)
+            .bind(input.duration_seconds)
+            .bind(&input.moderation_status)
+            .bind(&input.now)
+            .bind(&input.now)
+            .execute(&mut *tx)
+            .await?;
+        }
 
         sqlx::query(
             r#"
             UPDATE music_ai_generation_task
             SET status = 'succeeded',
                 moderation_status = ?,
+                provider_output_count = MAX(provider_output_count, ?),
                 completed_at = COALESCE(completed_at, ?),
                 updated_at = ?
             WHERE tenant_id = ? AND id = ?
             "#,
         )
-        .bind(&input.moderation_status)
-        .bind(&input.now)
-        .bind(&input.now)
-        .bind(&input.tenant_id)
-        .bind(&input.task_id)
+        .bind(&first.moderation_status)
+        .bind(inputs.len() as i64)
+        .bind(&first.now)
+        .bind(&first.now)
+        .bind(&first.tenant_id)
+        .bind(&first.task_id)
         .execute(&mut *tx)
         .await?;
 
@@ -2522,6 +2825,317 @@ fn normalize_tag_slug(value: &str) -> String {
 
 fn bool_int(value: bool) -> i64 {
     if value { 1 } else { 0 }
+}
+
+fn require_archive_text(value: &str, field_name: &str) -> Result<String, DriveProductError> {
+    let value = value.trim();
+    if value.is_empty() {
+        return Err(DriveProductError::Validation(format!(
+            "{field_name} is required"
+        )));
+    }
+    Ok(value.to_string())
+}
+
+fn require_archive_identifier(value: &str, field_name: &str) -> Result<String, DriveProductError> {
+    let value = require_archive_text(value, field_name)?;
+    if value.len() > 255
+        || !value
+            .chars()
+            .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | ':' | '@' | '-'))
+    {
+        return Err(DriveProductError::Validation(format!(
+            "{field_name} contains invalid characters"
+        )));
+    }
+    Ok(value)
+}
+
+fn archive_actor(
+    user_id: Option<&str>,
+    anonymous_id: Option<&str>,
+) -> Result<UploaderActor, DriveProductError> {
+    if let Some(user_id) = user_id.map(str::trim).filter(|value| !value.is_empty()) {
+        return Ok(UploaderActor::User {
+            user_id: require_archive_identifier(user_id, "user_id")?,
+        });
+    }
+    let anonymous_id = anonymous_id
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .unwrap_or("app:sdkwork-music:anonymous");
+    Ok(UploaderActor::Anonymous {
+        anonymous_id: require_archive_identifier(anonymous_id, "anonymous_id")?,
+    })
+}
+
+fn archive_operator_id(actor: &UploaderActor) -> String {
+    match actor {
+        UploaderActor::Anonymous { anonymous_id } => anonymous_id.clone(),
+        UploaderActor::User { user_id } => user_id.clone(),
+        UploaderActor::System { operator_id } => operator_id.clone(),
+    }
+}
+
+fn upload_profile_for_kind(kind: &str, content_type: &str) -> String {
+    let normalized_kind = kind.trim().to_ascii_lowercase();
+    match normalized_kind.as_str() {
+        "image" | "video" | "audio" | "document" | "archive" | "text" => normalized_kind,
+        "music" | "voice" => "audio".to_string(),
+        _ if content_type.trim().to_ascii_lowercase().starts_with("image/") => "image".to_string(),
+        _ if content_type.trim().to_ascii_lowercase().starts_with("video/") => "video".to_string(),
+        _ if content_type.trim().to_ascii_lowercase().starts_with("audio/") => "audio".to_string(),
+        _ => "generic".to_string(),
+    }
+}
+
+fn artifact_fingerprint(
+    artifact: &MusicGeneratedProviderArtifact,
+    fallback_id: &str,
+) -> Result<String, DriveProductError> {
+    if let Some(checksum) = artifact
+        .checksum_sha256_hex
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        validate_archive_sha256_checksum(checksum)?;
+        return Ok(checksum.to_string());
+    }
+    Ok(format!("provider_asset:{fallback_id}"))
+}
+
+fn generated_artifact_checksum(
+    artifact: &MusicGeneratedProviderArtifact,
+    content: &[u8],
+) -> Result<String, DriveProductError> {
+    if let Some(checksum) = artifact
+        .checksum_sha256_hex
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        validate_archive_sha256_checksum(checksum)?;
+        return Ok(checksum.to_string());
+    }
+    Ok(sha256_hex(content))
+}
+
+fn sha256_hex(content: &[u8]) -> String {
+    let digest = Sha256::digest(content);
+    let mut output = String::with_capacity("sha256:".len() + 64);
+    output.push_str("sha256:");
+    for byte in digest {
+        push_hex_byte(&mut output, byte);
+    }
+    output
+}
+
+fn push_hex_byte(output: &mut String, byte: u8) {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    output.push(char::from(HEX[usize::from(byte >> 4)]));
+    output.push(char::from(HEX[usize::from(byte & 0x0f)]));
+}
+
+fn validate_archive_sha256_checksum(value: &str) -> Result<(), DriveProductError> {
+    let Some(hex) = value.strip_prefix("sha256:") else {
+        return Err(DriveProductError::Validation(
+            "checksum_sha256_hex must use sha256:<64 lowercase hex>".to_string(),
+        ));
+    };
+    if hex.len() != 64 || !hex.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+        return Err(DriveProductError::Validation(
+            "checksum_sha256_hex must use sha256:<64 lowercase hex>".to_string(),
+        ));
+    }
+    Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+fn generated_artifact_snapshot(
+    artifact: &MusicGeneratedProviderArtifact,
+    upload_item: &sdkwork_drive_product::uploader::DriveUploadItem,
+    drive_uri: &str,
+    provider_code: &str,
+    provider_model: &str,
+    provider_task_id: Option<&str>,
+    ordinal: usize,
+    task_id: &str,
+    stored_object: Option<&StoredMusicGeneratedArtifactObject>,
+) -> Result<String, DriveProductError> {
+    let kind = artifact.kind.trim().to_ascii_lowercase();
+    let mut root = Map::new();
+    root.insert("kind".to_string(), Value::String(kind));
+    root.insert("source".to_string(), Value::String("drive".to_string()));
+    root.insert("uri".to_string(), Value::String(drive_uri.to_string()));
+    root.insert(
+        "mimeType".to_string(),
+        Value::String(artifact.content_type.trim().to_ascii_lowercase()),
+    );
+    root.insert(
+        "sizeBytes".to_string(),
+        Value::String(artifact.content_length.max(0).to_string()),
+    );
+    root.insert(
+        "durationSeconds".to_string(),
+        Value::Number(serde_json::Number::from(artifact.duration_seconds.max(0))),
+    );
+
+    let checksum = stored_object
+        .map(|stored_object| stored_object.checksum_sha256_hex.as_str())
+        .or_else(|| {
+            artifact
+                .checksum_sha256_hex
+                .as_deref()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+        });
+    if let Some(checksum) = checksum {
+        validate_archive_sha256_checksum(checksum)?;
+        let mut checksum_json = Map::new();
+        checksum_json.insert("algorithm".to_string(), Value::String("sha256".to_string()));
+        checksum_json.insert("value".to_string(), Value::String(checksum.to_string()));
+        root.insert("checksum".to_string(), Value::Object(checksum_json));
+    }
+
+    let mut drive = Map::new();
+    drive.insert("spaceType".to_string(), Value::String("ai_generated".to_string()));
+    drive.insert("spaceId".to_string(), Value::String(upload_item.space_id.clone()));
+    drive.insert("nodeId".to_string(), Value::String(upload_item.node_id.clone()));
+    drive.insert("uri".to_string(), Value::String(drive_uri.to_string()));
+    drive.insert("uploadItemId".to_string(), Value::String(upload_item.id.clone()));
+    if let Some(upload_session_id) = &upload_item.upload_session_id {
+        drive.insert(
+            "uploadSessionId".to_string(),
+            Value::String(upload_session_id.clone()),
+        );
+    }
+    if let Some(storage_provider_id) = &upload_item.storage_provider_id {
+        drive.insert(
+            "storageProviderId".to_string(),
+            Value::String(storage_provider_id.clone()),
+        );
+    }
+    if let Some(storage_upload_id) = &upload_item.storage_upload_id {
+        drive.insert(
+            "storageUploadId".to_string(),
+            Value::String(storage_upload_id.clone()),
+        );
+    }
+    drive.insert(
+        "uploadStatus".to_string(),
+        Value::String(upload_item.status.clone()),
+    );
+    if let Some(stored_object) = stored_object {
+        let mut object = Map::new();
+        object.insert(
+            "bucket".to_string(),
+            Value::String(stored_object.bucket.clone()),
+        );
+        object.insert(
+            "objectKey".to_string(),
+            Value::String(stored_object.object_key.clone()),
+        );
+        object.insert("uploadStatus".to_string(), Value::String(upload_item.status.clone()));
+        if let Some(etag) = &stored_object.etag {
+            object.insert("etag".to_string(), Value::String(etag.clone()));
+        }
+        if let Some(version_id) = &stored_object.version_id {
+            object.insert("versionId".to_string(), Value::String(version_id.clone()));
+        }
+        drive.insert("object".to_string(), Value::Object(object));
+    } else if let (Some(bucket), Some(object_key)) =
+        (upload_item.object_bucket.as_ref(), upload_item.object_key.as_ref())
+    {
+        let mut object = Map::new();
+        object.insert("bucket".to_string(), Value::String(bucket.clone()));
+        object.insert("objectKey".to_string(), Value::String(object_key.clone()));
+        object.insert("uploadStatus".to_string(), Value::String("prepared".to_string()));
+        drive.insert("object".to_string(), Value::Object(object));
+    }
+    root.insert("drive".to_string(), Value::Object(drive));
+
+    let mut ai = Map::new();
+    ai.insert("provenance".to_string(), Value::String("generated".to_string()));
+    ai.insert("provider".to_string(), Value::String(provider_code.to_string()));
+    ai.insert("model".to_string(), Value::String(provider_model.to_string()));
+    ai.insert("taskId".to_string(), Value::String(task_id.to_string()));
+    ai.insert(
+        "artifactIndex".to_string(),
+        Value::Number(serde_json::Number::from(ordinal as u64)),
+    );
+    if let Some(provider_task_id) = provider_task_id {
+        ai.insert(
+            "providerTaskId".to_string(),
+            Value::String(provider_task_id.to_string()),
+        );
+    }
+    if let Some(provider_asset_id) = artifact
+        .provider_asset_id
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        ai.insert(
+            "providerAssetId".to_string(),
+            Value::String(provider_asset_id.to_string()),
+        );
+    }
+    if let Some(provider_asset_url) = artifact
+        .provider_asset_url
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        ai.insert(
+            "providerAssetUrl".to_string(),
+            Value::String(provider_asset_url.to_string()),
+        );
+    }
+    root.insert("ai".to_string(), Value::Object(ai));
+
+    if let Some(metadata) = parse_artifact_metadata(artifact.metadata_json.as_deref())? {
+        root.insert("metadata".to_string(), metadata);
+    }
+
+    serde_json::to_string(&Value::Object(root)).map_err(|error| {
+        DriveProductError::Internal(format!("serialize generated artifact snapshot failed: {error}"))
+    })
+}
+
+fn parse_artifact_metadata(raw: Option<&str>) -> Result<Option<Value>, DriveProductError> {
+    let Some(raw) = raw.map(str::trim).filter(|value| !value.is_empty()) else {
+        return Ok(None);
+    };
+    let parsed: Value = serde_json::from_str(raw).map_err(|error| {
+        DriveProductError::Validation(format!("metadata_json must be valid JSON: {error}"))
+    })?;
+    if parsed.is_object() {
+        Ok(Some(parsed))
+    } else {
+        let mut wrapper = Map::new();
+        wrapper.insert("providerPayload".to_string(), parsed);
+        Ok(Some(Value::Object(wrapper)))
+    }
+}
+
+fn drive_object_store_error(error: DriveObjectStoreError) -> DriveProductError {
+    match error.kind {
+        DriveObjectStoreErrorKind::NotFound => DriveProductError::NotFound(error.message),
+        DriveObjectStoreErrorKind::Conflict => DriveProductError::Conflict(error.message),
+        DriveObjectStoreErrorKind::PermissionDenied => {
+            DriveProductError::PermissionDenied(error.message)
+        }
+        DriveObjectStoreErrorKind::InvalidRequest | DriveObjectStoreErrorKind::IntegrityFailed => {
+            DriveProductError::Validation(error.message)
+        }
+        DriveObjectStoreErrorKind::RateLimited
+        | DriveObjectStoreErrorKind::Timeout
+        | DriveObjectStoreErrorKind::Unavailable
+        | DriveObjectStoreErrorKind::UpstreamError
+        | DriveObjectStoreErrorKind::NotSupported
+        | DriveObjectStoreErrorKind::Internal => DriveProductError::Internal(error.message),
+    }
 }
 
 fn normalize_task_status(
