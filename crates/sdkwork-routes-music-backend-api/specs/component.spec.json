@@ -2,36 +2,20 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-music-app-sdk",
-    "displayName": "SDKWork Music App SDK",
+    "name": "sdkwork-routes-music-backend-api",
+    "displayName": "Sdkwork Routes Music Backend Api",
     "version": "0.1.0",
-    "type": "sdk-family",
-    "root": "sdkwork-music/sdks/sdkwork-music-app-sdk",
+    "type": "rust-route-crate",
+    "root": "sdkwork-music/crates/sdkwork-routes-music-backend-api",
     "domain": "content",
-    "declaredDomain": "content",
-    "capability": "music",
-    "status": "ready",
+    "capability": "routes-music-backend-api",
     "languages": [
-      "typescript"
+      "rust"
     ],
     "generated": false,
-    "private": true,
     "manifests": [
-      "package.json",
-      ".sdkwork-assembly.json",
-      "sdk-manifest.json"
+      "Cargo.toml"
     ]
-  },
-  "contracts": {
-    "sdkDependencies": [],
-    "publicExports": [
-      "."
-    ],
-    "runtimeEntrypoints": [],
-    "routeManifest": null,
-    "sdkClients": [],
-    "events": [],
-    "configKeys": []
   },
   "canonicalSpecs": [
     {
@@ -60,29 +44,49 @@
       "purpose": "Verification and contract testing expectations."
     },
     {
-      "file": "TYPESCRIPT_CODE_SPEC.md",
-      "path": "../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
-      "purpose": "TypeScript and Node package rules."
-    },
-    {
-      "file": "SDK_SPEC.md",
-      "path": "../../../sdkwork-specs/SDK_SPEC.md",
-      "purpose": "SDK family and generated client integration rules."
-    },
-    {
-      "file": "SDK_WORKSPACE_GENERATION_SPEC.md",
-      "path": "../../../sdkwork-specs/SDK_WORKSPACE_GENERATION_SPEC.md",
-      "purpose": "SDK workspace and generated artifact placement rules."
+      "file": "RUST_CODE_SPEC.md",
+      "path": "../../../sdkwork-specs/RUST_CODE_SPEC.md",
+      "purpose": "Rust crate and module rules."
     },
     {
       "file": "API_SPEC.md",
       "path": "../../../sdkwork-specs/API_SPEC.md",
-      "purpose": "OpenAPI authority rules for SDK generation."
+      "purpose": "HTTP API contract authority rules."
+    },
+    {
+      "file": "SDK_SPEC.md",
+      "path": "../../../sdkwork-specs/SDK_SPEC.md",
+      "purpose": "Generated SDK semantics and integration rules."
+    },
+    {
+      "file": "SDK_WORKSPACE_GENERATION_SPEC.md",
+      "path": "../../../sdkwork-specs/SDK_WORKSPACE_GENERATION_SPEC.md",
+      "purpose": "SDK workspace and route manifest generation rules."
+    },
+    {
+      "file": "DOMAIN_SPEC.md",
+      "path": "../../../sdkwork-specs/DOMAIN_SPEC.md",
+      "purpose": "Domain and capability boundary rules."
+    },
+    {
+      "file": "SECURITY_SPEC.md",
+      "path": "../../../sdkwork-specs/SECURITY_SPEC.md",
+      "purpose": "Protected API and security rules."
     }
   ],
+  "contracts": {
+    "publicExports": [
+      "."
+    ],
+    "runtimeEntrypoints": [],
+    "routeManifest": "sdks/_route-manifests/<surface>/<packageName>.route-manifest.json",
+    "sdkClients": [],
+    "events": [],
+    "configKeys": []
+  },
   "verification": {
     "commands": [
-      "pnpm test"
+      "cargo test"
     ]
   }
 }

@@ -17,3 +17,9 @@ Authoritative directories:
 Generated SDK `.sdkwork/` directories under `generated/server-openapi` are owned
 by `sdkgen` and must not be edited as repository workspace metadata. Runtime
 state belongs under user-private runtime directories, not this source tree.
+
+## Execution References
+
+- Agent entrypoint: `AGENTS.md`
+- Shared execution soul: `../sdkwork-specs/SOUL.md`
+- Workspace metadata standard: `../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md`
