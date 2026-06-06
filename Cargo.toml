@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "crates/sdkwork-music-core-rust",
+    "crates/sdkwork-music-storage-sqlx-rust",
+    "crates/sdkwork-routes-music-app-api",
+    "crates/sdkwork-routes-music-backend-api",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+

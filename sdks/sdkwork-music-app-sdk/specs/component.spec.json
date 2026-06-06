@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-music-app-sdk",
+    "displayName": "SDKWork Music App SDK",
+    "version": "0.1.0",
+    "type": "sdk-family",
+    "root": "sdkwork-music/sdks/sdkwork-music-app-sdk",
+    "domain": "music",
+    "declaredDomain": "music",
+    "capability": "music",
+    "status": "ready",
+    "languages": [
+      "typescript"
+    ],
+    "generated": false,
+    "private": true,
+    "manifests": [
+      "package.json",
+      ".sdkwork-assembly.json",
+      "sdk-manifest.json"
+    ]
+  },
+  "contracts": {
+    "sdkDependencies": []
+  }
+}
+

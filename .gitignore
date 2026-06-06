@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Rust build output
+target/
+
+# Package artifacts
+*.tgz
+npm-debug.log*
+pnpm-debug.log*
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Caches and reports
+.turbo/
+.vite/
+coverage/
+.nyc_output/
+.DS_Store
+Thumbs.db
+
+# SDK generator transient reports
+**/.sdkwork/sdkwork-generator-changes.json
+**/.sdkwork/sdkwork-generator-report.json

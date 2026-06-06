@@ -1,0 +1,1 @@
+{"version":3,"file":"music-artist-command.d.ts","sourceRoot":"","sources":["../../src/types/music-artist-command.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,MAAM,wBAAwB,CAAC;AAEjE,MAAM,WAAW,kBAAkB;IACjC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,MAAM,CAAC,EAAE,kBAAkB,CAAC;IAC5B,qBAAqB,CAAC,EAAE,MAAM,CAAC;CAChC"}

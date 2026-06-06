@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "sdkName": "sdkwork-music-backend-sdk",
+  "sdkOwner": "sdkwork-music",
+  "apiAuthority": "sdkwork-music-backend-api",
+  "sdkFamily": "sdkwork-music-backend-sdk",
+  "sdkType": "backend",
+  "apiPrefix": "/backend/v3/api",
+  "generationInputSpec": "openapi/sdkwork-music-backend-api.openapi.json",
+  "generatedPackages": {
+    "typescript": {
+      "language": "typescript",
+      "packageName": "sdkwork-music-backend-sdk-generated-typescript",
+      "generatedOutput": "sdkwork-music-backend-sdk-typescript/generated/server-openapi"
+    }
+  },
+  "generatorName": "@sdkwork/sdk-generator",
+  "generatorPath": "D:\\javasource\\spring-ai-plus\\sdk\\sdkwork-sdk-generator\\bin\\sdkgen.js",
+  "baseUrl": "http://127.0.0.1:18080",
+  "standardProfile": "sdkwork-v3",
+  "fixedSdkVersion": "0.1.0",
+  "ownerOnlyOperationCount": 36,
+  "operations": [
+    {
+      "method": "GET",
+      "operationId": "ai.generation.creditLedger.list",
+      "path": "/backend/v3/api/music/ai/generation/credit_ledger"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.generation.tasks.management.list",
+      "path": "/backend/v3/api/music/ai/generation/tasks"
+    },
+    {
+      "method": "POST",
+      "operationId": "ai.generation.tasks.moderate",
+      "path": "/backend/v3/api/music/ai/generation/tasks/{taskId}/moderate"
+    },
+    {
+      "method": "POST",
+      "operationId": "ai.generation.tasks.publish",
+      "path": "/backend/v3/api/music/ai/generation/tasks/{taskId}/publish"
+    },
+    {
+      "method": "POST",
+      "operationId": "ai.promptTemplates.create",
+      "path": "/backend/v3/api/music/ai/prompt_templates"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.promptTemplates.management.list",
+      "path": "/backend/v3/api/music/ai/prompt_templates"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "ai.promptTemplates.update",
+      "path": "/backend/v3/api/music/ai/prompt_templates/{templateId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "ai.stylePresets.create",
+      "path": "/backend/v3/api/music/ai/style_presets"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.stylePresets.management.list",
+      "path": "/backend/v3/api/music/ai/style_presets"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "ai.stylePresets.update",
+      "path": "/backend/v3/api/music/ai/style_presets/{presetId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "albums.create",
+      "path": "/backend/v3/api/music/albums"
+    },
+    {
+      "method": "GET",
+      "operationId": "albums.management.list",
+      "path": "/backend/v3/api/music/albums"
+    },
+    {
+      "method": "POST",
+      "operationId": "artists.create",
+      "path": "/backend/v3/api/music/artists"
+    },
+    {
+      "method": "GET",
+      "operationId": "artists.management.list",
+      "path": "/backend/v3/api/music/artists"
+    },
+    {
+      "method": "POST",
+      "operationId": "audio.assets.create",
+      "path": "/backend/v3/api/music/audio/assets"
+    },
+    {
+      "method": "GET",
+      "operationId": "audio.assets.management.list",
+      "path": "/backend/v3/api/music/audio/assets"
+    },
+    {
+      "method": "POST",
+      "operationId": "charts.create",
+      "path": "/backend/v3/api/music/charts"
+    },
+    {
+      "method": "POST",
+      "operationId": "charts.entries.create",
+      "path": "/backend/v3/api/music/charts/{chartId}/entries"
+    },
+    {
+      "method": "GET",
+      "operationId": "charts.management.list",
+      "path": "/backend/v3/api/music/charts"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "charts.update",
+      "path": "/backend/v3/api/music/charts/{chartId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "contentReports.management.list",
+      "path": "/backend/v3/api/music/content_reports"
+    },
+    {
+      "method": "POST",
+      "operationId": "contentReports.resolve",
+      "path": "/backend/v3/api/music/content_reports/{reportId}/resolve"
+    },
+    {
+      "method": "GET",
+      "operationId": "moderation.signals.list",
+      "path": "/backend/v3/api/music/moderation/signals"
+    },
+    {
+      "method": "GET",
+      "operationId": "playlists.management.list",
+      "path": "/backend/v3/api/music/playlists"
+    },
+    {
+      "method": "GET",
+      "operationId": "recommendation.feedback.management.list",
+      "path": "/backend/v3/api/music/recommendation/feedback"
+    },
+    {
+      "method": "POST",
+      "operationId": "recommendation.shelves.create",
+      "path": "/backend/v3/api/music/recommendation/shelves"
+    },
+    {
+      "method": "GET",
+      "operationId": "recommendation.shelves.management.list",
+      "path": "/backend/v3/api/music/recommendation/shelves"
+    },
+    {
+      "method": "POST",
+      "operationId": "releases.channels.create",
+      "path": "/backend/v3/api/music/releases/{releaseId}/channels"
+    },
+    {
+      "method": "GET",
+      "operationId": "releases.list",
+      "path": "/backend/v3/api/music/releases"
+    },
+    {
+      "method": "POST",
+      "operationId": "rights.policies.create",
+      "path": "/backend/v3/api/music/rights/policies"
+    },
+    {
+      "method": "GET",
+      "operationId": "rights.policies.management.list",
+      "path": "/backend/v3/api/music/rights/policies"
+    },
+    {
+      "method": "POST",
+      "operationId": "rights.policies.territories.create",
+      "path": "/backend/v3/api/music/rights/policies/{policyId}/territories"
+    },
+    {
+      "method": "POST",
+      "operationId": "tracks.archive",
+      "path": "/backend/v3/api/music/tracks/{trackId}/archive"
+    },
+    {
+      "method": "POST",
+      "operationId": "tracks.create",
+      "path": "/backend/v3/api/music/tracks"
+    },
+    {
+      "method": "GET",
+      "operationId": "tracks.management.list",
+      "path": "/backend/v3/api/music/tracks"
+    },
+    {
+      "method": "POST",
+      "operationId": "tracks.publish",
+      "path": "/backend/v3/api/music/tracks/{trackId}/publish"
+    }
+  ],
+  "managedBy": "tools/music_sdk_generator_runner.mjs"
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"music-ai-style-preset.d.ts","sourceRoot":"","sources":["../../src/types/music-ai-style-preset.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,kBAAkB;IACjC,EAAE,EAAE,MAAM,CAAC;IACX,QAAQ,EAAE,MAAM,CAAC;IACjB,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;IACd,SAAS,EAAE,MAAM,EAAE,CAAC;IACpB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,MAAM,EAAE,OAAO,GAAG,QAAQ,GAAG,UAAU,CAAC;CACzC"}

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "sdkName": "sdkwork-music-app-sdk",
+  "sdkOwner": "sdkwork-music",
+  "apiAuthority": "sdkwork-music-app-api",
+  "sdkFamily": "sdkwork-music-app-sdk",
+  "sdkType": "app",
+  "apiPrefix": "/app/v3/api",
+  "generationInputSpec": "openapi/sdkwork-music-app-api.openapi.json",
+  "generatedPackages": {
+    "typescript": {
+      "language": "typescript",
+      "packageName": "sdkwork-music-app-sdk-generated-typescript",
+      "generatedOutput": "sdkwork-music-app-sdk-typescript/generated/server-openapi"
+    }
+  },
+  "generatorName": "@sdkwork/sdk-generator",
+  "generatorPath": "D:\\javasource\\spring-ai-plus\\sdk\\sdkwork-sdk-generator\\bin\\sdkgen.js",
+  "baseUrl": "http://127.0.0.1:18080",
+  "standardProfile": "sdkwork-v3",
+  "fixedSdkVersion": "0.1.0",
+  "ownerOnlyOperationCount": 32,
+  "operations": [
+    {
+      "method": "POST",
+      "operationId": "ai.generation.tasks.create",
+      "path": "/app/v3/api/music/ai/generation/tasks"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.generation.tasks.list",
+      "path": "/app/v3/api/music/ai/generation/tasks"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.generation.tasks.retrieve",
+      "path": "/app/v3/api/music/ai/generation/tasks/{taskId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.promptTemplates.list",
+      "path": "/app/v3/api/music/ai/prompt_templates"
+    },
+    {
+      "method": "GET",
+      "operationId": "ai.stylePresets.list",
+      "path": "/app/v3/api/music/ai/style_presets"
+    },
+    {
+      "method": "GET",
+      "operationId": "albums.list",
+      "path": "/app/v3/api/music/albums"
+    },
+    {
+      "method": "GET",
+      "operationId": "artists.list",
+      "path": "/app/v3/api/music/artists"
+    },
+    {
+      "method": "GET",
+      "operationId": "audio.assets.list",
+      "path": "/app/v3/api/music/audio/assets"
+    },
+    {
+      "method": "GET",
+      "operationId": "charts.entries.list",
+      "path": "/app/v3/api/music/charts/{chartId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "charts.list",
+      "path": "/app/v3/api/music/charts"
+    },
+    {
+      "method": "POST",
+      "operationId": "comments.create",
+      "path": "/app/v3/api/music/comments"
+    },
+    {
+      "method": "GET",
+      "operationId": "comments.list",
+      "path": "/app/v3/api/music/comments"
+    },
+    {
+      "method": "POST",
+      "operationId": "contentReports.create",
+      "path": "/app/v3/api/music/content_reports"
+    },
+    {
+      "method": "GET",
+      "operationId": "downloads.entitlements.list",
+      "path": "/app/v3/api/music/downloads/entitlements"
+    },
+    {
+      "method": "GET",
+      "operationId": "home.shelves.list",
+      "path": "/app/v3/api/music/home/shelves"
+    },
+    {
+      "method": "POST",
+      "operationId": "library.items.create",
+      "path": "/app/v3/api/music/library/items"
+    },
+    {
+      "method": "DELETE",
+      "operationId": "library.items.delete",
+      "path": "/app/v3/api/music/library/items/{itemId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "library.items.list",
+      "path": "/app/v3/api/music/library/items"
+    },
+    {
+      "method": "GET",
+      "operationId": "listeningHistory.list",
+      "path": "/app/v3/api/music/listening_history"
+    },
+    {
+      "method": "POST",
+      "operationId": "playback.sessions.create",
+      "path": "/app/v3/api/music/playback/sessions"
+    },
+    {
+      "method": "GET",
+      "operationId": "playback.sessions.list",
+      "path": "/app/v3/api/music/playback/sessions"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "playback.sessions.update",
+      "path": "/app/v3/api/music/playback/sessions/{sessionId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "playEvents.create",
+      "path": "/app/v3/api/music/play_events"
+    },
+    {
+      "method": "POST",
+      "operationId": "playlists.follow.create",
+      "path": "/app/v3/api/music/playlists/{playlistId}/follow"
+    },
+    {
+      "method": "DELETE",
+      "operationId": "playlists.follow.delete",
+      "path": "/app/v3/api/music/playlists/{playlistId}/follow"
+    },
+    {
+      "method": "GET",
+      "operationId": "playlists.list",
+      "path": "/app/v3/api/music/playlists"
+    },
+    {
+      "method": "POST",
+      "operationId": "playlists.tracks.create",
+      "path": "/app/v3/api/music/playlists/{playlistId}/tracks"
+    },
+    {
+      "method": "DELETE",
+      "operationId": "playlists.tracks.delete",
+      "path": "/app/v3/api/music/playlists/{playlistId}/tracks/{trackId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "recommendation.feedback.create",
+      "path": "/app/v3/api/music/recommendation/feedback"
+    },
+    {
+      "method": "GET",
+      "operationId": "search.query",
+      "path": "/app/v3/api/music/search"
+    },
+    {
+      "method": "GET",
+      "operationId": "search.suggestions.list",
+      "path": "/app/v3/api/music/search/suggestions"
+    },
+    {
+      "method": "GET",
+      "operationId": "tracks.list",
+      "path": "/app/v3/api/music/tracks"
+    }
+  ],
+  "managedBy": "tools/music_sdk_generator_runner.mjs"
+}

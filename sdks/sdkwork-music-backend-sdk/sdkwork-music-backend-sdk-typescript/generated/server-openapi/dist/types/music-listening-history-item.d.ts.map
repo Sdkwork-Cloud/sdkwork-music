@@ -1,0 +1,1 @@
+{"version":3,"file":"music-listening-history-item.d.ts","sourceRoot":"","sources":["../../src/types/music-listening-history-item.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAEhD,MAAM,WAAW,yBAAyB;IACxC,OAAO,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE,MAAM,CAAC;IACnB,SAAS,EAAE,MAAM,CAAC;IAClB,YAAY,EAAE,MAAM,CAAC;IACrB,KAAK,CAAC,EAAE,UAAU,CAAC;CACpB"}

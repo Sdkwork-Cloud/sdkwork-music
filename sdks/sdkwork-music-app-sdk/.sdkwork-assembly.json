@@ -1,0 +1,19 @@
+{
+  "workspace": "sdkwork-music-app-sdk",
+  "sdkOwner": "sdkwork-music",
+  "apiAuthority": "sdkwork-music-app-api",
+  "authoritySpec": "openapi/sdkwork-music-app-api.openapi.json",
+  "generationInputSpec": "openapi/sdkwork-music-app-api.openapi.json",
+  "sdkDependencies": [],
+  "derivedSpecs": {
+    "default": "openapi/sdkwork-music-app-api.openapi.json"
+  },
+  "discoverySurface": {
+    "sdkTarget": "app",
+    "apiPrefix": "/app/v3/api",
+    "generatedProtocols": [
+      "http-openapi"
+    ],
+    "manualTransports": []
+  }
+}

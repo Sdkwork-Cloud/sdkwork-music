@@ -1,0 +1,15 @@
+[package]
+name = "sdkwork-music-storage-sqlx-rust"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "sdkwork_music_storage_sqlx"
+path = "src/lib.rs"
+
+[dependencies]
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio", "sqlite", "postgres"] }
+
+[dev-dependencies]
+tokio = { version = "1.51", features = ["macros", "rt-multi-thread"] }
+

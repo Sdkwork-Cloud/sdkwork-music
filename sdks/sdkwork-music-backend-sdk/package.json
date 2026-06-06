@@ -1,0 +1,10 @@
+{
+  "name": "@sdkwork/music-backend-sdk-family",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node bin/generate-sdk.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
+

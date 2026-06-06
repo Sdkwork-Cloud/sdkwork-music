@@ -1,0 +1,1 @@
+{"version":3,"file":"music-release-channel-command.d.ts","sourceRoot":"","sources":["../../src/types/music-release-channel-command.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,0BAA0B;IACzC,WAAW,EAAE,MAAM,CAAC;IACpB,kBAAkB,EAAE,WAAW,GAAG,YAAY,GAAG,WAAW,GAAG,QAAQ,GAAG,SAAS,CAAC;IACpF,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

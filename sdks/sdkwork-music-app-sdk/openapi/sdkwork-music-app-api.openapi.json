@@ -1,0 +1,5693 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "SDKWork Music App API",
+    "version": "1.0.0",
+    "x-sdkwork-owner": "sdkwork-music",
+    "x-sdkwork-api-authority": "sdkwork-music-app-api"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:18080"
+    }
+  ],
+  "tags": [
+    {
+      "name": "music",
+      "description": "Music API resources.",
+      "x-sdk-nested-resource-surface": true
+    }
+  ],
+  "paths": {
+    "/app/v3/api/music/home/shelves": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music home.shelves.list",
+        "operationId": "home.shelves.list",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicHomeShelf"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "home.shelves",
+        "x-sdkwork-permission": "music.home.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/search": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music search.query",
+        "operationId": "search.query",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicSearchResult"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "search",
+        "x-sdkwork-permission": "music.search.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/artists": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music artists.list",
+        "operationId": "artists.list",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicArtist"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "artists",
+        "x-sdkwork-permission": "music.artists",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/albums": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music albums.list",
+        "operationId": "albums.list",
+        "parameters": [
+          {
+            "name": "artist_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAlbum"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "albums",
+        "x-sdkwork-permission": "music.albums",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/tracks": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music tracks.list",
+        "operationId": "tracks.list",
+        "parameters": [
+          {
+            "name": "artist_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "album_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicTrack"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "tracks",
+        "x-sdkwork-permission": "music.tracks",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playlists": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playlists.list",
+        "operationId": "playlists.list",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicPlaylist"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playlists",
+        "x-sdkwork-permission": "music.playlists",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/audio/assets": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music audio.assets.list",
+        "operationId": "audio.assets.list",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAudioAsset"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "audio.assets",
+        "x-sdkwork-permission": "music.audio.assets",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/charts": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music charts.list",
+        "operationId": "charts.list",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicChart"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "charts",
+        "x-sdkwork-permission": "music.charts",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/charts/{chartId}": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music charts.entries.list",
+        "operationId": "charts.entries.list",
+        "parameters": [
+          {
+            "name": "chartId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicChartEntry"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "charts.entries",
+        "x-sdkwork-permission": "music.charts.entries",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "tenant",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/library/items": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music library.items.list",
+        "operationId": "library.items.list",
+        "parameters": [
+          {
+            "name": "item_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicUserLibraryItem"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "library.items",
+        "x-sdkwork-permission": "music.library.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      },
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music library.items.create",
+        "operationId": "library.items.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicLibraryItemCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicUserLibraryItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "library.items",
+        "x-sdkwork-permission": "music.library.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/library/items/{itemId}": {
+      "delete": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music library.items.delete",
+        "operationId": "library.items.delete",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicUserLibraryItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "library.items",
+        "x-sdkwork-permission": "music.library.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playlists/{playlistId}/tracks": {
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playlists.tracks.create",
+        "operationId": "playlists.tracks.create",
+        "parameters": [
+          {
+            "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicPlaylistTrackCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaylist"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playlists.tracks",
+        "x-sdkwork-permission": "music.playlists.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playlists/{playlistId}/tracks/{trackId}": {
+      "delete": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playlists.tracks.delete",
+        "operationId": "playlists.tracks.delete",
+        "parameters": [
+          {
+            "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "trackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaylist"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playlists.tracks",
+        "x-sdkwork-permission": "music.playlists.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playlists/{playlistId}/follow": {
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playlists.follow.create",
+        "operationId": "playlists.follow.create",
+        "parameters": [
+          {
+            "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicPlaylistFollowCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaylistFollow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playlists.follow",
+        "x-sdkwork-permission": "music.playlists.follow",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      },
+      "delete": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playlists.follow.delete",
+        "operationId": "playlists.follow.delete",
+        "parameters": [
+          {
+            "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaylistFollow"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playlists.follow",
+        "x-sdkwork-permission": "music.playlists.follow",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/comments": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music comments.list",
+        "operationId": "comments.list",
+        "parameters": [
+          {
+            "name": "resource_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicComment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "comments",
+        "x-sdkwork-permission": "music.comments.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      },
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music comments.create",
+        "operationId": "comments.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicCommentCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicComment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "comments",
+        "x-sdkwork-permission": "music.comments.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/content_reports": {
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music contentReports.create",
+        "operationId": "contentReports.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicContentReportCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicContentReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "contentReports",
+        "x-sdkwork-permission": "music.contentReports.create",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/recommendation/feedback": {
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music recommendation.feedback.create",
+        "operationId": "recommendation.feedback.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicRecommendationFeedbackCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicRecommendationFeedback"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "recommendation.feedback",
+        "x-sdkwork-permission": "music.recommendationFeedback.create",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/search/suggestions": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music search.suggestions.list",
+        "operationId": "search.suggestions.list",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicSearchSuggestion"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "search.suggestions",
+        "x-sdkwork-permission": "music.search.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/downloads/entitlements": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music downloads.entitlements.list",
+        "operationId": "downloads.entitlements.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicDownloadEntitlement"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "downloads.entitlements",
+        "x-sdkwork-permission": "music.downloads.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playback/sessions": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playback.sessions.list",
+        "operationId": "playback.sessions.list",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicPlaybackSession"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playback.sessions",
+        "x-sdkwork-permission": "music.playback.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      },
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playback.sessions.create",
+        "operationId": "playback.sessions.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicPlaybackSessionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaybackSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playback.sessions",
+        "x-sdkwork-permission": "music.playback.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/playback/sessions/{sessionId}": {
+      "patch": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playback.sessions.update",
+        "operationId": "playback.sessions.update",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicPlaybackSessionCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicPlaybackSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playback.sessions",
+        "x-sdkwork-permission": "music.playback.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/listening_history": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music listeningHistory.list",
+        "operationId": "listeningHistory.list",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicListeningHistoryItem"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "listeningHistory",
+        "x-sdkwork-permission": "music.history.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/play_events": {
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music playEvents.create",
+        "operationId": "playEvents.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicPlayEventCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicListeningHistoryItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "playEvents",
+        "x-sdkwork-permission": "music.playback.write",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/ai/style_presets": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music ai.stylePresets.list",
+        "operationId": "ai.stylePresets.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiStylePreset"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "ai.stylePresets",
+        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/ai/prompt_templates": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music ai.promptTemplates.list",
+        "operationId": "ai.promptTemplates.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiPromptTemplate"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "ai.promptTemplates",
+        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/ai/generation/tasks": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music ai.generation.tasks.list",
+        "operationId": "ai.generation.tasks.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiGenerationTask"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "ai.generation.tasks",
+        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      },
+      "post": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music ai.generation.tasks.create",
+        "operationId": "ai.generation.tasks.create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicAiGenerationTaskCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicAiGenerationTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "ai.generation.tasks",
+        "x-sdkwork-permission": "music.aiGeneration.create",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": true,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/ai/generation/tasks/{taskId}": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music ai.generation.tasks.retrieve",
+        "operationId": "ai.generation.tasks.retrieve",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicAiGenerationTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "ai.generation.tasks",
+        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token"
+      }
+    },
+    "schemas": {
+      "MusicApiResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "data"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {}
+        }
+      },
+      "MusicMediaChecksum": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "algorithm",
+          "value"
+        ],
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "MusicMediaAiProvenance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "provenance"
+        ],
+        "properties": {
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "generated",
+              "edited",
+              "uploaded",
+              "unknown"
+            ]
+          },
+          "provider": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "model": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "moderationStatus": {
+            "$ref": "#/components/schemas/MusicModerationStatus"
+          }
+        }
+      },
+      "MusicMediaResource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video",
+              "audio",
+              "voice",
+              "document",
+              "archive",
+              "other"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "drive",
+              "provider_asset",
+              "external_url",
+              "generated"
+            ]
+          },
+          "uri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publicUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "mimeType": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "sizeBytes": {
+            "type": "string",
+            "format": "int64",
+            "pattern": "^[0-9]+$",
+            "x-sdkwork-int64-string": true,
+            "x-sdkwork-rust-type": "i64"
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksum": {
+            "$ref": "#/components/schemas/MusicMediaChecksum"
+          },
+          "ai": {
+            "$ref": "#/components/schemas/MusicMediaAiProvenance"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "MusicArtist": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "bio": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "avatar": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "avatarMediaResourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "MusicAlbum": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "artistId",
+          "slug",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "artistId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cover": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "coverMediaResourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "releaseDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "MusicAudioAsset": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "title",
+          "driveUri",
+          "audio",
+          "mimeType",
+          "durationSeconds",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "driveSpaceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "driveNodeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "driveUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          },
+          "audio": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "mimeType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksum": {
+            "$ref": "#/components/schemas/MusicMediaChecksum"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MusicAudioAssetStatus"
+          }
+        }
+      },
+      "MusicAudioAssetStatus": {
+        "type": "string",
+        "enum": [
+          "processing",
+          "queued",
+          "ready",
+          "failed",
+          "archived"
+        ]
+      },
+      "MusicTrack": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "artistId",
+          "slug",
+          "title",
+          "durationSeconds",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "artistId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "artistName": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "albumId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "albumTitle": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "audioAssetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "audio": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "$ref": "#/components/schemas/MusicTrackStatus"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 20
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicTrackStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "published",
+          "archived"
+        ]
+      },
+      "MusicPlaylist": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "title",
+          "trackIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "cover": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "trackIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "maxItems": 500
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicPlaylistFollow": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "playlistId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "playlistId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicComment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "resourceType",
+          "resourceId",
+          "body",
+          "moderationStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "resourceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "parentCommentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "moderationStatus": {
+            "$ref": "#/components/schemas/MusicModerationStatus"
+          },
+          "likeCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "replyCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicContentReport": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "reporterUserId",
+          "resourceType",
+          "resourceId",
+          "reasonCode",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reporterUserId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "resourceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reasonCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "reviewing",
+              "resolved",
+              "dismissed"
+            ]
+          },
+          "resolvedBy": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "resolutionNote": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "resolvedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicChart": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "title",
+          "chartType",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "chartType": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "genre",
+              "editorial",
+              "ai"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "periodStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicChartEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "chartId",
+          "trackId",
+          "rank",
+          "score"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "chartId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "track": {
+            "$ref": "#/components/schemas/MusicTrack"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "previousRank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MusicHomeShelf": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "title",
+          "shelfType",
+          "items"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "shelfType": {
+            "type": "string",
+            "enum": [
+              "personalized",
+              "new_release",
+              "chart",
+              "playlist",
+              "ai_generation",
+              "editorial"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MusicRecommendationItem"
+            },
+            "maxItems": 50
+          }
+        }
+      },
+      "MusicRecommendationItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "itemType",
+          "itemId",
+          "position"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reasonCode": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "track": {
+            "$ref": "#/components/schemas/MusicTrack"
+          },
+          "playlist": {
+            "$ref": "#/components/schemas/MusicPlaylist"
+          }
+        }
+      },
+      "MusicRecommendationFeedback": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "itemType",
+          "itemId",
+          "feedbackType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "feedbackType": {
+            "type": "string",
+            "enum": [
+              "like",
+              "dislike",
+              "not_interested",
+              "skip",
+              "hide",
+              "report"
+            ]
+          },
+          "reasonCode": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicSearchResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceType",
+          "resourceId",
+          "title"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "track": {
+            "$ref": "#/components/schemas/MusicTrack"
+          },
+          "artist": {
+            "$ref": "#/components/schemas/MusicArtist"
+          },
+          "album": {
+            "$ref": "#/components/schemas/MusicAlbum"
+          },
+          "playlist": {
+            "$ref": "#/components/schemas/MusicPlaylist"
+          }
+        }
+      },
+      "MusicSearchSuggestion": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "suggestionType",
+          "displayText",
+          "queryText",
+          "weight"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "suggestionType": {
+            "type": "string",
+            "enum": [
+              "hot",
+              "personalized",
+              "history",
+              "scene",
+              "ai_style"
+            ]
+          },
+          "displayText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "queryText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MusicUserLibraryItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "itemType",
+          "itemId",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "favorite",
+              "collected",
+              "downloaded",
+              "created",
+              "followed",
+              "recent"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicListeningHistoryItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackId",
+          "trackTitle",
+          "playCount",
+          "lastPlayedAt"
+        ],
+        "properties": {
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "trackTitle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "playCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lastPlayedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "track": {
+            "$ref": "#/components/schemas/MusicTrack"
+          }
+        }
+      },
+      "MusicDownloadEntitlement": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "trackId",
+          "audioAssetId",
+          "quality",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "audioAssetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "quality": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "high",
+              "lossless",
+              "hi_res"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "expired",
+              "revoked"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "track": {
+            "$ref": "#/components/schemas/MusicTrack"
+          }
+        }
+      },
+      "MusicPlaybackSession": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "deviceId",
+          "playbackState"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "deviceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "currentTrackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "queue": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "maxItems": 500
+          },
+          "positionMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playbackState": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "playing",
+              "paused",
+              "buffering",
+              "ended"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicAiStylePreset": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "title",
+          "styleTags",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "styleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "promptHint": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicAiPromptTemplate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "slug",
+          "title",
+          "templateText",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "templateText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicAiGenerationTask": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "prompt",
+          "styleTags",
+          "modelProvider",
+          "modelName",
+          "status",
+          "moderationStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "projectId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "lyricsPrompt": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "styleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "modelProvider": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reference": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "referenceDriveUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MusicAiGenerationTaskStatus"
+          },
+          "moderationStatus": {
+            "$ref": "#/components/schemas/MusicModerationStatus"
+          },
+          "rightsPolicyId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MusicAiGenerationVariant"
+            },
+            "maxItems": 16
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicAiGenerationTaskStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "MusicAiGenerationVariant": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "taskId",
+          "title",
+          "audio",
+          "moderationStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "audioAssetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "audio": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "moderationStatus": {
+            "$ref": "#/components/schemas/MusicModerationStatus"
+          }
+        }
+      },
+      "MusicAiGenerationCreditLedgerEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "direction",
+          "amount",
+          "balanceAfter",
+          "reasonCode",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "credit",
+              "debit",
+              "refund"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "balanceAfter": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reasonCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicModerationStatus": {
+        "type": "string",
+        "enum": [
+          "unknown",
+          "pending",
+          "approved",
+          "rejected",
+          "blocked"
+        ]
+      },
+      "MusicRightsPolicy": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "policyCode",
+          "title",
+          "licenseType",
+          "usageScope",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "policyCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "licenseType": {
+            "type": "string",
+            "enum": [
+              "platform",
+              "creator_owned",
+              "licensed",
+              "public_domain",
+              "restricted"
+            ]
+          },
+          "usageScope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attributionRequired": {
+            "type": "boolean"
+          },
+          "commercialUseAllowed": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicRightsTerritory": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "rightsPolicyId",
+          "regionCode",
+          "availability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rightsPolicyId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "regionCode": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 16
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "allowed",
+              "blocked",
+              "windowed"
+            ]
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicModerationSignal": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "resourceType",
+          "resourceId",
+          "signalType",
+          "severity",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "resourceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "signalType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "reviewing",
+              "resolved",
+              "dismissed"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicRelease": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "sourceType",
+          "sourceId",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "ai_generation_task",
+              "ai_generation_variant"
+            ]
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rightsPolicyId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "rejected",
+              "archived"
+            ]
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicReleaseChannel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "releaseId",
+          "channelCode",
+          "distributionStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "releaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "channelCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "distributionStatus": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "publishing",
+              "published",
+              "failed",
+              "revoked"
+            ]
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicArtistCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "bio": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "avatar": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "avatarMediaResourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "MusicAlbumCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cover": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "coverMediaResourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "releaseDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "MusicTrackCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "albumId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "audioAssetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 20
+          }
+        }
+      },
+      "MusicAudioAssetCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "driveSpaceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "driveNodeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "driveUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          },
+          "audio": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "mimeType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksum": {
+            "$ref": "#/components/schemas/MusicMediaChecksum"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MusicAudioAssetStatus"
+          }
+        }
+      },
+      "MusicLibraryItemCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemType",
+          "itemId",
+          "source"
+        ],
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "favorite",
+              "collected",
+              "downloaded",
+              "created",
+              "followed",
+              "recent"
+            ]
+          }
+        }
+      },
+      "MusicPlaylistTrackCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackId"
+        ],
+        "properties": {
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MusicPlaylistFollowCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "MusicCommentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceType",
+          "resourceId",
+          "body"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "parentCommentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        }
+      },
+      "MusicContentReportCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceType",
+          "resourceId",
+          "reasonCode"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reasonCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "MusicContentReportResolutionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "resolved",
+              "dismissed"
+            ]
+          },
+          "resolutionNote": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "MusicRecommendationFeedbackCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemType",
+          "itemId",
+          "feedbackType"
+        ],
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "feedbackType": {
+            "type": "string",
+            "enum": [
+              "like",
+              "dislike",
+              "not_interested",
+              "skip",
+              "hide",
+              "report"
+            ]
+          },
+          "reasonCode": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "MusicPlaybackSessionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "deviceId",
+          "playbackState"
+        ],
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "currentTrackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "queue": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "maxItems": 500
+          },
+          "positionMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playbackState": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "playing",
+              "paused",
+              "buffering",
+              "ended"
+            ]
+          }
+        }
+      },
+      "MusicPlayEventCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackId",
+          "occurredAt"
+        ],
+        "properties": {
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playedSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "completionRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicChartCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug",
+          "title",
+          "chartType",
+          "status"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "chartType": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "genre",
+              "editorial",
+              "ai"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "periodStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicChartEntryCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "trackId",
+          "rank"
+        ],
+        "properties": {
+          "trackId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "previousRank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MusicRecommendationShelfCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug",
+          "title",
+          "shelfType",
+          "status"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "shelfType": {
+            "type": "string",
+            "enum": [
+              "personalized",
+              "new_release",
+              "chart",
+              "playlist",
+              "ai_generation",
+              "editorial"
+            ]
+          },
+          "algorithmCode": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MusicRecommendationItemCommand"
+            },
+            "maxItems": 100
+          }
+        }
+      },
+      "MusicRecommendationItemCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemType",
+          "itemId",
+          "position"
+        ],
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "track",
+              "album",
+              "artist",
+              "playlist",
+              "chart",
+              "ai_generation_task"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reasonCode": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "MusicAiStylePresetCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug",
+          "title",
+          "styleTags",
+          "status"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "styleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "promptHint": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicAiPromptTemplateCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug",
+          "title",
+          "templateText",
+          "status"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "templateText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicAiGenerationTaskCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "prompt",
+          "styleTags",
+          "modelProvider",
+          "modelName"
+        ],
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "lyricsPrompt": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "styleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 32
+          },
+          "modelProvider": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "reference": {
+            "$ref": "#/components/schemas/MusicMediaResource"
+          },
+          "referenceDriveUri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          }
+        }
+      },
+      "MusicAiGenerationModerationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "moderationStatus"
+        ],
+        "properties": {
+          "moderationStatus": {
+            "$ref": "#/components/schemas/MusicModerationStatus"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "MusicAiGenerationPublishCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "variantId",
+          "rightsPolicyId"
+        ],
+        "properties": {
+          "variantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "rightsPolicyId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "trackSlug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "trackTitle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
+      },
+      "MusicRightsPolicyCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policyCode",
+          "title",
+          "licenseType",
+          "usageScope",
+          "status"
+        ],
+        "properties": {
+          "policyCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "licenseType": {
+            "type": "string",
+            "enum": [
+              "platform",
+              "creator_owned",
+              "licensed",
+              "public_domain",
+              "restricted"
+            ]
+          },
+          "usageScope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attributionRequired": {
+            "type": "boolean"
+          },
+          "commercialUseAllowed": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "archived"
+            ]
+          }
+        }
+      },
+      "MusicRightsTerritoryCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "regionCode",
+          "availability"
+        ],
+        "properties": {
+          "regionCode": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 16
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "allowed",
+              "blocked",
+              "windowed"
+            ]
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicReleaseChannelCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "channelCode",
+          "distributionStatus"
+        ],
+        "properties": {
+          "channelCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "distributionStatus": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "publishing",
+              "published",
+              "failed",
+              "revoked"
+            ]
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "title",
+          "status"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  },
+  "x-sdkwork-owner": "sdkwork-music",
+  "x-sdkwork-api-authority": "sdkwork-music-app-api",
+  "x-sdkwork-domain": "music",
+  "x-sdkwork-standard-profile": "sdkwork-v3"
+}

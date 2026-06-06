@@ -1,0 +1,12 @@
+[package]
+name = "sdkwork-routes-music-app-api"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+sdkwork-music-core-rust = { path = "../sdkwork-music-core-rust" }
+
+[lib]
+name = "sdkwork_routes_music_app_api"
+path = "src/lib.rs"
+

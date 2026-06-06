@@ -1,0 +1,19 @@
+{
+  "workspace": "sdkwork-music-backend-sdk",
+  "sdkOwner": "sdkwork-music",
+  "apiAuthority": "sdkwork-music-backend-api",
+  "authoritySpec": "openapi/sdkwork-music-backend-api.openapi.json",
+  "generationInputSpec": "openapi/sdkwork-music-backend-api.openapi.json",
+  "sdkDependencies": [],
+  "derivedSpecs": {
+    "default": "openapi/sdkwork-music-backend-api.openapi.json"
+  },
+  "discoverySurface": {
+    "sdkTarget": "backend",
+    "apiPrefix": "/backend/v3/api",
+    "generatedProtocols": [
+      "http-openapi"
+    ],
+    "manualTransports": []
+  }
+}
