@@ -272,6 +272,44 @@ pub struct NewMusicAiPromptTemplate {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NewMusicAiGenerationProvider {
+    pub id: String,
+    pub tenant_id: String,
+    pub provider_code: String,
+    pub display_name: String,
+    pub provider_family: String,
+    pub capability: String,
+    pub invocation_mode: String,
+    pub claw_router_provider_code: String,
+    pub claw_router_endpoint_key: String,
+    pub claw_router_standard_path: String,
+    pub supports_polling: bool,
+    pub supports_webhook: bool,
+    pub status: String,
+    pub config_snapshot: Option<String>,
+    pub now: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NewMusicAiGenerationProviderModel {
+    pub id: String,
+    pub tenant_id: String,
+    pub provider_id: String,
+    pub provider_code: String,
+    pub model_name: String,
+    pub display_name: String,
+    pub capability: String,
+    pub min_duration_seconds: i64,
+    pub max_duration_seconds: i64,
+    pub max_variant_count: i64,
+    pub supported_formats: Vec<String>,
+    pub supported_style_tags: Vec<String>,
+    pub pricing_unit: String,
+    pub status: String,
+    pub now: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct NewMusicAiGenerationTask {
     pub id: String,
     pub tenant_id: String,
@@ -283,6 +321,44 @@ pub struct NewMusicAiGenerationTask {
     pub model_provider: String,
     pub model_name: String,
     pub reference_drive_uri: Option<String>,
+    pub now: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NewMusicAiGenerationProviderAttempt {
+    pub id: String,
+    pub tenant_id: String,
+    pub task_id: String,
+    pub provider_id: String,
+    pub provider_code: String,
+    pub model_name: String,
+    pub invocation_mode: String,
+    pub claw_router_endpoint_key: String,
+    pub claw_router_standard_path: String,
+    pub claw_router_request_id: Option<String>,
+    pub external_task_id: Option<String>,
+    pub status: String,
+    pub provider_status: Option<String>,
+    pub request_snapshot: Option<String>,
+    pub response_snapshot: Option<String>,
+    pub now: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct NewMusicAiGenerationProviderEvent {
+    pub id: String,
+    pub tenant_id: String,
+    pub task_id: String,
+    pub attempt_id: Option<String>,
+    pub provider_code: String,
+    pub external_task_id: Option<String>,
+    pub external_event_id: Option<String>,
+    pub event_type: String,
+    pub source: String,
+    pub provider_status: String,
+    pub payload_hash: String,
+    pub payload_snapshot: String,
+    pub has_outputs: bool,
     pub now: String,
 }
 
@@ -410,9 +486,35 @@ pub struct MusicStoredAiGenerationTask {
     pub prompt: String,
     pub status: String,
     pub moderation_status: String,
+    pub provider_code: Option<String>,
+    pub external_task_id: Option<String>,
+    pub provider_output_count: i64,
     pub variant_count: i64,
     pub approved_variant_count: i64,
     pub updated_at: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MusicStoredAiGenerationProviderEvent {
+    pub id: String,
+    pub task_id: String,
+    pub provider_code: String,
+    pub event_type: String,
+    pub source: String,
+    pub provider_status: String,
+    pub status_before: String,
+    pub status_after: String,
+    pub created_at: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MusicStoredAiGenerationNotification {
+    pub id: String,
+    pub task_id: String,
+    pub user_id: String,
+    pub notification_type: String,
+    pub status: String,
+    pub created_at: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -1119,6 +1221,102 @@ impl SqliteMusicStore {
         Ok(())
     }
 
+    pub async fn upsert_ai_generation_provider(
+        &self,
+        input: NewMusicAiGenerationProvider,
+    ) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            r#"
+            INSERT INTO music_ai_generation_provider
+                (id, tenant_id, provider_code, display_name, provider_family, capability,
+                 invocation_mode, claw_router_provider_code, claw_router_endpoint_key,
+                 claw_router_standard_path, supports_polling, supports_webhook, status,
+                 config_snapshot, created_at, updated_at)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(tenant_id, provider_code) DO UPDATE SET
+                display_name = excluded.display_name,
+                provider_family = excluded.provider_family,
+                capability = excluded.capability,
+                invocation_mode = excluded.invocation_mode,
+                claw_router_provider_code = excluded.claw_router_provider_code,
+                claw_router_endpoint_key = excluded.claw_router_endpoint_key,
+                claw_router_standard_path = excluded.claw_router_standard_path,
+                supports_polling = excluded.supports_polling,
+                supports_webhook = excluded.supports_webhook,
+                status = excluded.status,
+                config_snapshot = excluded.config_snapshot,
+                updated_at = excluded.updated_at
+            "#,
+        )
+        .bind(input.id)
+        .bind(input.tenant_id)
+        .bind(input.provider_code)
+        .bind(input.display_name)
+        .bind(input.provider_family)
+        .bind(input.capability)
+        .bind(input.invocation_mode)
+        .bind(input.claw_router_provider_code)
+        .bind(input.claw_router_endpoint_key)
+        .bind(input.claw_router_standard_path)
+        .bind(bool_int(input.supports_polling))
+        .bind(bool_int(input.supports_webhook))
+        .bind(input.status)
+        .bind(input.config_snapshot)
+        .bind(&input.now)
+        .bind(&input.now)
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
+
+    pub async fn upsert_ai_generation_provider_model(
+        &self,
+        input: NewMusicAiGenerationProviderModel,
+    ) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            r#"
+            INSERT INTO music_ai_generation_provider_model
+                (id, tenant_id, provider_id, provider_code, model_name, display_name,
+                 capability, min_duration_seconds, max_duration_seconds, max_variant_count,
+                 supported_formats_json, supported_style_tags_json, pricing_unit, status,
+                 created_at, updated_at)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(tenant_id, provider_code, model_name) DO UPDATE SET
+                display_name = excluded.display_name,
+                capability = excluded.capability,
+                min_duration_seconds = excluded.min_duration_seconds,
+                max_duration_seconds = excluded.max_duration_seconds,
+                max_variant_count = excluded.max_variant_count,
+                supported_formats_json = excluded.supported_formats_json,
+                supported_style_tags_json = excluded.supported_style_tags_json,
+                pricing_unit = excluded.pricing_unit,
+                status = excluded.status,
+                updated_at = excluded.updated_at
+            "#,
+        )
+        .bind(input.id)
+        .bind(input.tenant_id)
+        .bind(input.provider_id)
+        .bind(input.provider_code)
+        .bind(input.model_name)
+        .bind(input.display_name)
+        .bind(input.capability)
+        .bind(input.min_duration_seconds)
+        .bind(input.max_duration_seconds)
+        .bind(input.max_variant_count)
+        .bind(json_string_array(&input.supported_formats))
+        .bind(json_string_array(&input.supported_style_tags))
+        .bind(input.pricing_unit)
+        .bind(input.status)
+        .bind(&input.now)
+        .bind(&input.now)
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
+
     pub async fn create_ai_generation_task(
         &self,
         input: NewMusicAiGenerationTask,
@@ -1127,10 +1325,11 @@ impl SqliteMusicStore {
             r#"
             INSERT INTO music_ai_generation_task
                 (id, tenant_id, project_id, user_id, prompt, lyrics_prompt, style_tags_json,
-                 model_provider, model_name, reference_drive_uri, status, moderation_status,
+                 model_provider, model_name, generation_mode, provider_code, provider_model,
+                 provider_invocation_mode, reference_drive_uri, status, moderation_status,
                  created_at, updated_at)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'queued', 'pending', ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, 'text_to_music', ?, ?, 'async_task', ?, 'queued', 'pending', ?, ?)
             "#,
         )
         .bind(input.id)
@@ -1140,14 +1339,254 @@ impl SqliteMusicStore {
         .bind(input.prompt)
         .bind(input.lyrics_prompt)
         .bind(json_string_array(&input.style_tags))
-        .bind(input.model_provider)
-        .bind(input.model_name)
+        .bind(&input.model_provider)
+        .bind(&input.model_name)
+        .bind(&input.model_provider)
+        .bind(&input.model_name)
         .bind(input.reference_drive_uri)
         .bind(&input.now)
         .bind(&input.now)
         .execute(&self.pool)
         .await?;
         Ok(())
+    }
+
+    pub async fn create_ai_generation_provider_attempt(
+        &self,
+        input: NewMusicAiGenerationProviderAttempt,
+    ) -> Result<(), sqlx::Error> {
+        let mut tx = self.pool.begin().await?;
+        sqlx::query(
+            r#"
+            INSERT INTO music_ai_generation_provider_attempt
+                (id, tenant_id, task_id, provider_id, provider_code, model_name,
+                 invocation_mode, claw_router_endpoint_key, claw_router_standard_path,
+                 claw_router_request_id, external_task_id, status, provider_status,
+                 request_snapshot, response_snapshot, submitted_at, created_at, updated_at)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            "#,
+        )
+        .bind(&input.id)
+        .bind(&input.tenant_id)
+        .bind(&input.task_id)
+        .bind(&input.provider_id)
+        .bind(&input.provider_code)
+        .bind(&input.model_name)
+        .bind(&input.invocation_mode)
+        .bind(&input.claw_router_endpoint_key)
+        .bind(&input.claw_router_standard_path)
+        .bind(&input.claw_router_request_id)
+        .bind(&input.external_task_id)
+        .bind(&input.status)
+        .bind(&input.provider_status)
+        .bind(&input.request_snapshot)
+        .bind(&input.response_snapshot)
+        .bind(&input.now)
+        .bind(&input.now)
+        .bind(&input.now)
+        .execute(&mut *tx)
+        .await?;
+
+        sqlx::query(
+            r#"
+            UPDATE music_ai_generation_task
+            SET status = ?,
+                provider_code = ?,
+                provider_model = ?,
+                provider_invocation_mode = ?,
+                external_task_id = COALESCE(?, external_task_id),
+                provider_status = COALESCE(?, provider_status),
+                last_provider_sync_at = ?,
+                updated_at = ?
+            WHERE tenant_id = ? AND id = ?
+            "#,
+        )
+        .bind(normalize_task_status("queued", input.provider_status.as_deref().unwrap_or(&input.status), false, &input.invocation_mode))
+        .bind(&input.provider_code)
+        .bind(&input.model_name)
+        .bind(&input.invocation_mode)
+        .bind(&input.external_task_id)
+        .bind(&input.provider_status)
+        .bind(&input.now)
+        .bind(&input.now)
+        .bind(&input.tenant_id)
+        .bind(&input.task_id)
+        .execute(&mut *tx)
+        .await?;
+
+        tx.commit().await?;
+        Ok(())
+    }
+
+    pub async fn record_ai_generation_provider_event(
+        &self,
+        input: NewMusicAiGenerationProviderEvent,
+    ) -> Result<bool, sqlx::Error> {
+        let mut tx = self.pool.begin().await?;
+        let status_before = task_status_in_tx(&mut tx, &input.tenant_id, &input.task_id).await?;
+        let invocation_mode =
+            task_invocation_mode_in_tx(&mut tx, &input.tenant_id, &input.task_id).await?;
+        let status_after = normalize_task_status(
+            &status_before,
+            &input.provider_status,
+            input.has_outputs,
+            &invocation_mode,
+        );
+        let result = sqlx::query(
+            r#"
+            INSERT OR IGNORE INTO music_ai_generation_provider_event
+                (id, tenant_id, task_id, attempt_id, provider_code, external_task_id,
+                 external_event_id, event_type, source, provider_status, status_before,
+                 status_after, payload_hash, payload_snapshot, created_at)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            "#,
+        )
+        .bind(&input.id)
+        .bind(&input.tenant_id)
+        .bind(&input.task_id)
+        .bind(&input.attempt_id)
+        .bind(&input.provider_code)
+        .bind(&input.external_task_id)
+        .bind(&input.external_event_id)
+        .bind(&input.event_type)
+        .bind(&input.source)
+        .bind(&input.provider_status)
+        .bind(&status_before)
+        .bind(&status_after)
+        .bind(&input.payload_hash)
+        .bind(&input.payload_snapshot)
+        .bind(&input.now)
+        .execute(&mut *tx)
+        .await?;
+
+        let inserted = result.rows_affected() > 0;
+        if inserted {
+            sqlx::query(
+                r#"
+                UPDATE music_ai_generation_task
+                SET status = ?,
+                    provider_code = ?,
+                    external_task_id = COALESCE(?, external_task_id),
+                    provider_status = ?,
+                    provider_output_count = provider_output_count + ?,
+                    last_provider_sync_at = ?,
+                    completed_at = CASE
+                        WHEN ? IN ('succeeded', 'failed', 'cancelled', 'expired')
+                        THEN COALESCE(completed_at, ?)
+                        ELSE completed_at
+                    END,
+                    updated_at = ?
+                WHERE tenant_id = ? AND id = ?
+                "#,
+            )
+            .bind(&status_after)
+            .bind(&input.provider_code)
+            .bind(&input.external_task_id)
+            .bind(&input.provider_status)
+            .bind(if input.has_outputs { 1_i64 } else { 0_i64 })
+            .bind(&input.now)
+            .bind(&status_after)
+            .bind(&input.now)
+            .bind(&input.now)
+            .bind(&input.tenant_id)
+            .bind(&input.task_id)
+            .execute(&mut *tx)
+            .await?;
+
+            if matches!(status_after.as_str(), "succeeded" | "failed" | "cancelled" | "expired") {
+                let user_id = task_user_id_in_tx(&mut tx, &input.tenant_id, &input.task_id).await?;
+                let notification_type = format!("ai_generation_{status_after}");
+                sqlx::query(
+                    r#"
+                    INSERT OR IGNORE INTO music_ai_generation_notification
+                        (id, tenant_id, user_id, task_id, notification_type, title, body, status, created_at)
+                    VALUES
+                        (?, ?, ?, ?, ?, ?, ?, 'unread', ?)
+                    "#,
+                )
+                .bind(format!("notification_{}", input.id))
+                .bind(&input.tenant_id)
+                .bind(user_id)
+                .bind(&input.task_id)
+                .bind(&notification_type)
+                .bind("Music generation updated")
+                .bind(format!("Generation {} is {}", input.task_id, status_after))
+                .bind(&input.now)
+                .execute(&mut *tx)
+                .await?;
+            }
+        }
+
+        tx.commit().await?;
+        Ok(inserted)
+    }
+
+    pub async fn list_ai_generation_provider_events(
+        &self,
+        tenant_id: &str,
+        task_id: &str,
+    ) -> Result<Vec<MusicStoredAiGenerationProviderEvent>, sqlx::Error> {
+        let rows = sqlx::query(
+            r#"
+            SELECT id, task_id, provider_code, event_type, source, provider_status,
+                   status_before, status_after, created_at
+            FROM music_ai_generation_provider_event
+            WHERE tenant_id = ? AND task_id = ?
+            ORDER BY created_at DESC, id DESC
+            "#,
+        )
+        .bind(tenant_id)
+        .bind(task_id)
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(rows
+            .iter()
+            .map(|row| MusicStoredAiGenerationProviderEvent {
+                id: string_cell(row, "id"),
+                task_id: string_cell(row, "task_id"),
+                provider_code: string_cell(row, "provider_code"),
+                event_type: string_cell(row, "event_type"),
+                source: string_cell(row, "source"),
+                provider_status: string_cell(row, "provider_status"),
+                status_before: string_cell(row, "status_before"),
+                status_after: string_cell(row, "status_after"),
+                created_at: string_cell(row, "created_at"),
+            })
+            .collect())
+    }
+
+    pub async fn list_ai_generation_notifications(
+        &self,
+        tenant_id: &str,
+        user_id: &str,
+    ) -> Result<Vec<MusicStoredAiGenerationNotification>, sqlx::Error> {
+        let rows = sqlx::query(
+            r#"
+            SELECT id, task_id, user_id, notification_type, status, created_at
+            FROM music_ai_generation_notification
+            WHERE tenant_id = ? AND user_id = ?
+            ORDER BY created_at DESC, id DESC
+            "#,
+        )
+        .bind(tenant_id)
+        .bind(user_id)
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(rows
+            .iter()
+            .map(|row| MusicStoredAiGenerationNotification {
+                id: string_cell(row, "id"),
+                task_id: string_cell(row, "task_id"),
+                user_id: string_cell(row, "user_id"),
+                notification_type: string_cell(row, "notification_type"),
+                status: string_cell(row, "status"),
+                created_at: string_cell(row, "created_at"),
+            })
+            .collect())
     }
 
     pub async fn complete_ai_generation_task(
@@ -1575,13 +2014,14 @@ impl SqliteMusicStore {
         let rows = sqlx::query(
             r#"
             SELECT t.id, t.tenant_id, t.user_id, t.prompt, t.status, t.moderation_status,
-                   t.updated_at,
+                   t.provider_code, t.external_task_id, t.provider_output_count, t.updated_at,
                    COUNT(v.id) AS variant_count,
                    SUM(CASE WHEN v.moderation_status = 'approved' THEN 1 ELSE 0 END) AS approved_variant_count
             FROM music_ai_generation_task t
             LEFT JOIN music_ai_generation_variant v ON v.task_id = t.id
             WHERE t.tenant_id = ? AND (? IS NULL OR t.user_id = ?)
-            GROUP BY t.id, t.tenant_id, t.user_id, t.prompt, t.status, t.moderation_status, t.updated_at
+            GROUP BY t.id, t.tenant_id, t.user_id, t.prompt, t.status, t.moderation_status,
+                     t.provider_code, t.external_task_id, t.provider_output_count, t.updated_at
             ORDER BY t.updated_at DESC
             "#,
         )
@@ -1600,6 +2040,9 @@ impl SqliteMusicStore {
                 prompt: string_cell(row, "prompt"),
                 status: string_cell(row, "status"),
                 moderation_status: string_cell(row, "moderation_status"),
+                provider_code: optional_string_cell(row, "provider_code"),
+                external_task_id: optional_string_cell(row, "external_task_id"),
+                provider_output_count: integer_cell(row, "provider_output_count"),
                 variant_count: integer_cell(row, "variant_count"),
                 approved_variant_count: integer_cell(row, "approved_variant_count"),
                 updated_at: string_cell(row, "updated_at"),
@@ -1826,9 +2269,14 @@ pub fn music_database_tables() -> Vec<&'static str> {
         "music_ai_generation_project",
         "music_ai_style_preset",
         "music_ai_prompt_template",
+        "music_ai_generation_provider",
+        "music_ai_generation_provider_model",
         "music_ai_generation_task",
+        "music_ai_generation_provider_attempt",
+        "music_ai_generation_provider_event",
         "music_ai_generation_variant",
         "music_ai_generation_credit_ledger",
+        "music_ai_generation_notification",
         "music_moderation_signal",
         "music_release",
         "music_release_channel",
@@ -1875,8 +2323,14 @@ pub fn music_database_indexes() -> Vec<&'static str> {
         "idx_music_ai_generation_project_user_updated",
         "idx_music_ai_style_preset_tenant_status",
         "idx_music_ai_prompt_template_tenant_status",
+        "idx_music_ai_generation_provider_tenant_status",
+        "idx_music_ai_generation_provider_model_tenant_status",
         "idx_music_ai_generation_task_tenant_status_updated",
         "idx_music_ai_generation_task_user_updated",
+        "idx_music_ai_generation_task_provider_external",
+        "idx_music_ai_generation_provider_attempt_task",
+        "idx_music_ai_generation_provider_event_task_created",
+        "idx_music_ai_generation_notification_user_status",
         "idx_music_ai_generation_variant_task",
         "idx_music_ai_generation_credit_ledger_user_created",
         "idx_music_moderation_signal_resource",
@@ -1981,9 +2435,14 @@ pub fn music_repository_bindings() -> Vec<MusicRepositoryBinding> {
                 "music_ai_generation_project",
                 "music_ai_style_preset",
                 "music_ai_prompt_template",
+                "music_ai_generation_provider",
+                "music_ai_generation_provider_model",
                 "music_ai_generation_task",
+                "music_ai_generation_provider_attempt",
+                "music_ai_generation_provider_event",
                 "music_ai_generation_variant",
                 "music_ai_generation_credit_ledger",
+                "music_ai_generation_notification",
             ],
         ),
         binding(
@@ -2059,6 +2518,106 @@ fn migration_checksum(name: &str, sql: &str) -> String {
 
 fn normalize_tag_slug(value: &str) -> String {
     value.trim().to_ascii_lowercase().replace(' ', "-")
+}
+
+fn bool_int(value: bool) -> i64 {
+    if value { 1 } else { 0 }
+}
+
+fn normalize_task_status(
+    current_status: &str,
+    provider_status: &str,
+    has_outputs: bool,
+    invocation_mode: &str,
+) -> String {
+    let current = current_status.trim().to_ascii_lowercase();
+    if matches!(
+        current.as_str(),
+        "succeeded" | "failed" | "cancelled" | "expired"
+    ) {
+        return current;
+    }
+
+    let provider = provider_status.trim().to_ascii_lowercase();
+    match provider.as_str() {
+        "queued" | "pending" | "submitted" | "created" | "in_queue" => "submitted".to_string(),
+        "routing" | "dispatching" => "routing".to_string(),
+        "running" | "processing" | "in_progress" | "generating" => "running".to_string(),
+        "succeeded" | "success" | "completed" | "complete" | "ok" => {
+            if has_outputs {
+                "succeeded".to_string()
+            } else if matches!(invocation_mode, "webhook" | "hybrid") {
+                "waiting_webhook".to_string()
+            } else {
+                "running".to_string()
+            }
+        }
+        "waiting_webhook" | "callback_pending" | "awaiting_callback" => "waiting_webhook".to_string(),
+        "failed" | "failure" | "error" | "rejected" | "blocked" => "failed".to_string(),
+        "cancelled" | "canceled" | "aborted" => "cancelled".to_string(),
+        "expired" | "timeout" | "timed_out" | "data_removed" => "expired".to_string(),
+        _ => current,
+    }
+}
+
+async fn task_status_in_tx(
+    tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    tenant_id: &str,
+    task_id: &str,
+) -> Result<String, sqlx::Error> {
+    let row = sqlx::query(
+        r#"
+        SELECT status
+        FROM music_ai_generation_task
+        WHERE tenant_id = ? AND id = ?
+        "#,
+    )
+    .bind(tenant_id)
+    .bind(task_id)
+    .fetch_one(&mut **tx)
+    .await?;
+
+    Ok(string_cell(&row, "status"))
+}
+
+async fn task_invocation_mode_in_tx(
+    tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    tenant_id: &str,
+    task_id: &str,
+) -> Result<String, sqlx::Error> {
+    let row = sqlx::query(
+        r#"
+        SELECT provider_invocation_mode
+        FROM music_ai_generation_task
+        WHERE tenant_id = ? AND id = ?
+        "#,
+    )
+    .bind(tenant_id)
+    .bind(task_id)
+    .fetch_one(&mut **tx)
+    .await?;
+
+    Ok(string_cell(&row, "provider_invocation_mode"))
+}
+
+async fn task_user_id_in_tx(
+    tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    tenant_id: &str,
+    task_id: &str,
+) -> Result<String, sqlx::Error> {
+    let row = sqlx::query(
+        r#"
+        SELECT user_id
+        FROM music_ai_generation_task
+        WHERE tenant_id = ? AND id = ?
+        "#,
+    )
+    .bind(tenant_id)
+    .bind(task_id)
+    .fetch_one(&mut **tx)
+    .await?;
+
+    Ok(string_cell(&row, "user_id"))
 }
 
 fn json_string_array(values: &[String]) -> String {

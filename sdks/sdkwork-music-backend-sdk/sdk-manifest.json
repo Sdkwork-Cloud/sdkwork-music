@@ -19,58 +19,8 @@
   "baseUrl": "http://127.0.0.1:18080",
   "standardProfile": "sdkwork-v3",
   "fixedSdkVersion": "0.1.0",
-  "ownerOnlyOperationCount": 36,
+  "ownerOnlyOperationCount": 45,
   "operations": [
-    {
-      "method": "GET",
-      "operationId": "ai.generation.creditLedger.list",
-      "path": "/backend/v3/api/music/ai/generation/credit_ledger"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.generation.tasks.management.list",
-      "path": "/backend/v3/api/music/ai/generation/tasks"
-    },
-    {
-      "method": "POST",
-      "operationId": "ai.generation.tasks.moderate",
-      "path": "/backend/v3/api/music/ai/generation/tasks/{taskId}/moderate"
-    },
-    {
-      "method": "POST",
-      "operationId": "ai.generation.tasks.publish",
-      "path": "/backend/v3/api/music/ai/generation/tasks/{taskId}/publish"
-    },
-    {
-      "method": "POST",
-      "operationId": "ai.promptTemplates.create",
-      "path": "/backend/v3/api/music/ai/prompt_templates"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.promptTemplates.management.list",
-      "path": "/backend/v3/api/music/ai/prompt_templates"
-    },
-    {
-      "method": "PATCH",
-      "operationId": "ai.promptTemplates.update",
-      "path": "/backend/v3/api/music/ai/prompt_templates/{templateId}"
-    },
-    {
-      "method": "POST",
-      "operationId": "ai.stylePresets.create",
-      "path": "/backend/v3/api/music/ai/style_presets"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.stylePresets.management.list",
-      "path": "/backend/v3/api/music/ai/style_presets"
-    },
-    {
-      "method": "PATCH",
-      "operationId": "ai.stylePresets.update",
-      "path": "/backend/v3/api/music/ai/style_presets/{presetId}"
-    },
     {
       "method": "POST",
       "operationId": "albums.create",
@@ -130,6 +80,101 @@
       "method": "POST",
       "operationId": "contentReports.resolve",
       "path": "/backend/v3/api/music/content_reports/{reportId}/resolve"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.attempts.list",
+      "path": "/backend/v3/api/music/generations/{generationId}/attempts"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.creditLedger.list",
+      "path": "/backend/v3/api/music/generations/credit_ledger"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.events.management.list",
+      "path": "/backend/v3/api/music/generations/events"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.management.list",
+      "path": "/backend/v3/api/music/generations"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.moderate",
+      "path": "/backend/v3/api/music/generations/{generationId}/moderate"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.promptTemplates.create",
+      "path": "/backend/v3/api/music/generations/prompt_templates"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.promptTemplates.management.list",
+      "path": "/backend/v3/api/music/generations/prompt_templates"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "generations.promptTemplates.update",
+      "path": "/backend/v3/api/music/generations/prompt_templates/{templateId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.providerModels.create",
+      "path": "/backend/v3/api/music/generations/provider_models"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.providerModels.management.list",
+      "path": "/backend/v3/api/music/generations/provider_models"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.providers.create",
+      "path": "/backend/v3/api/music/generations/providers"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.providers.management.list",
+      "path": "/backend/v3/api/music/generations/providers"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "generations.providers.update",
+      "path": "/backend/v3/api/music/generations/providers/{providerId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.publish",
+      "path": "/backend/v3/api/music/generations/{generationId}/publish"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.stylePresets.create",
+      "path": "/backend/v3/api/music/generations/style_presets"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.stylePresets.management.list",
+      "path": "/backend/v3/api/music/generations/style_presets"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "generations.stylePresets.update",
+      "path": "/backend/v3/api/music/generations/style_presets/{presetId}"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.sync",
+      "path": "/backend/v3/api/music/generations/{generationId}/sync"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.webhooks.receive",
+      "path": "/backend/v3/api/music/generations/webhooks/{providerCode}/events"
     },
     {
       "method": "GET",

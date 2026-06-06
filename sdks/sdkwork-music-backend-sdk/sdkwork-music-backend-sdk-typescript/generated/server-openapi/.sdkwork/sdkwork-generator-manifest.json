@@ -59,7 +59,7 @@
     },
     {
       "path": "src/api/music.ts",
-      "sha256": "262dac52cc8da4a426a4483d8e54e20515e5b7e3e4f1a309b8e9089a5c2b5a01"
+      "sha256": "69ac5424bd0a2a18ad30bc2e324b99fa7df2d0e5830e431ed84dbe745921ba6e"
     },
     {
       "path": "src/api/paths.ts",
@@ -86,22 +86,6 @@
       "sha256": "057a08826e9c7729430250d231dbd3cf89d034e16f222d793c92adff3d9b8582"
     },
     {
-      "path": "src/types/ai-generation-credit-ledger-list-response.ts",
-      "sha256": "6ecdec46137ddfe9114bb34b2fd0e7f7332b7e3d9d2005fe033c78678f351144"
-    },
-    {
-      "path": "src/types/ai-generation-tasks-management-list-response.ts",
-      "sha256": "1a5e6190432901dff34cfe12fa5f39223fb81caa98698595df0acd6eeac0a612"
-    },
-    {
-      "path": "src/types/ai-prompt-templates-management-list-response.ts",
-      "sha256": "d88ad4ea9688d9e0064a5dace7d0386b0eca77562590ff2d122ad926aa05fcc8"
-    },
-    {
-      "path": "src/types/ai-style-presets-management-list-response.ts",
-      "sha256": "0db03aeafb63b76387113f9e45f1dcd15f0735622ff13f0784cddffded6d6222"
-    },
-    {
       "path": "src/types/albums-management-list-response.ts",
       "sha256": "6383c0631e1f41a2c567652bf0a65514787ebb025ffbdd1961e3d0ef6659ae16"
     },
@@ -126,8 +110,40 @@
       "sha256": "4af1742b89fb29705f8d004b6d40c96b121e9c74d9677bfd82f4eb9ba0ff9a81"
     },
     {
+      "path": "src/types/generations-attempts-list-response.ts",
+      "sha256": "b5541ce327ed2600d7c258bcb41b2d70522bf9e9a1d85c3381d110513eb8b3c9"
+    },
+    {
+      "path": "src/types/generations-credit-ledger-list-response.ts",
+      "sha256": "48f9c557e4b34018bca1db38fb8af67defbcff03b42781010616fb1b3e8212f4"
+    },
+    {
+      "path": "src/types/generations-events-management-list-response.ts",
+      "sha256": "fefab410e3ba32e8f469a12fbe4f1e4704700f5c807c976e7f231b02058e41f8"
+    },
+    {
+      "path": "src/types/generations-management-list-response.ts",
+      "sha256": "0caaf8e1e0b4348567a284a7ddcb9809b1064e58f6505e0cbe5b2cfe757ddaea"
+    },
+    {
+      "path": "src/types/generations-prompt-templates-management-list-response.ts",
+      "sha256": "32c0f51a521d3b4454b88b1982cfbfef409d74ec0d31f22b30e57d19dfb11d11"
+    },
+    {
+      "path": "src/types/generations-provider-models-management-list-response.ts",
+      "sha256": "f29417dbef268fca3488e67f56b56b77a772d0665b40e67ffa0eeb075a50c99a"
+    },
+    {
+      "path": "src/types/generations-providers-management-list-response.ts",
+      "sha256": "b66e4236a21b2d0679e2705372a62ee495e3c0aec3329cb4caa8699d00a016c3"
+    },
+    {
+      "path": "src/types/generations-style-presets-management-list-response.ts",
+      "sha256": "244e69ad122facfa59ff4f477de06a2ae57f9b134466102e07edd52a48e0d87c"
+    },
+    {
       "path": "src/types/index.ts",
-      "sha256": "cb232ea9dd9460d50b69cebb1b174203e1f2ecb041cd5f3ed9d8630fe3e8bcf3"
+      "sha256": "0732d78bc537c57f4cbba34dbee060c0e2c8313e0d173aac3e2f1adaae59c327"
     },
     {
       "path": "src/types/moderation-signals-list-response.ts",
@@ -142,20 +158,60 @@
       "sha256": "869acb3fbf5e33354a0a3c8fad6fd4f64a6dc2495bbdefd8acbc918701442676"
     },
     {
+      "path": "src/types/music-ai-generation-notification-command.ts",
+      "sha256": "567a6d40aaaeba843d674349a3fa8c565d12b8a285916ccc6d0ac41d2197d940"
+    },
+    {
+      "path": "src/types/music-ai-generation-notification.ts",
+      "sha256": "af280870d6525d907d6676764bce655dd64928ff83735b4622344c5b223695b9"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-attempt.ts",
+      "sha256": "f3d1804de0c7fd7b2668577cbbc43a62f5abf78379c06f55d1317de3f6b3061b"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-command.ts",
+      "sha256": "d6e5976b785f13677a98ef52d418d49821ee8f0b7b863aff44ad7ab776498660"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-event-command.ts",
+      "sha256": "f2ec452d23f81dd906eee28a9962b652a41f7d64e5e46ca97670dba0f33dabe0"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-event.ts",
+      "sha256": "bf508bd8d217c26c75a8ef9dabf89392e7e2ab1cf142fa08e137195551705325"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-model-command.ts",
+      "sha256": "0d926e2ffb5388f92d30e939c0bb405cc7079185d30ebaa234dde5746e66c40d"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-model.ts",
+      "sha256": "1fd55cd0617bee5cd0017fcd4f5259664c3758bd20d720875642042451ac5591"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider.ts",
+      "sha256": "3e560525d155feeb976bbaf6684ec38f5f51054d7a1862229a9bf50fa732817b"
+    },
+    {
       "path": "src/types/music-ai-generation-publish-command.ts",
       "sha256": "fad3d56ab7a7530628703324b38f6c384c4af2d98edc772bf8fc438e4b6b598b"
     },
     {
       "path": "src/types/music-ai-generation-task-command.ts",
-      "sha256": "893c889afd1e543c73f142982f872ae6bcb1700328ba28e4698ebedc16ee7050"
+      "sha256": "35960ca9772d05ea672ef51be176af1351f7224bd5abd851984d2d5143606c13"
     },
     {
       "path": "src/types/music-ai-generation-task-status.ts",
-      "sha256": "eb06dc284eae6ed18d8e539fdffb676d779d23e0e2fa33d7aab4ecb8ba96c701"
+      "sha256": "95e9b66c95b40fc6a58caaa8fd96a84935689f20b6215628a352c03252ee6130"
+    },
+    {
+      "path": "src/types/music-ai-generation-task-sync-command.ts",
+      "sha256": "0c06b52448c395612b6f594cff86d75510fddf6305bfac5e15d18012897f6719"
     },
     {
       "path": "src/types/music-ai-generation-task.ts",
-      "sha256": "25da6821de1bb63dc7ae704a4a1cbecba61e0f565cd9c90ebf669bd19e3a28aa"
+      "sha256": "c2fc5a4ee58c7e0d23ddfec0484f8c74b99efd9d9f6b173a36721df07148f033"
     },
     {
       "path": "src/types/music-ai-generation-variant.ts",
@@ -168,6 +224,10 @@
     {
       "path": "src/types/music-ai-prompt-template.ts",
       "sha256": "0e265bdf89d121cc7bba6049dffd37cd40a35dfed44528f5235a9d9b47c5981d"
+    },
+    {
+      "path": "src/types/music-ai-provider-invocation-mode.ts",
+      "sha256": "ea9f8ee1525f4d3c9bb6379d8b89ab45326600fc806a9c29b39058d69d8eadda"
     },
     {
       "path": "src/types/music-ai-style-preset-command.ts",

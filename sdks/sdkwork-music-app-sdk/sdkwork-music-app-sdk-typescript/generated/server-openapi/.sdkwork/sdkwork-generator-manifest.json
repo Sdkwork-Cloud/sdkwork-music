@@ -59,7 +59,7 @@
     },
     {
       "path": "src/api/music.ts",
-      "sha256": "657fd0a91ae5f741eb91fe81cd1d5021f739b831352bbb9a3a9d0b7243140af4"
+      "sha256": "4a0c9e3888699571375c534b50aee42975f8c7e1ff8b1559fb8124635b4e7b66"
     },
     {
       "path": "src/api/paths.ts",
@@ -84,18 +84,6 @@
     {
       "path": "src/sdk.ts",
       "sha256": "a0767a0fd4cba280424b05dcb745d5d1cdaf540ab21e6b98933bda9f7e9a7b9e"
-    },
-    {
-      "path": "src/types/ai-generation-tasks-list-response.ts",
-      "sha256": "ace77c953c63c54dd2b607a41c2549cbbb18b298524eb74614f769f832b1116c"
-    },
-    {
-      "path": "src/types/ai-prompt-templates-list-response.ts",
-      "sha256": "8ac26f51be7236400e50c9620328168ed6f4f1ee6264cf52c1dc65186533ffd1"
-    },
-    {
-      "path": "src/types/ai-style-presets-list-response.ts",
-      "sha256": "af0c9ce3a4f1d7aea22ea19004050b00f2443fe5d0656a565862b40c6d15a2f9"
     },
     {
       "path": "src/types/albums-list-response.ts",
@@ -130,12 +118,40 @@
       "sha256": "a218f9c707916c9eb15e28231938b5c55157cbf6475f6e3282c7b45dbfb94dc0"
     },
     {
+      "path": "src/types/generations-events-list-response.ts",
+      "sha256": "1f7cbd19545685f62cf21d6eb65bde98b62506b0da708e544d01e5116790288d"
+    },
+    {
+      "path": "src/types/generations-list-response.ts",
+      "sha256": "014cd7576cd84c864991fd7cf5aee629777263fbf507d0325b04161da1d2b559"
+    },
+    {
+      "path": "src/types/generations-notifications-list-response.ts",
+      "sha256": "44f43562d5d6a9c3c5b15068cb922e2032b86bd29def78a9b981f222f1eade48"
+    },
+    {
+      "path": "src/types/generations-prompt-templates-list-response.ts",
+      "sha256": "505d1011d22a8847747fe61270ad0f424399282270dbbd62a64baac9434c767e"
+    },
+    {
+      "path": "src/types/generations-provider-models-list-response.ts",
+      "sha256": "11566cd7752cd39bf5d194e0cb2166cdd42cf1f3bbbdeddee3a0049401f8b50f"
+    },
+    {
+      "path": "src/types/generations-providers-list-response.ts",
+      "sha256": "db9941fd8c82c97906f6a7eccab4ebfbdbe148f93e1bb720fd8294c35e3fe890"
+    },
+    {
+      "path": "src/types/generations-style-presets-list-response.ts",
+      "sha256": "59373f0d59057129f8383ad73b024909686545c4b8949e7037cba0610122ceee"
+    },
+    {
       "path": "src/types/home-shelves-list-response.ts",
       "sha256": "4ff6c55d2f04f62f2932da7fe8daf5e6cbd1d48e124356222fac1878219c1c9d"
     },
     {
       "path": "src/types/index.ts",
-      "sha256": "660730fb97642d2733e861a9268327f398e3077d22711b256921055df8d3c0a2"
+      "sha256": "54d92579e7ad974a50f56e299e55c405464f24a2f69a9ca3783ecf62b8117fe8"
     },
     {
       "path": "src/types/library-items-list-response.ts",
@@ -154,20 +170,60 @@
       "sha256": "869acb3fbf5e33354a0a3c8fad6fd4f64a6dc2495bbdefd8acbc918701442676"
     },
     {
+      "path": "src/types/music-ai-generation-notification-command.ts",
+      "sha256": "567a6d40aaaeba843d674349a3fa8c565d12b8a285916ccc6d0ac41d2197d940"
+    },
+    {
+      "path": "src/types/music-ai-generation-notification.ts",
+      "sha256": "af280870d6525d907d6676764bce655dd64928ff83735b4622344c5b223695b9"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-attempt.ts",
+      "sha256": "f3d1804de0c7fd7b2668577cbbc43a62f5abf78379c06f55d1317de3f6b3061b"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-command.ts",
+      "sha256": "d6e5976b785f13677a98ef52d418d49821ee8f0b7b863aff44ad7ab776498660"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-event-command.ts",
+      "sha256": "f2ec452d23f81dd906eee28a9962b652a41f7d64e5e46ca97670dba0f33dabe0"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-event.ts",
+      "sha256": "bf508bd8d217c26c75a8ef9dabf89392e7e2ab1cf142fa08e137195551705325"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-model-command.ts",
+      "sha256": "0d926e2ffb5388f92d30e939c0bb405cc7079185d30ebaa234dde5746e66c40d"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider-model.ts",
+      "sha256": "1fd55cd0617bee5cd0017fcd4f5259664c3758bd20d720875642042451ac5591"
+    },
+    {
+      "path": "src/types/music-ai-generation-provider.ts",
+      "sha256": "3e560525d155feeb976bbaf6684ec38f5f51054d7a1862229a9bf50fa732817b"
+    },
+    {
       "path": "src/types/music-ai-generation-publish-command.ts",
       "sha256": "fad3d56ab7a7530628703324b38f6c384c4af2d98edc772bf8fc438e4b6b598b"
     },
     {
       "path": "src/types/music-ai-generation-task-command.ts",
-      "sha256": "893c889afd1e543c73f142982f872ae6bcb1700328ba28e4698ebedc16ee7050"
+      "sha256": "35960ca9772d05ea672ef51be176af1351f7224bd5abd851984d2d5143606c13"
     },
     {
       "path": "src/types/music-ai-generation-task-status.ts",
-      "sha256": "eb06dc284eae6ed18d8e539fdffb676d779d23e0e2fa33d7aab4ecb8ba96c701"
+      "sha256": "95e9b66c95b40fc6a58caaa8fd96a84935689f20b6215628a352c03252ee6130"
+    },
+    {
+      "path": "src/types/music-ai-generation-task-sync-command.ts",
+      "sha256": "0c06b52448c395612b6f594cff86d75510fddf6305bfac5e15d18012897f6719"
     },
     {
       "path": "src/types/music-ai-generation-task.ts",
-      "sha256": "25da6821de1bb63dc7ae704a4a1cbecba61e0f565cd9c90ebf669bd19e3a28aa"
+      "sha256": "c2fc5a4ee58c7e0d23ddfec0484f8c74b99efd9d9f6b173a36721df07148f033"
     },
     {
       "path": "src/types/music-ai-generation-variant.ts",
@@ -180,6 +236,10 @@
     {
       "path": "src/types/music-ai-prompt-template.ts",
       "sha256": "0e265bdf89d121cc7bba6049dffd37cd40a35dfed44528f5235a9d9b47c5981d"
+    },
+    {
+      "path": "src/types/music-ai-provider-invocation-mode.ts",
+      "sha256": "ea9f8ee1525f4d3c9bb6379d8b89ab45326600fc806a9c29b39058d69d8eadda"
     },
     {
       "path": "src/types/music-ai-style-preset-command.ts",

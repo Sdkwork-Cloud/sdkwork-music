@@ -19,33 +19,8 @@
   "baseUrl": "http://127.0.0.1:18080",
   "standardProfile": "sdkwork-v3",
   "fixedSdkVersion": "0.1.0",
-  "ownerOnlyOperationCount": 32,
+  "ownerOnlyOperationCount": 37,
   "operations": [
-    {
-      "method": "POST",
-      "operationId": "ai.generation.tasks.create",
-      "path": "/app/v3/api/music/ai/generation/tasks"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.generation.tasks.list",
-      "path": "/app/v3/api/music/ai/generation/tasks"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.generation.tasks.retrieve",
-      "path": "/app/v3/api/music/ai/generation/tasks/{taskId}"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.promptTemplates.list",
-      "path": "/app/v3/api/music/ai/prompt_templates"
-    },
-    {
-      "method": "GET",
-      "operationId": "ai.stylePresets.list",
-      "path": "/app/v3/api/music/ai/style_presets"
-    },
     {
       "method": "GET",
       "operationId": "albums.list",
@@ -90,6 +65,56 @@
       "method": "GET",
       "operationId": "downloads.entitlements.list",
       "path": "/app/v3/api/music/downloads/entitlements"
+    },
+    {
+      "method": "POST",
+      "operationId": "generations.create",
+      "path": "/app/v3/api/music/generations"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.events.list",
+      "path": "/app/v3/api/music/generations/{generationId}/events"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.list",
+      "path": "/app/v3/api/music/generations"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.notifications.list",
+      "path": "/app/v3/api/music/generations/notifications"
+    },
+    {
+      "method": "PATCH",
+      "operationId": "generations.notifications.update",
+      "path": "/app/v3/api/music/generations/notifications/{notificationId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.promptTemplates.list",
+      "path": "/app/v3/api/music/generations/prompt_templates"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.providerModels.list",
+      "path": "/app/v3/api/music/generations/provider_models"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.providers.list",
+      "path": "/app/v3/api/music/generations/providers"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.retrieve",
+      "path": "/app/v3/api/music/generations/{generationId}"
+    },
+    {
+      "method": "GET",
+      "operationId": "generations.stylePresets.list",
+      "path": "/app/v3/api/music/generations/style_presets"
     },
     {
       "method": "GET",

@@ -113,7 +113,7 @@ const counts = {
   backend: checkDocument(backend, "sdkwork-music-backend-api", "/backend/v3/api", "sdkwork-routes-music-backend-api"),
 };
 
-if (counts.app !== 32 || counts.backend !== 36) {
+if (counts.app !== 37 || counts.backend !== 45) {
   fail(`unexpected route counts ${JSON.stringify(counts)}`);
 }
 

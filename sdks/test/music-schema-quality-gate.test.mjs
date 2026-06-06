@@ -15,5 +15,5 @@ test("music schema quality gate uses generated OpenAPI defaults", () => {
 
   const gateResult = runNode(["tools/music_schema_quality_gate.mjs"]);
   assert.equal(gateResult.status, 0, gateResult.stderr);
-  assert.match(gateResult.stdout, /ok app=32 backend=36/u);
+  assert.match(gateResult.stdout, /ok app=37 backend=45/u);
 });

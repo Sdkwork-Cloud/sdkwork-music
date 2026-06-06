@@ -134,13 +134,21 @@ test("sdkwork-music has SDKWork v3 OpenAPI authorities and SDK families", () => 
   assert.ok(appOpenapi.paths["/app/v3/api/music/playback/sessions/{sessionId}"]);
   assert.ok(appOpenapi.paths["/app/v3/api/music/listening_history"]);
   assert.ok(appOpenapi.paths["/app/v3/api/music/play_events"]);
-  assert.ok(appOpenapi.paths["/app/v3/api/music/ai/style_presets"]);
-  assert.ok(appOpenapi.paths["/app/v3/api/music/ai/prompt_templates"]);
-  assert.ok(appOpenapi.paths["/app/v3/api/music/ai/generation/tasks"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/style_presets"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/prompt_templates"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/providers"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/provider_models"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/{generationId}/events"]);
+  assert.ok(appOpenapi.paths["/app/v3/api/music/generations/notifications"]);
   assert.ok(appOpenapi.components.schemas.MusicTrack);
   assert.ok(appOpenapi.components.schemas.MusicAudioAsset);
   assert.ok(appOpenapi.components.schemas.MusicMediaResource);
   assert.ok(appOpenapi.components.schemas.MusicAiGenerationTask);
+  assert.ok(appOpenapi.components.schemas.MusicAiGenerationProvider);
+  assert.ok(appOpenapi.components.schemas.MusicAiGenerationProviderModel);
+  assert.ok(appOpenapi.components.schemas.MusicAiGenerationProviderEvent);
+  assert.ok(appOpenapi.components.schemas.MusicAiGenerationNotification);
   assert.ok(appOpenapi.components.schemas.MusicComment);
   assert.ok(appOpenapi.components.schemas.MusicPlaybackSession);
   assert.deepEqual(appOpenapi.paths["/app/v3/api/music/tracks"].get.security, [{ AuthToken: [], AccessToken: [] }]);
@@ -161,10 +169,16 @@ test("sdkwork-music has SDKWork v3 OpenAPI authorities and SDK families", () => 
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/charts"]);
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/charts/{chartId}/entries"]);
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/recommendation/shelves"]);
-  assert.ok(backendOpenapi.paths["/backend/v3/api/music/ai/generation/tasks"]);
-  assert.ok(backendOpenapi.paths["/backend/v3/api/music/ai/style_presets"]);
-  assert.ok(backendOpenapi.paths["/backend/v3/api/music/ai/prompt_templates"]);
-  assert.ok(backendOpenapi.paths["/backend/v3/api/music/ai/generation/credit_ledger"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/style_presets"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/prompt_templates"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/providers"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/provider_models"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/credit_ledger"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/{generationId}/attempts"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/events"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/{generationId}/sync"]);
+  assert.ok(backendOpenapi.paths["/backend/v3/api/music/generations/webhooks/{providerCode}/events"]);
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/content_reports"]);
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/content_reports/{reportId}/resolve"]);
   assert.ok(backendOpenapi.paths["/backend/v3/api/music/rights/policies"]);
@@ -185,7 +199,7 @@ test("sdkwork-music has SDKWork v3 OpenAPI authorities and SDK families", () => 
   assert.equal(appRouteManifest.surface, "app-api");
   assert.equal(appRouteManifest.apiAuthority, "sdkwork-music-app-api");
   assert.equal(appRouteManifest.sdkFamily, "sdkwork-music-app-sdk");
-  assert.equal(appRouteManifest.routes.length, 32);
+  assert.equal(appRouteManifest.routes.length, 37);
 
   const backendRouteManifest = readJson(
     "sdks/_route-manifests/backend-api/sdkwork-routes-music-backend-api.route-manifest.json",
@@ -194,7 +208,7 @@ test("sdkwork-music has SDKWork v3 OpenAPI authorities and SDK families", () => 
   assert.equal(backendRouteManifest.surface, "backend-api");
   assert.equal(backendRouteManifest.apiAuthority, "sdkwork-music-backend-api");
   assert.equal(backendRouteManifest.sdkFamily, "sdkwork-music-backend-sdk");
-  assert.equal(backendRouteManifest.routes.length, 36);
+  assert.equal(backendRouteManifest.routes.length, 45);
 });
 
 test("sdkwork-music declares application workspace metadata for SDK generation", () => {

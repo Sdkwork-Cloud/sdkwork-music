@@ -1,5 +1,8 @@
+import type { MusicAiGenerationProviderAttempt } from './music-ai-generation-provider-attempt';
+import type { MusicAiGenerationProviderEvent } from './music-ai-generation-provider-event';
 import type { MusicAiGenerationTaskStatus } from './music-ai-generation-task-status';
 import type { MusicAiGenerationVariant } from './music-ai-generation-variant';
+import type { MusicAiProviderInvocationMode } from './music-ai-provider-invocation-mode';
 import type { MusicMediaResource } from './music-media-resource';
 import type { MusicModerationStatus } from './music-moderation-status';
 export interface MusicAiGenerationTask {
@@ -10,16 +13,30 @@ export interface MusicAiGenerationTask {
     prompt: string;
     lyricsPrompt?: string;
     styleTags: string[];
-    modelProvider: string;
-    modelName: string;
+    generationMode: 'text_to_music' | 'lyrics_to_music' | 'reference_to_music' | 'stem_generation' | 'arrangement' | 'voice_to_song';
+    providerCode: string;
+    providerModel: string;
+    providerInvocationMode: MusicAiProviderInvocationMode;
+    providerTaskId?: string;
+    externalTaskId?: string;
+    providerStatus?: string;
+    providerOutputCount?: number;
+    modelProvider?: string;
+    modelName?: string;
     reference?: MusicMediaResource;
     referenceDriveUri?: string;
+    requestedDurationSeconds?: number;
+    variantCount?: number;
     status: MusicAiGenerationTaskStatus;
     moderationStatus: MusicModerationStatus;
     rightsPolicyId?: string;
     variants?: MusicAiGenerationVariant[];
+    attempts?: MusicAiGenerationProviderAttempt[];
+    events?: MusicAiGenerationProviderEvent[];
     createdAt?: string;
     updatedAt?: string;
+    lastProviderSyncAt?: string;
+    nextPollAt?: string;
     completedAt?: string;
 }
 //# sourceMappingURL=music-ai-generation-task.d.ts.map

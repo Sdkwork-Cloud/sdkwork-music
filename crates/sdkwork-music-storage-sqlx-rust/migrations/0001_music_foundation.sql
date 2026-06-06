@@ -385,6 +385,46 @@ CREATE TABLE music_ai_prompt_template (
   UNIQUE (tenant_id, slug)
 );
 
+CREATE TABLE music_ai_generation_provider (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  provider_code TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  provider_family TEXT NOT NULL,
+  capability TEXT NOT NULL,
+  invocation_mode TEXT NOT NULL,
+  claw_router_provider_code TEXT NOT NULL,
+  claw_router_endpoint_key TEXT NOT NULL,
+  claw_router_standard_path TEXT NOT NULL,
+  supports_polling INTEGER NOT NULL DEFAULT 0,
+  supports_webhook INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL,
+  config_snapshot TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (tenant_id, provider_code)
+);
+
+CREATE TABLE music_ai_generation_provider_model (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  provider_id TEXT NOT NULL REFERENCES music_ai_generation_provider(id) ON DELETE CASCADE,
+  provider_code TEXT NOT NULL,
+  model_name TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  capability TEXT NOT NULL,
+  min_duration_seconds INTEGER NOT NULL DEFAULT 0,
+  max_duration_seconds INTEGER NOT NULL DEFAULT 0,
+  max_variant_count INTEGER NOT NULL DEFAULT 1,
+  supported_formats_json TEXT NOT NULL,
+  supported_style_tags_json TEXT NOT NULL,
+  pricing_unit TEXT NOT NULL,
+  status TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (tenant_id, provider_code, model_name)
+);
+
 CREATE TABLE music_ai_generation_task (
   id TEXT PRIMARY KEY,
   tenant_id TEXT NOT NULL,
@@ -395,6 +435,18 @@ CREATE TABLE music_ai_generation_task (
   style_tags_json TEXT NOT NULL,
   model_provider TEXT NOT NULL,
   model_name TEXT NOT NULL,
+  generation_mode TEXT NOT NULL DEFAULT 'text_to_music',
+  provider_code TEXT,
+  provider_model TEXT,
+  provider_invocation_mode TEXT NOT NULL DEFAULT 'async_task',
+  external_task_id TEXT,
+  provider_status TEXT,
+  provider_output_count INTEGER NOT NULL DEFAULT 0,
+  idempotency_key TEXT,
+  request_hash TEXT,
+  last_provider_sync_at TEXT,
+  next_poll_at TEXT,
+  retry_count INTEGER NOT NULL DEFAULT 0,
   reference_drive_uri TEXT,
   status TEXT NOT NULL,
   moderation_status TEXT NOT NULL,
@@ -403,6 +455,49 @@ CREATE TABLE music_ai_generation_task (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   completed_at TEXT
+);
+
+CREATE TABLE music_ai_generation_provider_attempt (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  task_id TEXT NOT NULL REFERENCES music_ai_generation_task(id) ON DELETE CASCADE,
+  provider_id TEXT NOT NULL REFERENCES music_ai_generation_provider(id),
+  provider_code TEXT NOT NULL,
+  model_name TEXT NOT NULL,
+  invocation_mode TEXT NOT NULL,
+  claw_router_endpoint_key TEXT NOT NULL,
+  claw_router_standard_path TEXT NOT NULL,
+  claw_router_request_id TEXT,
+  external_task_id TEXT,
+  status TEXT NOT NULL,
+  provider_status TEXT,
+  request_snapshot TEXT,
+  response_snapshot TEXT,
+  submitted_at TEXT,
+  last_polled_at TEXT,
+  completed_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE music_ai_generation_provider_event (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  task_id TEXT NOT NULL REFERENCES music_ai_generation_task(id) ON DELETE CASCADE,
+  attempt_id TEXT REFERENCES music_ai_generation_provider_attempt(id) ON DELETE SET NULL,
+  provider_code TEXT NOT NULL,
+  external_task_id TEXT,
+  external_event_id TEXT,
+  event_type TEXT NOT NULL,
+  source TEXT NOT NULL,
+  provider_status TEXT NOT NULL,
+  status_before TEXT NOT NULL,
+  status_after TEXT NOT NULL,
+  payload_hash TEXT NOT NULL,
+  payload_snapshot TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE (provider_code, external_event_id),
+  UNIQUE (provider_code, external_task_id, event_type, payload_hash)
 );
 
 CREATE TABLE music_ai_generation_variant (
@@ -429,6 +524,20 @@ CREATE TABLE music_ai_generation_credit_ledger (
   balance_after INTEGER NOT NULL,
   reason_code TEXT NOT NULL,
   created_at TEXT NOT NULL
+);
+
+CREATE TABLE music_ai_generation_notification (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  task_id TEXT NOT NULL REFERENCES music_ai_generation_task(id) ON DELETE CASCADE,
+  notification_type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT,
+  status TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  read_at TEXT,
+  UNIQUE (tenant_id, user_id, task_id, notification_type)
 );
 
 CREATE TABLE music_moderation_signal (
@@ -552,10 +661,16 @@ CREATE INDEX idx_music_search_suggestion_tenant_type ON music_search_suggestion 
 CREATE INDEX idx_music_ai_generation_project_user_updated ON music_ai_generation_project (tenant_id, user_id, updated_at DESC);
 CREATE INDEX idx_music_ai_style_preset_tenant_status ON music_ai_style_preset (tenant_id, status, updated_at DESC);
 CREATE INDEX idx_music_ai_prompt_template_tenant_status ON music_ai_prompt_template (tenant_id, status, updated_at DESC);
+CREATE INDEX idx_music_ai_generation_provider_tenant_status ON music_ai_generation_provider (tenant_id, status, updated_at DESC);
+CREATE INDEX idx_music_ai_generation_provider_model_tenant_status ON music_ai_generation_provider_model (tenant_id, provider_code, status, updated_at DESC);
 CREATE INDEX idx_music_ai_generation_task_tenant_status_updated ON music_ai_generation_task (tenant_id, status, updated_at DESC);
 CREATE INDEX idx_music_ai_generation_task_user_updated ON music_ai_generation_task (tenant_id, user_id, updated_at DESC);
+CREATE INDEX idx_music_ai_generation_task_provider_external ON music_ai_generation_task (tenant_id, provider_code, external_task_id);
+CREATE INDEX idx_music_ai_generation_provider_attempt_task ON music_ai_generation_provider_attempt (tenant_id, task_id, created_at DESC);
+CREATE INDEX idx_music_ai_generation_provider_event_task_created ON music_ai_generation_provider_event (tenant_id, task_id, created_at DESC);
 CREATE INDEX idx_music_ai_generation_variant_task ON music_ai_generation_variant (task_id, created_at DESC);
 CREATE INDEX idx_music_ai_generation_credit_ledger_user_created ON music_ai_generation_credit_ledger (tenant_id, user_id, created_at DESC);
+CREATE INDEX idx_music_ai_generation_notification_user_status ON music_ai_generation_notification (tenant_id, user_id, status, created_at DESC);
 CREATE INDEX idx_music_moderation_signal_resource ON music_moderation_signal (tenant_id, resource_type, resource_id, created_at DESC);
 CREATE INDEX idx_music_release_tenant_status_published ON music_release (tenant_id, status, published_at DESC);
 CREATE INDEX idx_music_release_channel_release_status ON music_release_channel (tenant_id, release_id, distribution_status);

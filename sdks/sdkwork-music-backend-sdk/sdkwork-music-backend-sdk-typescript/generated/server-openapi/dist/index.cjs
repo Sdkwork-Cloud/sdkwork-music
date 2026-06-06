@@ -359,115 +359,206 @@ class MusicRightsApi {
         this.policies = new MusicRightsPoliciesApi(client);
     }
 }
-class MusicAiGenerationTasksManagementApi {
+class MusicGenerationsWebhooksApi {
     constructor(client) {
         this.client = client;
     }
-    /** Music ai.generation.tasks.management.list */
+    /** Music generations.webhooks.receive */
+    async receive(providerCode, body) {
+        return this.client.post(backendApiPath(`/music/generations/webhooks/${serializePathParameter(providerCode, { name: 'providerCode', style: 'simple', explode: false })}/events`), body, undefined, undefined, 'application/json');
+    }
+}
+class MusicGenerationsEventsManagementApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.events.management.list */
     async list(params) {
         const query = buildQueryString([
-            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-            { name: 'user_id', value: params?.userId, style: 'form', explode: true, allowReserved: false },
+            { name: 'generation_id', value: params?.generationId, style: 'form', explode: true, allowReserved: false },
+            { name: 'provider_code', value: params?.providerCode, style: 'form', explode: true, allowReserved: false },
+            { name: 'source', value: params?.source, style: 'form', explode: true, allowReserved: false },
             { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
         ]);
-        return this.client.get(appendQueryString(backendApiPath(`/music/ai/generation/tasks`), query));
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/events`), query));
     }
 }
-class MusicAiGenerationTasksApi {
+class MusicGenerationsEventsApi {
     constructor(client) {
         this.client = client;
-        this.management = new MusicAiGenerationTasksManagementApi(client);
-    }
-    /** Music ai.generation.tasks.moderate */
-    async moderate(taskId, body) {
-        return this.client.post(backendApiPath(`/music/ai/generation/tasks/${serializePathParameter(taskId, { name: 'taskId', style: 'simple', explode: false })}/moderate`), body, undefined, undefined, 'application/json');
-    }
-    /** Music ai.generation.tasks.publish */
-    async publish(taskId, body) {
-        return this.client.post(backendApiPath(`/music/ai/generation/tasks/${serializePathParameter(taskId, { name: 'taskId', style: 'simple', explode: false })}/publish`), body, undefined, undefined, 'application/json');
+        this.management = new MusicGenerationsEventsManagementApi(client);
     }
 }
-class MusicAiGenerationCreditLedgerApi {
+class MusicGenerationsAttemptsApi {
     constructor(client) {
         this.client = client;
     }
-    /** Music ai.generation.creditLedger.list */
-    async list(params) {
+    /** Music generations.attempts.list */
+    async list(generationId, params) {
         const query = buildQueryString([
-            { name: 'user_id', value: params?.userId, style: 'form', explode: true, allowReserved: false },
-            { name: 'task_id', value: params?.taskId, style: 'form', explode: true, allowReserved: false },
             { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
         ]);
-        return this.client.get(appendQueryString(backendApiPath(`/music/ai/generation/credit_ledger`), query));
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/attempts`), query));
     }
 }
-class MusicAiGenerationApi {
-    constructor(client) {
-        this.client = client;
-        this.creditLedger = new MusicAiGenerationCreditLedgerApi(client);
-        this.tasks = new MusicAiGenerationTasksApi(client);
-    }
-}
-class MusicAiPromptTemplatesManagementApi {
+class MusicGenerationsProviderModelsManagementApi {
     constructor(client) {
         this.client = client;
     }
-    /** Music ai.promptTemplates.management.list */
+    /** Music generations.providerModels.management.list */
     async list(params) {
         const query = buildQueryString([
+            { name: 'provider_code', value: params?.providerCode, style: 'form', explode: true, allowReserved: false },
             { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
             { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
         ]);
-        return this.client.get(appendQueryString(backendApiPath(`/music/ai/prompt_templates`), query));
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/provider_models`), query));
     }
 }
-class MusicAiPromptTemplatesApi {
+class MusicGenerationsProviderModelsApi {
     constructor(client) {
         this.client = client;
-        this.management = new MusicAiPromptTemplatesManagementApi(client);
+        this.management = new MusicGenerationsProviderModelsManagementApi(client);
     }
-    /** Music ai.promptTemplates.create */
+    /** Music generations.providerModels.create */
     async create(body) {
-        return this.client.post(backendApiPath(`/music/ai/prompt_templates`), body, undefined, undefined, 'application/json');
+        return this.client.post(backendApiPath(`/music/generations/provider_models`), body, undefined, undefined, 'application/json');
     }
-    /** Music ai.promptTemplates.update */
+}
+class MusicGenerationsProvidersManagementApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.providers.management.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/providers`), query));
+    }
+}
+class MusicGenerationsProvidersApi {
+    constructor(client) {
+        this.client = client;
+        this.management = new MusicGenerationsProvidersManagementApi(client);
+    }
+    /** Music generations.providers.create */
+    async create(body) {
+        return this.client.post(backendApiPath(`/music/generations/providers`), body, undefined, undefined, 'application/json');
+    }
+    /** Music generations.providers.update */
+    async update(providerId, body) {
+        return this.client.patch(backendApiPath(`/music/generations/providers/${serializePathParameter(providerId, { name: 'providerId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+    }
+}
+class MusicGenerationsManagementApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.management.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'user_id', value: params?.userId, style: 'form', explode: true, allowReserved: false },
+            { name: 'provider_code', value: params?.providerCode, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations`), query));
+    }
+}
+class MusicGenerationsCreditLedgerApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.creditLedger.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'user_id', value: params?.userId, style: 'form', explode: true, allowReserved: false },
+            { name: 'generation_id', value: params?.generationId, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/credit_ledger`), query));
+    }
+}
+class MusicGenerationsPromptTemplatesManagementApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.promptTemplates.management.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/prompt_templates`), query));
+    }
+}
+class MusicGenerationsPromptTemplatesApi {
+    constructor(client) {
+        this.client = client;
+        this.management = new MusicGenerationsPromptTemplatesManagementApi(client);
+    }
+    /** Music generations.promptTemplates.create */
+    async create(body) {
+        return this.client.post(backendApiPath(`/music/generations/prompt_templates`), body, undefined, undefined, 'application/json');
+    }
+    /** Music generations.promptTemplates.update */
     async update(templateId, body) {
-        return this.client.patch(backendApiPath(`/music/ai/prompt_templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+        return this.client.patch(backendApiPath(`/music/generations/prompt_templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
     }
 }
-class MusicAiStylePresetsManagementApi {
+class MusicGenerationsStylePresetsManagementApi {
     constructor(client) {
         this.client = client;
     }
-    /** Music ai.stylePresets.management.list */
+    /** Music generations.stylePresets.management.list */
     async list(params) {
         const query = buildQueryString([
             { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
             { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
         ]);
-        return this.client.get(appendQueryString(backendApiPath(`/music/ai/style_presets`), query));
+        return this.client.get(appendQueryString(backendApiPath(`/music/generations/style_presets`), query));
     }
 }
-class MusicAiStylePresetsApi {
+class MusicGenerationsStylePresetsApi {
     constructor(client) {
         this.client = client;
-        this.management = new MusicAiStylePresetsManagementApi(client);
+        this.management = new MusicGenerationsStylePresetsManagementApi(client);
     }
-    /** Music ai.stylePresets.create */
+    /** Music generations.stylePresets.create */
     async create(body) {
-        return this.client.post(backendApiPath(`/music/ai/style_presets`), body, undefined, undefined, 'application/json');
+        return this.client.post(backendApiPath(`/music/generations/style_presets`), body, undefined, undefined, 'application/json');
     }
-    /** Music ai.stylePresets.update */
+    /** Music generations.stylePresets.update */
     async update(presetId, body) {
-        return this.client.patch(backendApiPath(`/music/ai/style_presets/${serializePathParameter(presetId, { name: 'presetId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+        return this.client.patch(backendApiPath(`/music/generations/style_presets/${serializePathParameter(presetId, { name: 'presetId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
     }
 }
-class MusicAiApi {
+class MusicGenerationsApi {
     constructor(client) {
         this.client = client;
-        this.stylePresets = new MusicAiStylePresetsApi(client);
-        this.promptTemplates = new MusicAiPromptTemplatesApi(client);
-        this.generation = new MusicAiGenerationApi(client);
+        this.stylePresets = new MusicGenerationsStylePresetsApi(client);
+        this.promptTemplates = new MusicGenerationsPromptTemplatesApi(client);
+        this.creditLedger = new MusicGenerationsCreditLedgerApi(client);
+        this.management = new MusicGenerationsManagementApi(client);
+        this.providers = new MusicGenerationsProvidersApi(client);
+        this.providerModels = new MusicGenerationsProviderModelsApi(client);
+        this.attempts = new MusicGenerationsAttemptsApi(client);
+        this.events = new MusicGenerationsEventsApi(client);
+        this.webhooks = new MusicGenerationsWebhooksApi(client);
+    }
+    /** Music generations.sync */
+    async sync(generationId, body) {
+        return this.client.post(backendApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/sync`), body, undefined, undefined, 'application/json');
+    }
+    /** Music generations.moderate */
+    async moderate(generationId, body) {
+        return this.client.post(backendApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/moderate`), body, undefined, undefined, 'application/json');
+    }
+    /** Music generations.publish */
+    async publish(generationId, body) {
+        return this.client.post(backendApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/publish`), body, undefined, undefined, 'application/json');
     }
 }
 class MusicContentReportsManagementApi {
@@ -722,7 +813,7 @@ class MusicApi {
         this.charts = new MusicChartsApi(client);
         this.recommendation = new MusicRecommendationApi(client);
         this.contentReports = new MusicContentReportsApi(client);
-        this.ai = new MusicAiApi(client);
+        this.generations = new MusicGenerationsApi(client);
         this.rights = new MusicRightsApi(client);
         this.moderation = new MusicModerationApi(client);
         this.releases = new MusicReleasesApi(client);

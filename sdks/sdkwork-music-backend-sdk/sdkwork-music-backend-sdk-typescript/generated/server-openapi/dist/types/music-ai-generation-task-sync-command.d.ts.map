@@ -1,0 +1,1 @@
+{"version":3,"file":"music-ai-generation-task-sync-command.d.ts","sourceRoot":"","sources":["../../src/types/music-ai-generation-task-sync-command.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,gCAAgC;IAC/C,MAAM,EAAE,MAAM,GAAG,aAAa,GAAG,gBAAgB,CAAC;IAClD,cAAc,CAAC,EAAE,MAAM,CAAC;IACxB,cAAc,CAAC,EAAE,MAAM,CAAC;IACxB,eAAe,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,CAAC;CAC3C"}

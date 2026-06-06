@@ -157,28 +157,53 @@ pub fn app_routes() -> Vec<MusicHttpRoute> {
         route(HttpMethod::Post, "/app/v3/api/music/play_events", "playEvents.create"),
         route(
             HttpMethod::Get,
-            "/app/v3/api/music/ai/style_presets",
-            "ai.stylePresets.list",
+            "/app/v3/api/music/generations/style_presets",
+            "generations.stylePresets.list",
         ),
         route(
             HttpMethod::Get,
-            "/app/v3/api/music/ai/prompt_templates",
-            "ai.promptTemplates.list",
+            "/app/v3/api/music/generations/prompt_templates",
+            "generations.promptTemplates.list",
         ),
         route(
             HttpMethod::Get,
-            "/app/v3/api/music/ai/generation/tasks",
-            "ai.generation.tasks.list",
+            "/app/v3/api/music/generations/providers",
+            "generations.providers.list",
+        ),
+        route(
+            HttpMethod::Get,
+            "/app/v3/api/music/generations/provider_models",
+            "generations.providerModels.list",
+        ),
+        route(
+            HttpMethod::Get,
+            "/app/v3/api/music/generations",
+            "generations.list",
         ),
         route(
             HttpMethod::Post,
-            "/app/v3/api/music/ai/generation/tasks",
-            "ai.generation.tasks.create",
+            "/app/v3/api/music/generations",
+            "generations.create",
         ),
         route(
             HttpMethod::Get,
-            "/app/v3/api/music/ai/generation/tasks/{taskId}",
-            "ai.generation.tasks.retrieve",
+            "/app/v3/api/music/generations/{generationId}",
+            "generations.retrieve",
+        ),
+        route(
+            HttpMethod::Get,
+            "/app/v3/api/music/generations/{generationId}/events",
+            "generations.events.list",
+        ),
+        route(
+            HttpMethod::Get,
+            "/app/v3/api/music/generations/notifications",
+            "generations.notifications.list",
+        ),
+        route(
+            HttpMethod::Patch,
+            "/app/v3/api/music/generations/notifications/{notificationId}",
+            "generations.notifications.update",
         ),
     ]
 }

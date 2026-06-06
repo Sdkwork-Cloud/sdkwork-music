@@ -1,7 +1,7 @@
 use sdkwork_music_core::{
     evaluate_ai_generation_publish_readiness, evaluate_track_publish_readiness,
-    music_capability_manifest, MusicAiGenerationTask, MusicAiGenerationTaskStatus, MusicTrack,
-    MusicTrackStatus,
+    music_capability_manifest, normalize_ai_generation_provider_status, MusicAiGenerationTask,
+    MusicAiGenerationTaskStatus, MusicAiProviderInvocationMode, MusicTrack, MusicTrackStatus,
 };
 
 #[test]
@@ -12,7 +12,17 @@ fn music_core_manifest_owns_music_domain_contracts() {
     assert_eq!(manifest.statuses, vec!["draft", "published", "archived"]);
     assert_eq!(
         manifest.ai_generation_statuses,
-        vec!["queued", "running", "succeeded", "failed", "cancelled"],
+        vec![
+            "queued",
+            "routing",
+            "submitted",
+            "running",
+            "waiting_webhook",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "expired",
+        ],
     );
     assert!(manifest.operations.contains(&"tracks.list"));
     assert!(manifest.operations.contains(&"audio.assets.list"));
@@ -31,13 +41,80 @@ fn music_core_manifest_owns_music_domain_contracts() {
     assert!(manifest.operations.contains(&"downloads.entitlements.list"));
     assert!(manifest.operations.contains(&"playback.sessions.create"));
     assert!(manifest.operations.contains(&"playback.sessions.update"));
-    assert!(manifest.operations.contains(&"ai.stylePresets.list"));
-    assert!(manifest.operations.contains(&"ai.promptTemplates.list"));
-    assert!(manifest.operations.contains(&"ai.generation.tasks.create"));
-    assert!(manifest.operations.contains(&"ai.generation.tasks.publish"));
+    assert!(manifest.operations.contains(&"generations.stylePresets.list"));
+    assert!(manifest.operations.contains(&"generations.promptTemplates.list"));
+    assert!(manifest.operations.contains(&"generations.providers.list"));
+    assert!(manifest.operations.contains(&"generations.providerModels.list"));
+    assert!(manifest.operations.contains(&"generations.create"));
+    assert!(manifest.operations.contains(&"generations.events.list"));
+    assert!(manifest.operations.contains(&"generations.notifications.list"));
+    assert!(manifest.operations.contains(&"generations.publish"));
+    assert!(manifest.operations.contains(&"generations.providers.create"));
+    assert!(manifest.operations.contains(&"generations.providerModels.create"));
+    assert!(manifest.operations.contains(&"generations.attempts.list"));
+    assert!(manifest.operations.contains(&"generations.sync"));
+    assert!(manifest.operations.contains(&"generations.webhooks.receive"));
     assert!(manifest.operations.contains(&"contentReports.resolve"));
     assert!(manifest.operations.contains(&"rights.policies.create"));
     assert!(manifest.operations.contains(&"releases.channels.create"));
+}
+
+#[test]
+fn music_core_normalizes_provider_task_and_webhook_statuses_without_terminal_regression() {
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Queued,
+            MusicAiProviderInvocationMode::AsyncTask,
+            "IN_QUEUE",
+            false,
+        ),
+        MusicAiGenerationTaskStatus::Submitted,
+    );
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Submitted,
+            MusicAiProviderInvocationMode::Webhook,
+            "IN_PROGRESS",
+            false,
+        ),
+        MusicAiGenerationTaskStatus::Running,
+    );
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Running,
+            MusicAiProviderInvocationMode::Webhook,
+            "OK",
+            true,
+        ),
+        MusicAiGenerationTaskStatus::Succeeded,
+    );
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Running,
+            MusicAiProviderInvocationMode::Webhook,
+            "OK",
+            false,
+        ),
+        MusicAiGenerationTaskStatus::WaitingWebhook,
+    );
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Succeeded,
+            MusicAiProviderInvocationMode::AsyncTask,
+            "IN_PROGRESS",
+            false,
+        ),
+        MusicAiGenerationTaskStatus::Succeeded,
+    );
+    assert_eq!(
+        normalize_ai_generation_provider_status(
+            MusicAiGenerationTaskStatus::Running,
+            MusicAiProviderInvocationMode::AsyncTask,
+            "data_removed",
+            false,
+        ),
+        MusicAiGenerationTaskStatus::Expired,
+    );
 }
 
 #[test]
@@ -77,6 +154,13 @@ fn music_core_evaluates_ai_generation_publish_readiness() {
         prompt: "city pop song for a late subway ride",
         model_provider: "sdkwork-ai",
         model_name: "music-v1",
+        generation_mode: "text_to_music",
+        provider_code: "claw-router",
+        provider_model: "stable-audio-3",
+        provider_invocation_mode: MusicAiProviderInvocationMode::Hybrid,
+        provider_task_id: Some("provider_task_1"),
+        provider_status: Some("succeeded"),
+        provider_output_count: 2,
         status: MusicAiGenerationTaskStatus::Succeeded,
         variant_count: 2,
         approved_variant_count: 1,
@@ -103,4 +187,15 @@ fn music_core_evaluates_ai_generation_publish_readiness() {
     let running_readiness = evaluate_ai_generation_publish_readiness(&running_task);
     assert!(!running_readiness.can_publish);
     assert!(running_readiness.issues.contains(&"generation-not-succeeded"));
+
+    let missing_provider_output = MusicAiGenerationTask {
+        provider_output_count: 0,
+        ..task
+    };
+    let missing_provider_output_readiness =
+        evaluate_ai_generation_publish_readiness(&missing_provider_output);
+    assert!(!missing_provider_output_readiness.can_publish);
+    assert!(missing_provider_output_readiness
+        .issues
+        .contains(&"missing-provider-output"));
 }

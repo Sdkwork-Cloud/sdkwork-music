@@ -444,9 +444,9 @@
     },
     {
       "method": "GET",
-      "path": "/app/v3/api/music/ai/style_presets",
+      "path": "/app/v3/api/music/generations/style_presets",
       "tag": "music",
-      "operationId": "ai.stylePresets.list",
+      "operationId": "generations.stylePresets.list",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",
@@ -460,9 +460,9 @@
     },
     {
       "method": "GET",
-      "path": "/app/v3/api/music/ai/prompt_templates",
+      "path": "/app/v3/api/music/generations/prompt_templates",
       "tag": "music",
-      "operationId": "ai.promptTemplates.list",
+      "operationId": "generations.promptTemplates.list",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",
@@ -476,9 +476,41 @@
     },
     {
       "method": "GET",
-      "path": "/app/v3/api/music/ai/generation/tasks",
+      "path": "/app/v3/api/music/generations/providers",
       "tag": "music",
-      "operationId": "ai.generation.tasks.list",
+      "operationId": "generations.providers.list",
+      "authMode": "dual-token",
+      "ownership": {
+        "owner": "sdkwork-music",
+        "apiAuthority": "sdkwork-music-app-api"
+      },
+      "source": {
+        "kind": "rust-route-crate",
+        "crateRoot": "crates/sdkwork-routes-music-app-api",
+        "routeCrate": "sdkwork-routes-music-app-api"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/music/generations/provider_models",
+      "tag": "music",
+      "operationId": "generations.providerModels.list",
+      "authMode": "dual-token",
+      "ownership": {
+        "owner": "sdkwork-music",
+        "apiAuthority": "sdkwork-music-app-api"
+      },
+      "source": {
+        "kind": "rust-route-crate",
+        "crateRoot": "crates/sdkwork-routes-music-app-api",
+        "routeCrate": "sdkwork-routes-music-app-api"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/music/generations",
+      "tag": "music",
+      "operationId": "generations.list",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",
@@ -492,9 +524,9 @@
     },
     {
       "method": "POST",
-      "path": "/app/v3/api/music/ai/generation/tasks",
+      "path": "/app/v3/api/music/generations",
       "tag": "music",
-      "operationId": "ai.generation.tasks.create",
+      "operationId": "generations.create",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",
@@ -508,9 +540,57 @@
     },
     {
       "method": "GET",
-      "path": "/app/v3/api/music/ai/generation/tasks/{taskId}",
+      "path": "/app/v3/api/music/generations/{generationId}",
       "tag": "music",
-      "operationId": "ai.generation.tasks.retrieve",
+      "operationId": "generations.retrieve",
+      "authMode": "dual-token",
+      "ownership": {
+        "owner": "sdkwork-music",
+        "apiAuthority": "sdkwork-music-app-api"
+      },
+      "source": {
+        "kind": "rust-route-crate",
+        "crateRoot": "crates/sdkwork-routes-music-app-api",
+        "routeCrate": "sdkwork-routes-music-app-api"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/music/generations/{generationId}/events",
+      "tag": "music",
+      "operationId": "generations.events.list",
+      "authMode": "dual-token",
+      "ownership": {
+        "owner": "sdkwork-music",
+        "apiAuthority": "sdkwork-music-app-api"
+      },
+      "source": {
+        "kind": "rust-route-crate",
+        "crateRoot": "crates/sdkwork-routes-music-app-api",
+        "routeCrate": "sdkwork-routes-music-app-api"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/music/generations/notifications",
+      "tag": "music",
+      "operationId": "generations.notifications.list",
+      "authMode": "dual-token",
+      "ownership": {
+        "owner": "sdkwork-music",
+        "apiAuthority": "sdkwork-music-app-api"
+      },
+      "source": {
+        "kind": "rust-route-crate",
+        "crateRoot": "crates/sdkwork-routes-music-app-api",
+        "routeCrate": "sdkwork-routes-music-app-api"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/app/v3/api/music/generations/notifications/{notificationId}",
+      "tag": "music",
+      "operationId": "generations.notifications.update",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",

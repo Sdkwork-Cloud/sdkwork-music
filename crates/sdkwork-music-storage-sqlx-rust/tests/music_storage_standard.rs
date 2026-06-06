@@ -1,6 +1,8 @@
 use sdkwork_music_storage_sqlx::{
     music_database_tables, music_migration_names, music_storage_capability_manifest,
-    NewMusicAiGenerationProject, NewMusicAiGenerationTask, NewMusicAiGenerationVariant,
+    NewMusicAiGenerationProject, NewMusicAiGenerationProvider,
+    NewMusicAiGenerationProviderAttempt, NewMusicAiGenerationProviderEvent,
+    NewMusicAiGenerationProviderModel, NewMusicAiGenerationTask, NewMusicAiGenerationVariant,
     NewMusicAiPromptTemplate, NewMusicAiStylePreset, NewMusicAlbum, NewMusicArtist,
     NewMusicAudioAsset, NewMusicChart, NewMusicChartEntry, NewMusicComment,
     NewMusicContentReport, NewMusicDownloadEntitlement, NewMusicLibraryItem,
@@ -51,9 +53,14 @@ fn music_storage_manifest_declares_complete_music_tables_and_migrations() {
             "music_ai_generation_project",
             "music_ai_style_preset",
             "music_ai_prompt_template",
+            "music_ai_generation_provider",
+            "music_ai_generation_provider_model",
             "music_ai_generation_task",
+            "music_ai_generation_provider_attempt",
+            "music_ai_generation_provider_event",
             "music_ai_generation_variant",
             "music_ai_generation_credit_ledger",
+            "music_ai_generation_notification",
             "music_moderation_signal",
             "music_release",
             "music_release_channel",
@@ -76,13 +83,25 @@ fn music_storage_manifest_declares_complete_music_tables_and_migrations() {
     assert!(manifest.indexes.contains(&"idx_music_search_suggestion_tenant_type"));
     assert!(manifest.indexes.contains(&"idx_music_ai_style_preset_tenant_status"));
     assert!(manifest.indexes.contains(&"idx_music_ai_prompt_template_tenant_status"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_tenant_status"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_model_tenant_status"));
     assert!(manifest.indexes.contains(&"idx_music_ai_generation_credit_ledger_user_created"));
     assert!(manifest.indexes.contains(&"idx_music_release_channel_release_status"));
     assert!(manifest.indexes.contains(&"idx_music_rights_territory_policy_region"));
     assert!(manifest.indexes.contains(&"idx_music_ai_generation_task_tenant_status_updated"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_task_provider_external"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_attempt_task"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_event_task_created"));
+    assert!(manifest.indexes.contains(&"idx_music_ai_generation_notification_user_status"));
     assert!(manifest.indexes.contains(&"idx_music_user_library_user_updated"));
     assert_eq!(manifest.migration_plan[0].name, "0001_music_foundation.sql");
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_track"));
+    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider"));
+    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_attempt"));
+    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_event"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("UNIQUE (provider_code, external_event_id)"));
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_task"));
     assert!(!manifest.migration_plan[0].sql.contains("source_uri"));
 }
@@ -114,6 +133,213 @@ fn music_storage_repositories_bind_to_music_tables() {
             "music.audit.repository",
         ],
     );
+}
+
+#[tokio::test]
+async fn sqlite_music_store_records_ai_generation_provider_events_idempotently() {
+    let pool = SqlitePoolOptions::new()
+        .max_connections(1)
+        .connect("sqlite::memory:")
+        .await
+        .expect("sqlite pool");
+    let store = SqliteMusicStore::new(pool);
+    store.migrate().await.expect("music migration");
+
+    store
+        .upsert_ai_generation_provider(NewMusicAiGenerationProvider {
+            id: "provider_1".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            provider_code: "stable-audio".to_owned(),
+            display_name: "Stable Audio".to_owned(),
+            provider_family: "claw-router".to_owned(),
+            capability: "text_to_music".to_owned(),
+            invocation_mode: "hybrid".to_owned(),
+            claw_router_provider_code: "stability-ai".to_owned(),
+            claw_router_endpoint_key: "audio.text_to_music".to_owned(),
+            claw_router_standard_path: "/v1/generation/audio".to_owned(),
+            supports_polling: true,
+            supports_webhook: true,
+            status: "active".to_owned(),
+            config_snapshot: Some(r#"{"resource":"music_output_second"}"#.to_owned()),
+            now: "2026-06-06T03:00:00Z".to_owned(),
+        })
+        .await
+        .expect("upsert provider");
+    store
+        .upsert_ai_generation_provider_model(NewMusicAiGenerationProviderModel {
+            id: "provider_model_1".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            provider_id: "provider_1".to_owned(),
+            provider_code: "stable-audio".to_owned(),
+            model_name: "stable-audio-3".to_owned(),
+            display_name: "Stable Audio 3".to_owned(),
+            capability: "text_to_music".to_owned(),
+            min_duration_seconds: 15,
+            max_duration_seconds: 240,
+            max_variant_count: 4,
+            supported_formats: vec!["audio/mpeg".to_owned(), "audio/wav".to_owned()],
+            supported_style_tags: vec!["pop".to_owned(), "cinematic".to_owned()],
+            pricing_unit: "music_output_second".to_owned(),
+            status: "active".to_owned(),
+            now: "2026-06-06T03:01:00Z".to_owned(),
+        })
+        .await
+        .expect("upsert provider model");
+    store
+        .create_ai_generation_project(NewMusicAiGenerationProject {
+            id: "project_provider".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            user_id: "user_1".to_owned(),
+            title: "Provider Campaign".to_owned(),
+            visibility: "private".to_owned(),
+            now: "2026-06-06T03:02:00Z".to_owned(),
+        })
+        .await
+        .expect("create project");
+    store
+        .create_ai_generation_task(NewMusicAiGenerationTask {
+            id: "task_provider".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            project_id: Some("project_provider".to_owned()),
+            user_id: "user_1".to_owned(),
+            prompt: "professional synth pop hook with a clean vocal lead".to_owned(),
+            lyrics_prompt: Some("write a chorus about sunrise in the city".to_owned()),
+            style_tags: vec!["synth-pop".to_owned(), "vocal".to_owned()],
+            model_provider: "stable-audio".to_owned(),
+            model_name: "stable-audio-3".to_owned(),
+            reference_drive_uri: None,
+            now: "2026-06-06T03:03:00Z".to_owned(),
+        })
+        .await
+        .expect("create task");
+    store
+        .create_ai_generation_provider_attempt(NewMusicAiGenerationProviderAttempt {
+            id: "attempt_1".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            task_id: "task_provider".to_owned(),
+            provider_id: "provider_1".to_owned(),
+            provider_code: "stable-audio".to_owned(),
+            model_name: "stable-audio-3".to_owned(),
+            invocation_mode: "hybrid".to_owned(),
+            claw_router_endpoint_key: "audio.text_to_music".to_owned(),
+            claw_router_standard_path: "/v1/generation/audio".to_owned(),
+            claw_router_request_id: Some("router_request_1".to_owned()),
+            external_task_id: Some("external_task_1".to_owned()),
+            status: "submitted".to_owned(),
+            provider_status: Some("queued".to_owned()),
+            request_snapshot: Some(r#"{"prompt":"professional synth pop hook"}"#.to_owned()),
+            response_snapshot: Some(r#"{"provider":{"taskId":"external_task_1"}}"#.to_owned()),
+            now: "2026-06-06T03:04:00Z".to_owned(),
+        })
+        .await
+        .expect("create attempt");
+
+    let first_insert = store
+        .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
+            id: "event_running".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            task_id: "task_provider".to_owned(),
+            attempt_id: Some("attempt_1".to_owned()),
+            provider_code: "stable-audio".to_owned(),
+            external_task_id: Some("external_task_1".to_owned()),
+            external_event_id: Some("evt_1".to_owned()),
+            event_type: "task.status".to_owned(),
+            source: "webhook".to_owned(),
+            provider_status: "running".to_owned(),
+            payload_hash: "hash_evt_1".to_owned(),
+            payload_snapshot: r#"{"status":"running"}"#.to_owned(),
+            has_outputs: false,
+            now: "2026-06-06T03:05:00Z".to_owned(),
+        })
+        .await
+        .expect("record first event");
+    let duplicate_insert = store
+        .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
+            id: "event_running_duplicate".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            task_id: "task_provider".to_owned(),
+            attempt_id: Some("attempt_1".to_owned()),
+            provider_code: "stable-audio".to_owned(),
+            external_task_id: Some("external_task_1".to_owned()),
+            external_event_id: Some("evt_1".to_owned()),
+            event_type: "task.status".to_owned(),
+            source: "webhook".to_owned(),
+            provider_status: "running".to_owned(),
+            payload_hash: "hash_evt_1".to_owned(),
+            payload_snapshot: r#"{"status":"running"}"#.to_owned(),
+            has_outputs: false,
+            now: "2026-06-06T03:06:00Z".to_owned(),
+        })
+        .await
+        .expect("record duplicate event");
+    assert!(first_insert);
+    assert!(!duplicate_insert);
+
+    let success_insert = store
+        .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
+            id: "event_success".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            task_id: "task_provider".to_owned(),
+            attempt_id: Some("attempt_1".to_owned()),
+            provider_code: "stable-audio".to_owned(),
+            external_task_id: Some("external_task_1".to_owned()),
+            external_event_id: Some("evt_2".to_owned()),
+            event_type: "task.completed".to_owned(),
+            source: "poll".to_owned(),
+            provider_status: "succeeded".to_owned(),
+            payload_hash: "hash_evt_2".to_owned(),
+            payload_snapshot: r#"{"status":"succeeded","artifacts":[{"kind":"audio"}]}"#.to_owned(),
+            has_outputs: true,
+            now: "2026-06-06T03:07:00Z".to_owned(),
+        })
+        .await
+        .expect("record success event");
+    assert!(success_insert);
+
+    let stale_running_insert = store
+        .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
+            id: "event_stale".to_owned(),
+            tenant_id: "tenant_1".to_owned(),
+            task_id: "task_provider".to_owned(),
+            attempt_id: Some("attempt_1".to_owned()),
+            provider_code: "stable-audio".to_owned(),
+            external_task_id: Some("external_task_1".to_owned()),
+            external_event_id: Some("evt_3".to_owned()),
+            event_type: "task.status".to_owned(),
+            source: "poll".to_owned(),
+            provider_status: "running".to_owned(),
+            payload_hash: "hash_evt_3".to_owned(),
+            payload_snapshot: r#"{"status":"running"}"#.to_owned(),
+            has_outputs: false,
+            now: "2026-06-06T03:08:00Z".to_owned(),
+        })
+        .await
+        .expect("record stale event");
+    assert!(stale_running_insert);
+
+    let tasks = store
+        .list_ai_generation_tasks("tenant_1", Some("user_1"))
+        .await
+        .expect("AI tasks");
+    assert_eq!(tasks[0].status, "succeeded");
+    assert_eq!(tasks[0].provider_code.as_deref(), Some("stable-audio"));
+    assert_eq!(tasks[0].external_task_id.as_deref(), Some("external_task_1"));
+    assert_eq!(tasks[0].provider_output_count, 1);
+
+    let events = store
+        .list_ai_generation_provider_events("tenant_1", "task_provider")
+        .await
+        .expect("provider events");
+    assert_eq!(events.len(), 3);
+    assert_eq!(events[0].status_after, "succeeded");
+
+    let notifications = store
+        .list_ai_generation_notifications("tenant_1", "user_1")
+        .await
+        .expect("notifications");
+    assert_eq!(notifications.len(), 1);
+    assert_eq!(notifications[0].notification_type, "ai_generation_succeeded");
+    assert_eq!(notifications[0].status, "unread");
 }
 
 #[tokio::test]

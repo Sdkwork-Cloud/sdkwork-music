@@ -1,50 +1,86 @@
 import type { HttpClient } from '../http/client';
-import type { AiGenerationTasksListResponse, AiPromptTemplatesListResponse, AiStylePresetsListResponse, AlbumsListResponse, ArtistsListResponse, AudioAssetsListResponse, ChartsEntriesListResponse, ChartsListResponse, CommentsListResponse, DownloadsEntitlementsListResponse, HomeShelvesListResponse, LibraryItemsListResponse, ListeningHistoryListResponse, MusicAiGenerationTask, MusicAiGenerationTaskCommand, MusicComment, MusicCommentCommand, MusicContentReport, MusicContentReportCommand, MusicLibraryItemCommand, MusicListeningHistoryItem, MusicPlaybackSession, MusicPlaybackSessionCommand, MusicPlayEventCommand, MusicPlaylist, MusicPlaylistFollow, MusicPlaylistFollowCommand, MusicPlaylistTrackCommand, MusicRecommendationFeedback, MusicRecommendationFeedbackCommand, MusicUserLibraryItem, PlaybackSessionsListResponse, PlaylistsListResponse, SearchQueryResponse, SearchSuggestionsListResponse, TracksListResponse } from '../types';
-export interface MusicAiGenerationTasksListParams {
+import type { AlbumsListResponse, ArtistsListResponse, AudioAssetsListResponse, ChartsEntriesListResponse, ChartsListResponse, CommentsListResponse, DownloadsEntitlementsListResponse, GenerationsEventsListResponse, GenerationsListResponse, GenerationsNotificationsListResponse, GenerationsPromptTemplatesListResponse, GenerationsProviderModelsListResponse, GenerationsProvidersListResponse, GenerationsStylePresetsListResponse, HomeShelvesListResponse, LibraryItemsListResponse, ListeningHistoryListResponse, MusicAiGenerationNotification, MusicAiGenerationNotificationCommand, MusicAiGenerationTask, MusicAiGenerationTaskCommand, MusicComment, MusicCommentCommand, MusicContentReport, MusicContentReportCommand, MusicLibraryItemCommand, MusicListeningHistoryItem, MusicPlaybackSession, MusicPlaybackSessionCommand, MusicPlayEventCommand, MusicPlaylist, MusicPlaylistFollow, MusicPlaylistFollowCommand, MusicPlaylistTrackCommand, MusicRecommendationFeedback, MusicRecommendationFeedbackCommand, MusicUserLibraryItem, PlaybackSessionsListResponse, PlaylistsListResponse, SearchQueryResponse, SearchSuggestionsListResponse, TracksListResponse } from '../types';
+export interface MusicGenerationsNotificationsListParams {
     status?: string;
     limit?: number;
 }
-export declare class MusicAiGenerationTasksApi {
+export declare class MusicGenerationsNotificationsApi {
     private client;
     constructor(client: HttpClient);
-    /** Music ai.generation.tasks.list */
-    list(params?: MusicAiGenerationTasksListParams): Promise<AiGenerationTasksListResponse>;
-    /** Music ai.generation.tasks.create */
+    /** Music generations.notifications.list */
+    list(params?: MusicGenerationsNotificationsListParams): Promise<GenerationsNotificationsListResponse>;
+    /** Music generations.notifications.update */
+    update(notificationId: string, body: MusicAiGenerationNotificationCommand): Promise<MusicAiGenerationNotification>;
+}
+export interface MusicGenerationsEventsListParams {
+    limit?: number;
+}
+export declare class MusicGenerationsEventsApi {
+    private client;
+    constructor(client: HttpClient);
+    /** Music generations.events.list */
+    list(generationId: string, params?: MusicGenerationsEventsListParams): Promise<GenerationsEventsListResponse>;
+}
+export interface MusicGenerationsProviderModelsListParams {
+    providerCode?: string;
+    status?: string;
+    limit?: number;
+}
+export declare class MusicGenerationsProviderModelsApi {
+    private client;
+    constructor(client: HttpClient);
+    /** Music generations.providerModels.list */
+    list(params?: MusicGenerationsProviderModelsListParams): Promise<GenerationsProviderModelsListResponse>;
+}
+export interface MusicGenerationsProvidersListParams {
+    status?: string;
+    limit?: number;
+}
+export declare class MusicGenerationsProvidersApi {
+    private client;
+    constructor(client: HttpClient);
+    /** Music generations.providers.list */
+    list(params?: MusicGenerationsProvidersListParams): Promise<GenerationsProvidersListResponse>;
+}
+export interface MusicGenerationsPromptTemplatesListParams {
+    status?: string;
+    limit?: number;
+}
+export declare class MusicGenerationsPromptTemplatesApi {
+    private client;
+    constructor(client: HttpClient);
+    /** Music generations.promptTemplates.list */
+    list(params?: MusicGenerationsPromptTemplatesListParams): Promise<GenerationsPromptTemplatesListResponse>;
+}
+export interface MusicGenerationsStylePresetsListParams {
+    status?: string;
+    limit?: number;
+}
+export declare class MusicGenerationsStylePresetsApi {
+    private client;
+    constructor(client: HttpClient);
+    /** Music generations.stylePresets.list */
+    list(params?: MusicGenerationsStylePresetsListParams): Promise<GenerationsStylePresetsListResponse>;
+}
+export interface MusicGenerationsListParams {
+    status?: string;
+    limit?: number;
+}
+export declare class MusicGenerationsApi {
+    private client;
+    readonly stylePresets: MusicGenerationsStylePresetsApi;
+    readonly promptTemplates: MusicGenerationsPromptTemplatesApi;
+    readonly providers: MusicGenerationsProvidersApi;
+    readonly providerModels: MusicGenerationsProviderModelsApi;
+    readonly events: MusicGenerationsEventsApi;
+    readonly notifications: MusicGenerationsNotificationsApi;
+    constructor(client: HttpClient);
+    /** Music generations.list */
+    list(params?: MusicGenerationsListParams): Promise<GenerationsListResponse>;
+    /** Music generations.create */
     create(body: MusicAiGenerationTaskCommand): Promise<MusicAiGenerationTask>;
-    /** Music ai.generation.tasks.retrieve */
-    retrieve(taskId: string): Promise<MusicAiGenerationTask>;
-}
-export declare class MusicAiGenerationApi {
-    private client;
-    readonly tasks: MusicAiGenerationTasksApi;
-    constructor(client: HttpClient);
-}
-export interface MusicAiPromptTemplatesListParams {
-    status?: string;
-    limit?: number;
-}
-export declare class MusicAiPromptTemplatesApi {
-    private client;
-    constructor(client: HttpClient);
-    /** Music ai.promptTemplates.list */
-    list(params?: MusicAiPromptTemplatesListParams): Promise<AiPromptTemplatesListResponse>;
-}
-export interface MusicAiStylePresetsListParams {
-    status?: string;
-    limit?: number;
-}
-export declare class MusicAiStylePresetsApi {
-    private client;
-    constructor(client: HttpClient);
-    /** Music ai.stylePresets.list */
-    list(params?: MusicAiStylePresetsListParams): Promise<AiStylePresetsListResponse>;
-}
-export declare class MusicAiApi {
-    private client;
-    readonly stylePresets: MusicAiStylePresetsApi;
-    readonly promptTemplates: MusicAiPromptTemplatesApi;
-    readonly generation: MusicAiGenerationApi;
-    constructor(client: HttpClient);
+    /** Music generations.retrieve */
+    retrieve(generationId: string): Promise<MusicAiGenerationTask>;
 }
 export declare class MusicPlayEventsApi {
     private client;
@@ -295,7 +331,7 @@ export declare class MusicApi {
     readonly playback: MusicPlaybackApi;
     readonly listeningHistory: MusicListeningHistoryApi;
     readonly playEvents: MusicPlayEventsApi;
-    readonly ai: MusicAiApi;
+    readonly generations: MusicGenerationsApi;
     constructor(client: HttpClient);
 }
 export declare function createMusicApi(client: HttpClient): MusicApi;

@@ -276,65 +276,113 @@ function appApiPath(path) {
     return `${normalizedPrefix}${normalizedPath}`;
 }
 
-class MusicAiGenerationTasksApi {
+class MusicGenerationsNotificationsApi {
     constructor(client) {
         this.client = client;
     }
-    /** Music ai.generation.tasks.list */
+    /** Music generations.notifications.list */
     async list(params) {
         const query = buildQueryString([
             { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
             { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
         ]);
-        return this.client.get(appendQueryString(appApiPath(`/music/ai/generation/tasks`), query));
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/notifications`), query));
     }
-    /** Music ai.generation.tasks.create */
+    /** Music generations.notifications.update */
+    async update(notificationId, body) {
+        return this.client.patch(appApiPath(`/music/generations/notifications/${serializePathParameter(notificationId, { name: 'notificationId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+    }
+}
+class MusicGenerationsEventsApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.events.list */
+    async list(generationId, params) {
+        const query = buildQueryString([
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/events`), query));
+    }
+}
+class MusicGenerationsProviderModelsApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.providerModels.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'provider_code', value: params?.providerCode, style: 'form', explode: true, allowReserved: false },
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/provider_models`), query));
+    }
+}
+class MusicGenerationsProvidersApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.providers.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/providers`), query));
+    }
+}
+class MusicGenerationsPromptTemplatesApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.promptTemplates.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/prompt_templates`), query));
+    }
+}
+class MusicGenerationsStylePresetsApi {
+    constructor(client) {
+        this.client = client;
+    }
+    /** Music generations.stylePresets.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations/style_presets`), query));
+    }
+}
+class MusicGenerationsApi {
+    constructor(client) {
+        this.client = client;
+        this.stylePresets = new MusicGenerationsStylePresetsApi(client);
+        this.promptTemplates = new MusicGenerationsPromptTemplatesApi(client);
+        this.providers = new MusicGenerationsProvidersApi(client);
+        this.providerModels = new MusicGenerationsProviderModelsApi(client);
+        this.events = new MusicGenerationsEventsApi(client);
+        this.notifications = new MusicGenerationsNotificationsApi(client);
+    }
+    /** Music generations.list */
+    async list(params) {
+        const query = buildQueryString([
+            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
+            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+        ]);
+        return this.client.get(appendQueryString(appApiPath(`/music/generations`), query));
+    }
+    /** Music generations.create */
     async create(body) {
-        return this.client.post(appApiPath(`/music/ai/generation/tasks`), body, undefined, undefined, 'application/json');
+        return this.client.post(appApiPath(`/music/generations`), body, undefined, undefined, 'application/json');
     }
-    /** Music ai.generation.tasks.retrieve */
-    async retrieve(taskId) {
-        return this.client.get(appApiPath(`/music/ai/generation/tasks/${serializePathParameter(taskId, { name: 'taskId', style: 'simple', explode: false })}`));
-    }
-}
-class MusicAiGenerationApi {
-    constructor(client) {
-        this.client = client;
-        this.tasks = new MusicAiGenerationTasksApi(client);
-    }
-}
-class MusicAiPromptTemplatesApi {
-    constructor(client) {
-        this.client = client;
-    }
-    /** Music ai.promptTemplates.list */
-    async list(params) {
-        const query = buildQueryString([
-            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
-        ]);
-        return this.client.get(appendQueryString(appApiPath(`/music/ai/prompt_templates`), query));
-    }
-}
-class MusicAiStylePresetsApi {
-    constructor(client) {
-        this.client = client;
-    }
-    /** Music ai.stylePresets.list */
-    async list(params) {
-        const query = buildQueryString([
-            { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-            { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
-        ]);
-        return this.client.get(appendQueryString(appApiPath(`/music/ai/style_presets`), query));
-    }
-}
-class MusicAiApi {
-    constructor(client) {
-        this.client = client;
-        this.stylePresets = new MusicAiStylePresetsApi(client);
-        this.promptTemplates = new MusicAiPromptTemplatesApi(client);
-        this.generation = new MusicAiGenerationApi(client);
+    /** Music generations.retrieve */
+    async retrieve(generationId) {
+        return this.client.get(appApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}`));
     }
 }
 class MusicPlayEventsApi {
@@ -667,7 +715,7 @@ class MusicApi {
         this.playback = new MusicPlaybackApi(client);
         this.listeningHistory = new MusicListeningHistoryApi(client);
         this.playEvents = new MusicPlayEventsApi(client);
-        this.ai = new MusicAiApi(client);
+        this.generations = new MusicGenerationsApi(client);
     }
 }
 function createMusicApi(client) {

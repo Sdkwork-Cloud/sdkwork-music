@@ -51,8 +51,8 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
       assert.deepEqual(operation.security, [{ AuthToken: [], AccessToken: [] }], `${surface} security ${path}`);
     }
   }
-  assert.equal(operations(app).length, 32);
-  assert.equal(operations(backend).length, 36);
+  assert.equal(operations(app).length, 37);
+  assert.equal(operations(backend).length, 45);
 
   assert.deepEqual(parameterNames(operation(app, "/app/v3/api/music/tracks", "get")), [
     "artist_id",
@@ -80,6 +80,13 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
   assert.ok(app.components.schemas.MusicUserLibraryItem);
   assert.ok(app.components.schemas.MusicAiGenerationTask);
   assert.ok(app.components.schemas.MusicAiGenerationVariant);
+  assert.ok(app.components.schemas.MusicAiGenerationProvider);
+  assert.ok(app.components.schemas.MusicAiGenerationProviderModel);
+  assert.ok(app.components.schemas.MusicAiGenerationProviderAttempt);
+  assert.ok(app.components.schemas.MusicAiGenerationProviderEvent);
+  assert.ok(app.components.schemas.MusicAiGenerationNotification);
+  assert.ok(app.components.schemas.MusicAiProviderInvocationMode);
+  assert.ok(app.components.schemas.MusicAiGenerationProviderEventCommand);
   assert.ok(app.components.schemas.MusicComment);
   assert.ok(app.components.schemas.MusicContentReport);
   assert.ok(app.components.schemas.MusicRecommendationFeedback);
@@ -93,6 +100,17 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
   assert.ok(backend.components.schemas.MusicReleaseChannel);
   assert.ok(backend.components.schemas.MusicAiGenerationCreditLedgerEntry);
   assert.ok(backend.components.schemas.MusicModerationSignal);
+  assert.deepEqual(app.components.schemas.MusicAiGenerationTaskStatus.enum, [
+    "queued",
+    "routing",
+    "submitted",
+    "running",
+    "waiting_webhook",
+    "succeeded",
+    "failed",
+    "cancelled",
+    "expired",
+  ]);
 
   assert.equal(operation(app, "/app/v3/api/music/home/shelves", "get").operationId, "home.shelves.list");
   assert.equal(operation(app, "/app/v3/api/music/search", "get").operationId, "search.query");
@@ -144,21 +162,41 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
     "playback.sessions.update",
   );
   assert.equal(
-    operation(app, "/app/v3/api/music/ai/style_presets", "get").operationId,
-    "ai.stylePresets.list",
+    operation(app, "/app/v3/api/music/generations/style_presets", "get").operationId,
+    "generations.stylePresets.list",
   );
   assert.equal(
-    operation(app, "/app/v3/api/music/ai/prompt_templates", "get").operationId,
-    "ai.promptTemplates.list",
+    operation(app, "/app/v3/api/music/generations/prompt_templates", "get").operationId,
+    "generations.promptTemplates.list",
   );
   assert.equal(operation(app, "/app/v3/api/music/play_events", "post").operationId, "playEvents.create");
   assert.equal(
-    operation(app, "/app/v3/api/music/ai/generation/tasks", "post").operationId,
-    "ai.generation.tasks.create",
+    operation(app, "/app/v3/api/music/generations", "post").operationId,
+    "generations.create",
   );
   assert.equal(
-    operation(app, "/app/v3/api/music/ai/generation/tasks/{taskId}", "get").operationId,
-    "ai.generation.tasks.retrieve",
+    operation(app, "/app/v3/api/music/generations/providers", "get").operationId,
+    "generations.providers.list",
+  );
+  assert.equal(
+    operation(app, "/app/v3/api/music/generations/provider_models", "get").operationId,
+    "generations.providerModels.list",
+  );
+  assert.equal(
+    operation(app, "/app/v3/api/music/generations/{generationId}", "get").operationId,
+    "generations.retrieve",
+  );
+  assert.equal(
+    operation(app, "/app/v3/api/music/generations/{generationId}/events", "get").operationId,
+    "generations.events.list",
+  );
+  assert.equal(
+    operation(app, "/app/v3/api/music/generations/notifications", "get").operationId,
+    "generations.notifications.list",
+  );
+  assert.equal(
+    operation(app, "/app/v3/api/music/generations/notifications/{notificationId}", "patch").operationId,
+    "generations.notifications.update",
   );
 
   assert.equal(operation(backend, "/backend/v3/api/music/charts", "post").operationId, "charts.create");
@@ -183,32 +221,77 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
     "contentReports.resolve",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/style_presets", "post").operationId,
-    "ai.stylePresets.create",
+    operation(backend, "/backend/v3/api/music/generations/style_presets", "post").operationId,
+    "generations.stylePresets.create",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/style_presets/{presetId}", "patch").operationId,
-    "ai.stylePresets.update",
+    operation(backend, "/backend/v3/api/music/generations/style_presets/{presetId}", "patch").operationId,
+    "generations.stylePresets.update",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/prompt_templates", "post").operationId,
-    "ai.promptTemplates.create",
+    operation(backend, "/backend/v3/api/music/generations/prompt_templates", "post").operationId,
+    "generations.promptTemplates.create",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/prompt_templates/{templateId}", "patch").operationId,
-    "ai.promptTemplates.update",
+    operation(backend, "/backend/v3/api/music/generations/prompt_templates/{templateId}", "patch").operationId,
+    "generations.promptTemplates.update",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/generation/credit_ledger", "get").operationId,
-    "ai.generation.creditLedger.list",
+    operation(backend, "/backend/v3/api/music/generations/credit_ledger", "get").operationId,
+    "generations.creditLedger.list",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/generation/tasks/{taskId}/moderate", "post").operationId,
-    "ai.generation.tasks.moderate",
+    operation(backend, "/backend/v3/api/music/generations", "get").operationId,
+    "generations.management.list",
   );
   assert.equal(
-    operation(backend, "/backend/v3/api/music/ai/generation/tasks/{taskId}/publish", "post").operationId,
-    "ai.generation.tasks.publish",
+    operation(backend, "/backend/v3/api/music/generations/providers", "get").operationId,
+    "generations.providers.management.list",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/providers", "post").operationId,
+    "generations.providers.create",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/providers/{providerId}", "patch").operationId,
+    "generations.providers.update",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/provider_models", "get").operationId,
+    "generations.providerModels.management.list",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/provider_models", "post").operationId,
+    "generations.providerModels.create",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/{generationId}/attempts", "get").operationId,
+    "generations.attempts.list",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/events", "get").operationId,
+    "generations.events.management.list",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/{generationId}/sync", "post").operationId,
+    "generations.sync",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/webhooks/{providerCode}/events", "post").operationId,
+    "generations.webhooks.receive",
+  );
+  assert.deepEqual(
+    operation(backend, "/backend/v3/api/music/generations/webhooks/{providerCode}/events", "post")
+      .requestBody.content["application/json"].schema,
+    { $ref: "#/components/schemas/MusicAiGenerationProviderEventCommand" },
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/{generationId}/moderate", "post").operationId,
+    "generations.moderate",
+  );
+  assert.equal(
+    operation(backend, "/backend/v3/api/music/generations/{generationId}/publish", "post").operationId,
+    "generations.publish",
   );
   assert.equal(
     operation(backend, "/backend/v3/api/music/moderation/signals", "get").operationId,

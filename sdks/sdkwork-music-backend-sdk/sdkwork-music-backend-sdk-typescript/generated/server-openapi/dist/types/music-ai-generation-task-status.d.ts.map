@@ -1,1 +1,1 @@
-{"version":3,"file":"music-ai-generation-task-status.d.ts","sourceRoot":"","sources":["../../src/types/music-ai-generation-task-status.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,2BAA2B,GAAG,QAAQ,GAAG,SAAS,GAAG,WAAW,GAAG,QAAQ,GAAG,WAAW,CAAC"}
+{"version":3,"file":"music-ai-generation-task-status.d.ts","sourceRoot":"","sources":["../../src/types/music-ai-generation-task-status.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,2BAA2B,GAAG,QAAQ,GAAG,SAAS,GAAG,WAAW,GAAG,SAAS,GAAG,iBAAiB,GAAG,WAAW,GAAG,QAAQ,GAAG,WAAW,GAAG,SAAS,CAAC"}

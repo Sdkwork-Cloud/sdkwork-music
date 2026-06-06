@@ -5,7 +5,7 @@ use sdkwork_routes_music_backend_api::{
 #[test]
 fn music_backend_routes_use_sdkwork_v3_prefixes_and_resource_operation_ids() {
     let routes = backend_routes();
-    assert_eq!(routes.len(), 36);
+    assert_eq!(routes.len(), 45);
     assert!(routes.iter().all(|route| route.path.starts_with("/backend/v3/api/music")));
     assert!(routes.iter().all(|route| route.tag == "music"));
     assert!(routes.iter().all(|route| route.operation_id.contains('.')));
@@ -15,13 +15,23 @@ fn music_backend_routes_use_sdkwork_v3_prefixes_and_resource_operation_ids() {
     assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "recommendation.shelves.create"));
     assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "contentReports.management.list"));
     assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "contentReports.resolve"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "ai.stylePresets.management.list"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "ai.stylePresets.create"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "ai.promptTemplates.management.list"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "ai.promptTemplates.create"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "ai.generation.creditLedger.list"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "ai.generation.tasks.moderate"));
-    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "ai.generation.tasks.publish"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.stylePresets.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.stylePresets.create"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.promptTemplates.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.promptTemplates.create"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.creditLedger.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.providers.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.providers.create"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Patch && route.operation_id == "generations.providers.update"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.providerModels.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.providerModels.create"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.attempts.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "generations.events.management.list"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.sync"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.webhooks.receive"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.moderate"));
+    assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "generations.publish"));
     assert!(routes.iter().any(|route| route.method == HttpMethod::Get && route.operation_id == "rights.policies.management.list"));
     assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "rights.policies.create"));
     assert!(routes.iter().any(|route| route.method == HttpMethod::Post && route.operation_id == "rights.policies.territories.create"));
@@ -44,7 +54,7 @@ fn music_backend_route_manifest_exposes_sdkwork_materialization_metadata() {
     assert_eq!(manifest.sdk_family, "sdkwork-music-backend-sdk");
     assert_eq!(manifest.prefix, "/backend/v3/api");
     assert_eq!(manifest.auth_mode, "dual-token");
-    assert_eq!(manifest.routes.len(), 36);
+    assert_eq!(manifest.routes.len(), 45);
     assert!(manifest.routes.iter().all(|route| route.source_route_crate == manifest.package_name));
     assert!(manifest.routes.iter().all(|route| route.path.starts_with(manifest.prefix)));
 }

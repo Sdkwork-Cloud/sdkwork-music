@@ -38,7 +38,7 @@ export default defineConfig({
       },
       {
         find: "@sdkwork/core-pc-react",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-core/sdkwork-core-pc-react/dist/index.js", import.meta.url)),
+        replacement: fileURLToPath(new URL("./tests/shims/sdkwork-core-pc-react.ts", import.meta.url)),
       },
       {
         find: "@sdkwork/audio-pc-react",

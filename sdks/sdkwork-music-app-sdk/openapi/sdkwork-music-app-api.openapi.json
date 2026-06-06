@@ -2416,13 +2416,13 @@
         "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
       }
     },
-    "/app/v3/api/music/ai/style_presets": {
+    "/app/v3/api/music/generations/style_presets": {
       "get": {
         "tags": [
           "music"
         ],
-        "summary": "Music ai.stylePresets.list",
-        "operationId": "ai.stylePresets.list",
+        "summary": "Music generations.stylePresets.list",
+        "operationId": "generations.stylePresets.list",
         "parameters": [
           {
             "name": "status",
@@ -2498,8 +2498,8 @@
         "x-sdkwork-owner": "sdkwork-music",
         "x-sdkwork-api-authority": "sdkwork-music-app-api",
         "x-sdkwork-domain": "music",
-        "x-sdkwork-resource": "ai.stylePresets",
-        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-resource": "generations.stylePresets",
+        "x-sdkwork-permission": "music.generations.read",
         "x-sdkwork-public": false,
         "x-sdkwork-tenant-scope": "user",
         "x-sdkwork-data-scope": "tenant",
@@ -2508,13 +2508,13 @@
         "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
       }
     },
-    "/app/v3/api/music/ai/prompt_templates": {
+    "/app/v3/api/music/generations/prompt_templates": {
       "get": {
         "tags": [
           "music"
         ],
-        "summary": "Music ai.promptTemplates.list",
-        "operationId": "ai.promptTemplates.list",
+        "summary": "Music generations.promptTemplates.list",
+        "operationId": "generations.promptTemplates.list",
         "parameters": [
           {
             "name": "status",
@@ -2590,8 +2590,8 @@
         "x-sdkwork-owner": "sdkwork-music",
         "x-sdkwork-api-authority": "sdkwork-music-app-api",
         "x-sdkwork-domain": "music",
-        "x-sdkwork-resource": "ai.promptTemplates",
-        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-resource": "generations.promptTemplates",
+        "x-sdkwork-permission": "music.generations.read",
         "x-sdkwork-public": false,
         "x-sdkwork-tenant-scope": "user",
         "x-sdkwork-data-scope": "tenant",
@@ -2600,13 +2600,206 @@
         "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
       }
     },
-    "/app/v3/api/music/ai/generation/tasks": {
+    "/app/v3/api/music/generations/providers": {
       "get": {
         "tags": [
           "music"
         ],
-        "summary": "Music ai.generation.tasks.list",
-        "operationId": "ai.generation.tasks.list",
+        "summary": "Music generations.providers.list",
+        "operationId": "generations.providers.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiGenerationProvider"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "generations.providers",
+        "x-sdkwork-permission": "music.generations.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/generations/provider_models": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music generations.providerModels.list",
+        "operationId": "generations.providerModels.list",
+        "parameters": [
+          {
+            "name": "provider_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiGenerationProviderModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "generations.providerModels",
+        "x-sdkwork-permission": "music.generations.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/generations": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music generations.list",
+        "operationId": "generations.list",
         "parameters": [
           {
             "name": "status",
@@ -2682,8 +2875,8 @@
         "x-sdkwork-owner": "sdkwork-music",
         "x-sdkwork-api-authority": "sdkwork-music-app-api",
         "x-sdkwork-domain": "music",
-        "x-sdkwork-resource": "ai.generation.tasks",
-        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-resource": "generations",
+        "x-sdkwork-permission": "music.generations.read",
         "x-sdkwork-public": false,
         "x-sdkwork-tenant-scope": "user",
         "x-sdkwork-data-scope": "tenant",
@@ -2695,8 +2888,8 @@
         "tags": [
           "music"
         ],
-        "summary": "Music ai.generation.tasks.create",
-        "operationId": "ai.generation.tasks.create",
+        "summary": "Music generations.create",
+        "operationId": "generations.create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2759,8 +2952,8 @@
         "x-sdkwork-owner": "sdkwork-music",
         "x-sdkwork-api-authority": "sdkwork-music-app-api",
         "x-sdkwork-domain": "music",
-        "x-sdkwork-resource": "ai.generation.tasks",
-        "x-sdkwork-permission": "music.aiGeneration.create",
+        "x-sdkwork-resource": "generations",
+        "x-sdkwork-permission": "music.generations.create",
         "x-sdkwork-public": false,
         "x-sdkwork-tenant-scope": "user",
         "x-sdkwork-data-scope": "tenant",
@@ -2769,16 +2962,16 @@
         "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
       }
     },
-    "/app/v3/api/music/ai/generation/tasks/{taskId}": {
+    "/app/v3/api/music/generations/{generationId}": {
       "get": {
         "tags": [
           "music"
         ],
-        "summary": "Music ai.generation.tasks.retrieve",
-        "operationId": "ai.generation.tasks.retrieve",
+        "summary": "Music generations.retrieve",
+        "operationId": "generations.retrieve",
         "parameters": [
           {
-            "name": "taskId",
+            "name": "generationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2839,8 +3032,283 @@
         "x-sdkwork-owner": "sdkwork-music",
         "x-sdkwork-api-authority": "sdkwork-music-app-api",
         "x-sdkwork-domain": "music",
-        "x-sdkwork-resource": "ai.generation.tasks",
-        "x-sdkwork-permission": "music.aiGeneration.read",
+        "x-sdkwork-resource": "generations",
+        "x-sdkwork-permission": "music.generations.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/generations/{generationId}/events": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music generations.events.list",
+        "operationId": "generations.events.list",
+        "parameters": [
+          {
+            "name": "generationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiGenerationProviderEvent"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "generations.events",
+        "x-sdkwork-permission": "music.generations.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/generations/notifications": {
+      "get": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music generations.notifications.list",
+        "operationId": "generations.notifications.list",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MusicAiGenerationNotification"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "generations.notifications",
+        "x-sdkwork-permission": "music.generations.notifications.read",
+        "x-sdkwork-public": false,
+        "x-sdkwork-tenant-scope": "user",
+        "x-sdkwork-data-scope": "tenant",
+        "x-sdkwork-idempotent": false,
+        "x-sdkwork-source": "rust-route-manifest",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-music-app-api"
+      }
+    },
+    "/app/v3/api/music/generations/notifications/{notificationId}": {
+      "patch": {
+        "tags": [
+          "music"
+        ],
+        "summary": "Music generations.notifications.update",
+        "operationId": "generations.notifications.update",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusicAiGenerationNotificationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicAiGenerationNotification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Problem detail",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "x-sdkwork-owner": "sdkwork-music",
+        "x-sdkwork-api-authority": "sdkwork-music-app-api",
+        "x-sdkwork-domain": "music",
+        "x-sdkwork-resource": "generations.notifications",
+        "x-sdkwork-permission": "music.generations.notifications.write",
         "x-sdkwork-public": false,
         "x-sdkwork-tenant-scope": "user",
         "x-sdkwork-data-scope": "tenant",
@@ -4232,6 +4700,237 @@
           }
         }
       },
+      "MusicAiProviderInvocationMode": {
+        "type": "string",
+        "enum": [
+          "sync",
+          "async_task",
+          "webhook",
+          "hybrid"
+        ]
+      },
+      "MusicAiGenerationProvider": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "providerCode",
+          "displayName",
+          "providerFamily",
+          "capability",
+          "invocationMode",
+          "clawRouterProviderCode",
+          "clawRouterEndpointKey",
+          "clawRouterStandardPath",
+          "supportsPolling",
+          "supportsWebhook",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "providerFamily": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "capability": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "invocationMode": {
+            "$ref": "#/components/schemas/MusicAiProviderInvocationMode"
+          },
+          "clawRouterProviderCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "clawRouterEndpointKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "clawRouterStandardPath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "supportsPolling": {
+            "type": "boolean"
+          },
+          "supportsWebhook": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "configSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicAiGenerationProviderModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "providerId",
+          "providerCode",
+          "modelName",
+          "displayName",
+          "capability",
+          "minDurationSeconds",
+          "maxDurationSeconds",
+          "maxVariantCount",
+          "supportedFormats",
+          "pricingUnit",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "capability": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "minDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxVariantCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "supportedFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "maxItems": 16
+          },
+          "supportedStyleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 64
+          },
+          "pricingUnit": {
+            "type": "string",
+            "enum": [
+              "generation",
+              "second",
+              "credit",
+              "token",
+              "provider_native"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "MusicAiGenerationTask": {
         "type": "object",
         "additionalProperties": false,
@@ -4241,8 +4940,10 @@
           "userId",
           "prompt",
           "styleTags",
-          "modelProvider",
-          "modelName",
+          "generationMode",
+          "providerCode",
+          "providerModel",
+          "providerInvocationMode",
           "status",
           "moderationStatus"
         ],
@@ -4285,14 +4986,52 @@
             },
             "maxItems": 32
           },
-          "modelProvider": {
+          "generationMode": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "providerCode": {
             "type": "string",
             "minLength": 1,
             "maxLength": 64
           },
-          "modelName": {
+          "providerModel": {
             "type": "string",
             "minLength": 1,
+            "maxLength": 128
+          },
+          "providerInvocationMode": {
+            "$ref": "#/components/schemas/MusicAiProviderInvocationMode"
+          },
+          "providerTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "externalTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "providerStatus": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "providerOutputCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "modelProvider": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
             "maxLength": 128
           },
           "reference": {
@@ -4303,6 +5042,15 @@
             "minLength": 1,
             "maxLength": 512,
             "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          },
+          "requestedDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "variantCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
           },
           "status": {
             "$ref": "#/components/schemas/MusicAiGenerationTaskStatus"
@@ -4322,11 +5070,33 @@
             },
             "maxItems": 16
           },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MusicAiGenerationProviderAttempt"
+            },
+            "maxItems": 32
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MusicAiGenerationProviderEvent"
+            },
+            "maxItems": 100
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastProviderSyncAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nextPollAt": {
             "type": "string",
             "format": "date-time"
           },
@@ -4340,11 +5110,268 @@
         "type": "string",
         "enum": [
           "queued",
+          "routing",
+          "submitted",
           "running",
+          "waiting_webhook",
           "succeeded",
           "failed",
-          "cancelled"
+          "cancelled",
+          "expired"
         ]
+      },
+      "MusicAiGenerationProviderAttempt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "taskId",
+          "providerId",
+          "providerCode",
+          "modelName",
+          "invocationMode",
+          "clawRouterEndpointKey",
+          "clawRouterStandardPath",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "invocationMode": {
+            "$ref": "#/components/schemas/MusicAiProviderInvocationMode"
+          },
+          "clawRouterEndpointKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "clawRouterStandardPath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "clawRouterRequestId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "externalTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "status": {
+            "$ref": "#/components/schemas/MusicAiGenerationTaskStatus"
+          },
+          "providerStatus": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "requestSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "responseSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicAiGenerationProviderEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "taskId",
+          "providerCode",
+          "eventType",
+          "source",
+          "providerStatus",
+          "statusBefore",
+          "statusAfter",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "externalTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "externalEventId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "eventType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "start",
+              "poll",
+              "webhook",
+              "manual_sync",
+              "provider_callback"
+            ]
+          },
+          "providerStatus": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "statusBefore": {
+            "$ref": "#/components/schemas/MusicAiGenerationTaskStatus"
+          },
+          "statusAfter": {
+            "$ref": "#/components/schemas/MusicAiGenerationTaskStatus"
+          },
+          "payloadHash": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "payloadSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hasOutputs": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MusicAiGenerationNotification": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tenantId",
+          "userId",
+          "taskId",
+          "notificationType",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tenantId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "userId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "notificationType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "unread",
+              "read",
+              "archived"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "readAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "MusicAiGenerationVariant": {
         "type": "object",
@@ -5437,14 +6464,196 @@
           }
         }
       },
+      "MusicAiGenerationProviderCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "providerCode",
+          "displayName",
+          "providerFamily",
+          "capability",
+          "invocationMode",
+          "clawRouterProviderCode",
+          "clawRouterEndpointKey",
+          "clawRouterStandardPath",
+          "supportsPolling",
+          "supportsWebhook",
+          "status"
+        ],
+        "properties": {
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "providerFamily": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "capability": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "invocationMode": {
+            "$ref": "#/components/schemas/MusicAiProviderInvocationMode"
+          },
+          "clawRouterProviderCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "clawRouterEndpointKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "clawRouterStandardPath": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "supportsPolling": {
+            "type": "boolean"
+          },
+          "supportsWebhook": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          },
+          "configSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "MusicAiGenerationProviderModelCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "providerId",
+          "providerCode",
+          "modelName",
+          "displayName",
+          "capability",
+          "minDurationSeconds",
+          "maxDurationSeconds",
+          "maxVariantCount",
+          "supportedFormats",
+          "pricingUnit",
+          "status"
+        ],
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "providerCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "capability": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "minDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxVariantCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "supportedFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "maxItems": 16
+          },
+          "supportedStyleTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 64
+          },
+          "pricingUnit": {
+            "type": "string",
+            "enum": [
+              "generation",
+              "second",
+              "credit",
+              "token",
+              "provider_native"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ]
+          }
+        }
+      },
       "MusicAiGenerationTaskCommand": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "prompt",
           "styleTags",
-          "modelProvider",
-          "modelName"
+          "providerCode",
+          "providerModel"
         ],
         "properties": {
           "projectId": {
@@ -5470,14 +6679,33 @@
             },
             "maxItems": 32
           },
-          "modelProvider": {
+          "generationMode": {
+            "type": "string",
+            "enum": [
+              "text_to_music",
+              "lyrics_to_music",
+              "reference_to_music",
+              "stem_generation",
+              "arrangement",
+              "voice_to_song"
+            ]
+          },
+          "providerCode": {
             "type": "string",
             "minLength": 1,
             "maxLength": 64
           },
-          "modelName": {
+          "providerModel": {
             "type": "string",
             "minLength": 1,
+            "maxLength": 128
+          },
+          "modelProvider": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "modelName": {
+            "type": "string",
             "maxLength": 128
           },
           "reference": {
@@ -5488,6 +6716,134 @@
             "minLength": 1,
             "maxLength": 512,
             "pattern": "^drive://spaces/[^/]+/nodes/[^/]+$"
+          },
+          "requestedDurationSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "variantCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "negativePrompt": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "providerOptions": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "MusicAiGenerationTaskSyncCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "poll",
+              "manual_sync",
+              "webhook_replay"
+            ]
+          },
+          "providerStatus": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "externalTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "payloadSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "MusicAiGenerationProviderEventCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "eventType",
+          "source",
+          "providerStatus",
+          "payloadHash",
+          "payloadSnapshot"
+        ],
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "externalTaskId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "externalEventId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "eventType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "poll",
+              "webhook",
+              "manual_sync",
+              "provider_callback"
+            ]
+          },
+          "providerStatus": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "payloadHash": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "payloadSnapshot": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hasOutputs": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MusicAiGenerationNotificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "read",
+              "archived"
+            ]
           }
         }
       },
