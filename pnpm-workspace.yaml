@@ -6,6 +6,7 @@ packages:
   - "sdks/sdkwork-music-backend-sdk/*/generated/server-openapi"
   - "../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-core/sdkwork-core-pc-react"
   - "../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-ui/sdkwork-ui-pc-react"
+  - "../../javasource/spring-ai-plus/spring-ai-plus-business/spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript"
   - "../../javasource/spring-ai-plus/sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
 
 catalog:
