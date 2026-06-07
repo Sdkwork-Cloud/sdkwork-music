@@ -4,8 +4,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 const musicRoot = path.resolve(import.meta.dirname, "..");
-const corePcReactRoot =
-  "D:/javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-core/sdkwork-core-pc-react";
+const corePcReactRoot = path.resolve(musicRoot, "../sdkwork-core/sdkwork-core-pc-react");
 
 function collectFiles(root) {
   const result = [];

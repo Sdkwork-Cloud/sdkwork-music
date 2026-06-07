@@ -4,7 +4,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 const musicRoot = path.resolve(import.meta.dirname, "..");
-const appbaseRoot = "D:/javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-appbase";
+const appbaseRoot = path.resolve(musicRoot, "..", "sdkwork-appbase");
 
 function readJson(relativePath) {
   return JSON.parse(readFileSync(path.join(musicRoot, relativePath), "utf8"));
@@ -45,6 +45,32 @@ function listFiles(root) {
   }
   return result;
 }
+
+function assertNoRetiredGenericSdkDebt(relativePath) {
+  const retiredFragments = [
+    ["@sdkwork/", "app-sdk"].join(""),
+    ["@sdkwork/", "backend-sdk"].join(""),
+    ["sdkwork-", "app-sdk"].join(""),
+    ["sdkwork-", "backend-sdk"].join(""),
+    ["spring-ai-plus-", "app-api"].join(""),
+    ["spring-ai-plus-", "backend-api"].join(""),
+  ];
+  assert.doesNotMatch(
+    readText(musicRoot, relativePath),
+    new RegExp(retiredFragments.join("|"), "u"),
+    `${relativePath} must not reference the retired generic Spring app/backend SDK family.`,
+  );
+}
+
+test("sdkwork-music does not depend on the retired generic app or backend SDK packages", () => {
+  for (const relativePath of [
+    "pnpm-workspace.yaml",
+    "vitest.config.ts",
+    "pnpm-lock.yaml",
+  ]) {
+    assertNoRetiredGenericSdkDebt(relativePath);
+  }
+});
 
 test("sdkwork-music owns migrated audio and media UI packages", () => {
   assertExists("packages/pc-react/content/sdkwork-audio-pc-react/package.json");
@@ -236,7 +262,7 @@ test("sdkwork-music documents SDK workspace and family generation contracts", ()
   const workspaceReadme = readText(musicRoot, "sdks/README.md");
   assert.match(workspaceReadme, /sdkwork-music-app-sdk/);
   assert.match(workspaceReadme, /sdkwork-music-backend-sdk/);
-  assert.match(workspaceReadme, /D:\\javasource\\spring-ai-plus\\sdk\\sdkwork-sdk-generator\\bin\\sdkgen\.js/);
+  assert.match(workspaceReadme, /../sdkwork-sdk-generator\\bin\\sdkgen\.js/);
 
   const appReadme = readText(musicRoot, "sdks/sdkwork-music-app-sdk/README.md");
   assert.match(appReadme, /SDK family: `sdkwork-music-app-sdk`/);

@@ -59,7 +59,7 @@
     },
     {
       "path": "src/api/music.ts",
-      "sha256": "69ac5424bd0a2a18ad30bc2e324b99fa7df2d0e5830e431ed84dbe745921ba6e"
+      "sha256": "138a030e0545008d1a8c7910a7d010d54432086a6a6933189d4b638faa763c41"
     },
     {
       "path": "src/api/paths.ts",
@@ -167,11 +167,11 @@
     },
     {
       "path": "src/types/music-ai-generation-provider-attempt.ts",
-      "sha256": "f3d1804de0c7fd7b2668577cbbc43a62f5abf78379c06f55d1317de3f6b3061b"
+      "sha256": "d6e84ac4efbddfea86c9ce0b87dfe4c243aa15c25f447cbb2bda9b27dc5d534f"
     },
     {
       "path": "src/types/music-ai-generation-provider-command.ts",
-      "sha256": "d6e5976b785f13677a98ef52d418d49821ee8f0b7b863aff44ad7ab776498660"
+      "sha256": "07609a2b7f06e24e6c54ba62bc4ef8db7217d1ef5ef8a499796ccb750d765c38"
     },
     {
       "path": "src/types/music-ai-generation-provider-event-command.ts",
@@ -191,7 +191,7 @@
     },
     {
       "path": "src/types/music-ai-generation-provider.ts",
-      "sha256": "3e560525d155feeb976bbaf6684ec38f5f51054d7a1862229a9bf50fa732817b"
+      "sha256": "efe04e828ffbd0cb34ec9df3189be4e756f1f9b0af60671b7286ff3242a1e6dc"
     },
     {
       "path": "src/types/music-ai-generation-publish-command.ts",

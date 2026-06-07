@@ -21,16 +21,16 @@
         "packages/pc-react/content/sdkwork-audio-pc-react/src/index.ts"
       ],
       "@sdkwork/core-pc-react": [
-        "../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-core/sdkwork-core-pc-react/dist/index.d.ts"
+        "../sdkwork-core/sdkwork-core-pc-react/dist/index.d.ts"
       ],
       "@sdkwork/media-pc-react": [
         "packages/pc-react/content/sdkwork-media-pc-react/src/index.ts"
       ],
       "@sdkwork/ui-pc-react": [
-        "../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-ui/sdkwork-ui-pc-react/dist/index.d.ts"
+        "../sdkwork-ui/sdkwork-ui-pc-react/dist/index.d.ts"
       ],
       "@sdkwork/ui-pc-react/theme": [
-        "../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-ui/sdkwork-ui-pc-react/dist/theme/index.d.ts"
+        "../sdkwork-ui/sdkwork-ui-pc-react/dist/theme/index.d.ts"
       ]
     },
     "resolveJsonModule": true,

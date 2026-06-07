@@ -30,23 +30,19 @@ export default defineConfig({
       },
       {
         find: "@sdkwork/ui-pc-react/theme",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-ui/sdkwork-ui-pc-react/dist/theme.js", import.meta.url)),
+        replacement: fileURLToPath(new URL("../sdkwork-ui/sdkwork-ui-pc-react/dist/theme.js", import.meta.url)),
       },
       {
         find: "@sdkwork/ui-pc-react",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-ui/sdkwork-ui-pc-react/dist/index.js", import.meta.url)),
+        replacement: fileURLToPath(new URL("../sdkwork-ui/sdkwork-ui-pc-react/dist/index.js", import.meta.url)),
       },
       {
         find: "@sdkwork/core-pc-react",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/spring-ai-plus-business/apps/sdkwork-core/sdkwork-core-pc-react/dist/index.js", import.meta.url)),
-      },
-      {
-        find: "@sdkwork/app-sdk",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/spring-ai-plus-business/spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript/dist/index.js", import.meta.url)),
+        replacement: fileURLToPath(new URL("../sdkwork-core/sdkwork-core-pc-react/dist/index.js", import.meta.url)),
       },
       {
         find: "@sdkwork/sdk-common",
-        replacement: fileURLToPath(new URL("../../javasource/spring-ai-plus/sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript/dist/index.js", import.meta.url)),
+        replacement: fileURLToPath(new URL("../sdkwork-sdk-commons/sdkwork-sdk-common-typescript/dist/index.js", import.meta.url)),
       },
       {
         find: "@sdkwork/audio-pc-react",

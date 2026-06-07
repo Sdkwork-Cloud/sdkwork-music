@@ -350,6 +350,7 @@ pub struct NewMusicAiGenerationProviderAttempt {
     pub invocation_mode: String,
     pub claw_router_endpoint_key: String,
     pub claw_router_standard_path: String,
+    pub claw_router_operation_id: String,
     pub claw_router_request_id: Option<String>,
     pub external_task_id: Option<String>,
     pub status: String,
@@ -447,6 +448,16 @@ pub struct ArchiveMusicGeneratedArtifactsCommand {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ArchivedMusicGeneratedArtifacts {
     pub variants: Vec<NewMusicAiGenerationVariant>,
+    pub media_resources: Vec<ArchivedMusicGeneratedMediaResource>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ArchivedMusicGeneratedMediaResource {
+    pub artifact_id: Option<String>,
+    pub title: String,
+    pub kind: String,
+    pub drive_uri: String,
+    pub media_resource_snapshot: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -505,10 +516,12 @@ where
         }
 
         let actor = archive_actor(command.user_id.as_deref(), command.anonymous_id.as_deref())?;
-        let mut variants = Vec::with_capacity(command.artifacts.len());
+        let mut variants = Vec::new();
+        let mut media_resources = Vec::with_capacity(command.artifacts.len());
         for (index, artifact) in command.artifacts.iter().enumerate() {
             let ordinal = index + 1;
             let upload_item_id = format!("music-ai-{task_id}-{ordinal:04}");
+            let kind = media_kind_for_artifact(artifact);
             let mut upload_item = self
                 .drive_uploader
                 .prepare_upload(PrepareUploaderUploadCommand {
@@ -518,14 +531,11 @@ where
                     organization_id: None,
                     actor: actor.clone(),
                     app_id: "sdkwork-music".to_string(),
-                    app_resource_type: "music_ai_generation_variant".to_string(),
+                    app_resource_type: app_resource_type_for_media_kind(&kind).to_string(),
                     app_resource_id: format!("{task_id}-{ordinal:04}"),
                     scene: Some("music_ai_generation".to_string()),
                     source: Some("ai_generated".to_string()),
-                    upload_profile_code: upload_profile_for_kind(
-                        &artifact.kind,
-                        &artifact.content_type,
-                    ),
+                    upload_profile_code: upload_profile_for_kind(&kind, &artifact.content_type),
                     file_fingerprint: artifact_fingerprint(artifact, &upload_item_id)?,
                     original_file_name: require_archive_text(&artifact.file_name, "file_name")?,
                     content_type: require_archive_text(&artifact.content_type, "content_type")?,
@@ -574,31 +584,45 @@ where
                 "drive://spaces/{}/nodes/{}",
                 upload_item.space_id, upload_item.node_id
             );
-            variants.push(NewMusicAiGenerationVariant {
-                id: format!("variant_{task_id}_{ordinal:04}"),
-                tenant_id: tenant_id.clone(),
-                task_id: task_id.clone(),
-                audio_asset_id: None,
-                title: require_archive_text(&artifact.title, "title")?,
+            let title = require_archive_text(&artifact.title, "title")?;
+            let media_resource_snapshot = generated_artifact_snapshot(
+                artifact,
+                &upload_item,
+                &drive_uri,
+                &provider_code,
+                &provider_model,
+                command.provider_task_id.as_deref(),
+                ordinal,
+                &task_id,
+                stored_object.as_ref(),
+            )?;
+            media_resources.push(ArchivedMusicGeneratedMediaResource {
+                artifact_id: optional_archive_text(artifact.id.as_deref()),
+                title: title.clone(),
+                kind: kind.clone(),
                 drive_uri: drive_uri.clone(),
-                media_resource_snapshot: Some(generated_artifact_snapshot(
-                    artifact,
-                    &upload_item,
-                    &drive_uri,
-                    &provider_code,
-                    &provider_model,
-                    command.provider_task_id.as_deref(),
-                    ordinal,
-                    &task_id,
-                    stored_object.as_ref(),
-                )?),
-                duration_seconds: artifact.duration_seconds.max(0),
-                moderation_status: "approved".to_string(),
-                now: now.clone(),
+                media_resource_snapshot: media_resource_snapshot.clone(),
             });
+            if kind == "audio" {
+                variants.push(NewMusicAiGenerationVariant {
+                    id: format!("variant_{task_id}_{ordinal:04}"),
+                    tenant_id: tenant_id.clone(),
+                    task_id: task_id.clone(),
+                    audio_asset_id: None,
+                    title,
+                    drive_uri,
+                    media_resource_snapshot: Some(media_resource_snapshot),
+                    duration_seconds: artifact.duration_seconds.max(0),
+                    moderation_status: "approved".to_string(),
+                    now: now.clone(),
+                });
+            }
         }
 
-        Ok(ArchivedMusicGeneratedArtifacts { variants })
+        Ok(ArchivedMusicGeneratedArtifacts {
+            variants,
+            media_resources,
+        })
     }
 
     async fn store_generated_artifact_object(
@@ -1645,10 +1669,10 @@ impl SqliteMusicStore {
             INSERT INTO music_ai_generation_provider_attempt
                 (id, tenant_id, task_id, provider_id, provider_code, model_name,
                  invocation_mode, claw_router_endpoint_key, claw_router_standard_path,
-                 claw_router_request_id, external_task_id, status, provider_status,
+                 claw_router_operation_id, claw_router_request_id, external_task_id, status, provider_status,
                  request_snapshot, response_snapshot, submitted_at, created_at, updated_at)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&input.id)
@@ -1660,6 +1684,7 @@ impl SqliteMusicStore {
         .bind(&input.invocation_mode)
         .bind(&input.claw_router_endpoint_key)
         .bind(&input.claw_router_standard_path)
+        .bind(&input.claw_router_operation_id)
         .bind(&input.claw_router_request_id)
         .bind(&input.external_task_id)
         .bind(&input.status)
@@ -2837,6 +2862,13 @@ fn require_archive_text(value: &str, field_name: &str) -> Result<String, DrivePr
     Ok(value.to_string())
 }
 
+fn optional_archive_text(value: Option<&str>) -> Option<String> {
+    value
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
+}
+
 fn require_archive_identifier(value: &str, field_name: &str) -> Result<String, DriveProductError> {
     let value = require_archive_text(value, field_name)?;
     if value.len() > 255
@@ -2877,14 +2909,36 @@ fn archive_operator_id(actor: &UploaderActor) -> String {
     }
 }
 
+fn media_kind_for_artifact(artifact: &MusicGeneratedProviderArtifact) -> String {
+    let normalized_kind = artifact.kind.trim().to_ascii_lowercase();
+    let content_type = artifact.content_type.trim().to_ascii_lowercase();
+    match normalized_kind.as_str() {
+        "image" | "video" | "audio" | "document" | "archive" => normalized_kind,
+        "music" | "voice" => "audio".to_string(),
+        _ if content_type.starts_with("image/") => "image".to_string(),
+        _ if content_type.starts_with("video/") => "video".to_string(),
+        _ if content_type.starts_with("audio/") => "audio".to_string(),
+        _ => "other".to_string(),
+    }
+}
+
+fn app_resource_type_for_media_kind(kind: &str) -> &'static str {
+    if kind == "audio" {
+        "music_ai_generation_variant"
+    } else {
+        "music_ai_generation_artifact"
+    }
+}
+
 fn upload_profile_for_kind(kind: &str, content_type: &str) -> String {
     let normalized_kind = kind.trim().to_ascii_lowercase();
+    let normalized_content_type = content_type.trim().to_ascii_lowercase();
     match normalized_kind.as_str() {
         "image" | "video" | "audio" | "document" | "archive" | "text" => normalized_kind,
         "music" | "voice" => "audio".to_string(),
-        _ if content_type.trim().to_ascii_lowercase().starts_with("image/") => "image".to_string(),
-        _ if content_type.trim().to_ascii_lowercase().starts_with("video/") => "video".to_string(),
-        _ if content_type.trim().to_ascii_lowercase().starts_with("audio/") => "audio".to_string(),
+        _ if normalized_content_type.starts_with("image/") => "image".to_string(),
+        _ if normalized_content_type.starts_with("video/") => "video".to_string(),
+        _ if normalized_content_type.starts_with("audio/") => "audio".to_string(),
         _ => "generic".to_string(),
     }
 }
@@ -2963,7 +3017,7 @@ fn generated_artifact_snapshot(
     task_id: &str,
     stored_object: Option<&StoredMusicGeneratedArtifactObject>,
 ) -> Result<String, DriveProductError> {
-    let kind = artifact.kind.trim().to_ascii_lowercase();
+    let kind = media_kind_for_artifact(artifact);
     let mut root = Map::new();
     root.insert("kind".to_string(), Value::String(kind));
     root.insert("source".to_string(), Value::String("drive".to_string()));

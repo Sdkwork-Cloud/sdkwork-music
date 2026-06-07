@@ -23,7 +23,36 @@
     ]
   },
   "contracts": {
-    "sdkDependencies": [],
+    "sdkDependencies": [
+      {
+        "workspace": "clawrouter-open-sdk",
+        "role": "ai-music-generation-provider-capability",
+        "required": true,
+        "dependencyMode": "consumer-sdk",
+        "apiPrefix": "/v1",
+        "apiAuthority": "sdkwork-claw-router.ai",
+        "generatedTransportImportPolicy": "forbidden",
+        "operations": [
+          "sunoCreateMusicGeneration",
+          "sunoRetrieveMusicGeneration"
+        ],
+        "paths": [
+          "/suno/v1/music/generations",
+          "/suno/v1/music/generations/{task_id}"
+        ],
+        "packageByLanguage": {
+          "typescript": "@sdkwork/clawrouter-open-sdk",
+          "flutter": "clawrouter_open_sdk",
+          "rust": "clawrouter-open-sdk",
+          "java": "com.sdkwork.clawrouter:clawrouter-open-sdk",
+          "csharp": "Sdkwork.ClawRouter.Open.Sdk",
+          "swift": "ClawRouterOpenSdk",
+          "kotlin": "com.sdkwork.clawrouter:clawrouter-open-sdk",
+          "go": "github.com/sdkwork/clawrouter-open-sdk",
+          "python": "sdkwork-clawrouter-open-sdk"
+        }
+      }
+    ],
     "publicExports": [
       "."
     ],

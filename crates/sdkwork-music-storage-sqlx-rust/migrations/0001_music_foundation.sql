@@ -467,6 +467,7 @@ CREATE TABLE music_ai_generation_provider_attempt (
   invocation_mode TEXT NOT NULL,
   claw_router_endpoint_key TEXT NOT NULL,
   claw_router_standard_path TEXT NOT NULL,
+  claw_router_operation_id TEXT NOT NULL,
   claw_router_request_id TEXT,
   external_task_id TEXT,
   status TEXT NOT NULL,

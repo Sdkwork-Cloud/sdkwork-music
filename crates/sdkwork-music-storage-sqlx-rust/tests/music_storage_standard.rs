@@ -122,6 +122,9 @@ fn music_storage_manifest_declares_complete_music_tables_and_migrations() {
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_track"));
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider"));
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_attempt"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("claw_router_operation_id TEXT NOT NULL"));
     assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_event"));
     assert!(manifest.migration_plan[0]
         .sql
@@ -166,25 +169,27 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         .connect("sqlite::memory:")
         .await
         .expect("sqlite pool");
-    let store = SqliteMusicStore::new(pool);
+    let store = SqliteMusicStore::new(pool.clone());
     store.migrate().await.expect("music migration");
 
     store
         .upsert_ai_generation_provider(NewMusicAiGenerationProvider {
             id: "provider_1".to_owned(),
             tenant_id: "tenant_1".to_owned(),
-            provider_code: "stable-audio".to_owned(),
-            display_name: "Stable Audio".to_owned(),
+            provider_code: "suno".to_owned(),
+            display_name: "Suno Music".to_owned(),
             provider_family: "claw-router".to_owned(),
             capability: "text_to_music".to_owned(),
             invocation_mode: "hybrid".to_owned(),
-            claw_router_provider_code: "stability-ai".to_owned(),
-            claw_router_endpoint_key: "audio.text_to_music".to_owned(),
-            claw_router_standard_path: "/v1/generation/audio".to_owned(),
+            claw_router_provider_code: "suno".to_owned(),
+            claw_router_endpoint_key: "suno.music.generations.create".to_owned(),
+            claw_router_standard_path: "/suno/v1/music/generations".to_owned(),
             supports_polling: true,
             supports_webhook: true,
             status: "active".to_owned(),
-            config_snapshot: Some(r#"{"resource":"music_output_second"}"#.to_owned()),
+            config_snapshot: Some(
+                r#"{"sdkFamily":"clawrouter-open-sdk","apiAuthority":"sdkwork-claw-router.ai","apiPrefix":"/v1","createOperationId":"sunoCreateMusicGeneration","retrieveOperationId":"sunoRetrieveMusicGeneration","resource":"music_generation_task"}"#.to_owned(),
+            ),
             now: "2026-06-06T03:00:00Z".to_owned(),
         })
         .await
@@ -194,9 +199,9 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             id: "provider_model_1".to_owned(),
             tenant_id: "tenant_1".to_owned(),
             provider_id: "provider_1".to_owned(),
-            provider_code: "stable-audio".to_owned(),
-            model_name: "stable-audio-3".to_owned(),
-            display_name: "Stable Audio 3".to_owned(),
+            provider_code: "suno".to_owned(),
+            model_name: "suno-v1".to_owned(),
+            display_name: "Suno v1".to_owned(),
             capability: "text_to_music".to_owned(),
             min_duration_seconds: 15,
             max_duration_seconds: 240,
@@ -229,8 +234,8 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             prompt: "professional synth pop hook with a clean vocal lead".to_owned(),
             lyrics_prompt: Some("write a chorus about sunrise in the city".to_owned()),
             style_tags: vec!["synth-pop".to_owned(), "vocal".to_owned()],
-            model_provider: "stable-audio".to_owned(),
-            model_name: "stable-audio-3".to_owned(),
+            model_provider: "suno".to_owned(),
+            model_name: "suno-v1".to_owned(),
             reference_drive_uri: None,
             now: "2026-06-06T03:03:00Z".to_owned(),
         })
@@ -242,11 +247,12 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "tenant_1".to_owned(),
             task_id: "task_provider".to_owned(),
             provider_id: "provider_1".to_owned(),
-            provider_code: "stable-audio".to_owned(),
-            model_name: "stable-audio-3".to_owned(),
+            provider_code: "suno".to_owned(),
+            model_name: "suno-v1".to_owned(),
             invocation_mode: "hybrid".to_owned(),
-            claw_router_endpoint_key: "audio.text_to_music".to_owned(),
-            claw_router_standard_path: "/v1/generation/audio".to_owned(),
+            claw_router_endpoint_key: "suno.music.generations.create".to_owned(),
+            claw_router_standard_path: "/suno/v1/music/generations".to_owned(),
+            claw_router_operation_id: "sunoCreateMusicGeneration".to_owned(),
             claw_router_request_id: Some("router_request_1".to_owned()),
             external_task_id: Some("external_task_1".to_owned()),
             status: "submitted".to_owned(),
@@ -257,6 +263,26 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         })
         .await
         .expect("create attempt");
+    let provider_binding: (String, String) = sqlx::query_as(
+        "SELECT claw_router_endpoint_key, claw_router_standard_path FROM music_ai_generation_provider WHERE id = ?",
+    )
+    .bind("provider_1")
+    .fetch_one(&pool)
+    .await
+    .expect("provider claw-router binding");
+    assert_eq!(provider_binding.0, "suno.music.generations.create");
+    assert_eq!(provider_binding.1, "/suno/v1/music/generations");
+
+    let attempt_binding: (String, String, String) = sqlx::query_as(
+        "SELECT claw_router_endpoint_key, claw_router_standard_path, claw_router_operation_id FROM music_ai_generation_provider_attempt WHERE id = ?",
+    )
+    .bind("attempt_1")
+    .fetch_one(&pool)
+    .await
+    .expect("attempt claw-router binding");
+    assert_eq!(attempt_binding.0, "suno.music.generations.create");
+    assert_eq!(attempt_binding.1, "/suno/v1/music/generations");
+    assert_eq!(attempt_binding.2, "sunoCreateMusicGeneration");
 
     let first_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
@@ -264,7 +290,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "tenant_1".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
-            provider_code: "stable-audio".to_owned(),
+            provider_code: "suno".to_owned(),
             external_task_id: Some("external_task_1".to_owned()),
             external_event_id: Some("evt_1".to_owned()),
             event_type: "task.status".to_owned(),
@@ -283,7 +309,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "tenant_1".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
-            provider_code: "stable-audio".to_owned(),
+            provider_code: "suno".to_owned(),
             external_task_id: Some("external_task_1".to_owned()),
             external_event_id: Some("evt_1".to_owned()),
             event_type: "task.status".to_owned(),
@@ -305,7 +331,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "tenant_1".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
-            provider_code: "stable-audio".to_owned(),
+            provider_code: "suno".to_owned(),
             external_task_id: Some("external_task_1".to_owned()),
             external_event_id: Some("evt_2".to_owned()),
             event_type: "task.completed".to_owned(),
@@ -326,7 +352,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "tenant_1".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
-            provider_code: "stable-audio".to_owned(),
+            provider_code: "suno".to_owned(),
             external_task_id: Some("external_task_1".to_owned()),
             external_event_id: Some("evt_3".to_owned()),
             event_type: "task.status".to_owned(),
@@ -346,7 +372,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         .await
         .expect("AI tasks");
     assert_eq!(tasks[0].status, "succeeded");
-    assert_eq!(tasks[0].provider_code.as_deref(), Some("stable-audio"));
+    assert_eq!(tasks[0].provider_code.as_deref(), Some("suno"));
     assert_eq!(tasks[0].external_task_id.as_deref(), Some("external_task_1"));
     assert_eq!(tasks[0].provider_output_count, 1);
 
@@ -946,7 +972,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
 }
 
 #[tokio::test]
-async fn generated_artifact_archive_uses_drive_ai_space_and_completes_multiple_variants() {
+async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_variants() {
     let pool = SqlitePoolOptions::new()
         .max_connections(1)
         .connect("sqlite::memory:")
@@ -1034,16 +1060,16 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_multiple_v
         .await
         .expect("archive generated artifacts to drive");
 
-    assert_eq!(archived.variants.len(), 2);
+    assert_eq!(archived.media_resources.len(), 2);
+    assert_eq!(archived.variants.len(), 1);
     assert!(archived
-        .variants
+        .media_resources
         .iter()
-        .all(|variant| variant.drive_uri.starts_with("drive://spaces/space-ai-generated-user-user-archive/nodes/node-")));
+        .all(|resource| resource.drive_uri.starts_with("drive://spaces/space-ai-generated-user-user-archive/nodes/node-")));
     let first_snapshot: serde_json::Value = serde_json::from_str(
-        archived.variants[0]
+        archived.media_resources[0]
             .media_resource_snapshot
-            .as_deref()
-            .expect("snapshot"),
+            .as_str(),
     )
     .expect("valid snapshot json");
     assert_eq!(first_snapshot["source"], "drive");
@@ -1061,6 +1087,28 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_multiple_v
     assert_eq!(first_snapshot["ai"]["provider"], "suno");
     assert_eq!(first_snapshot["ai"]["providerTaskId"], "provider_task_archive");
     assert_eq!(first_snapshot["metadata"]["seed"], 42);
+    let variant_snapshot: serde_json::Value = serde_json::from_str(
+        archived.variants[0]
+            .media_resource_snapshot
+            .as_deref()
+            .expect("variant snapshot"),
+    )
+    .expect("valid variant snapshot json");
+    assert_eq!(variant_snapshot["kind"], "audio");
+    assert_eq!(archived.variants[0].title, "Summer preview");
+
+    let upload_items = drive_store.upload_items();
+    assert_eq!(upload_items.len(), 2);
+    assert_eq!(
+        upload_items[0].app_resource_type,
+        "music_ai_generation_artifact"
+    );
+    assert_eq!(upload_items[0].upload_profile_code, "image");
+    assert_eq!(
+        upload_items[1].app_resource_type,
+        "music_ai_generation_variant"
+    );
+    assert_eq!(upload_items[1].upload_profile_code, "audio");
 
     let writes = object_store.put_requests();
     assert_eq!(writes.len(), 2);
@@ -1118,9 +1166,9 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_multiple_v
         .expect("AI tasks");
     assert_eq!(tasks.len(), 1);
     assert_eq!(tasks[0].status, "succeeded");
-    assert_eq!(tasks[0].variant_count, 2);
-    assert_eq!(tasks[0].approved_variant_count, 2);
-    assert_eq!(tasks[0].provider_output_count, 2);
+    assert_eq!(tasks[0].variant_count, 1);
+    assert_eq!(tasks[0].approved_variant_count, 1);
+    assert_eq!(tasks[0].provider_output_count, 1);
 }
 
 #[derive(Clone, Default)]
@@ -1143,6 +1191,16 @@ impl InMemoryDriveUploaderStore {
 
     fn completions(&self) -> Vec<CompleteDriveStoredUpload> {
         self.state.lock().expect("drive state").completions.clone()
+    }
+
+    fn upload_items(&self) -> Vec<DriveUploadItem> {
+        self.state
+            .lock()
+            .expect("drive state")
+            .items
+            .values()
+            .cloned()
+            .collect()
     }
 }
 

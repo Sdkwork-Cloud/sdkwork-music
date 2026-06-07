@@ -26,6 +26,7 @@ Thumbs.db
 # SDK generator transient reports
 **/.sdkwork/sdkwork-generator-changes.json
 **/.sdkwork/sdkwork-generator-report.json
+**/.sdkwork/manual-backups/
 
 # SDKWork local environment and runtime config overrides
 .env.local

@@ -6,9 +6,9 @@ import type { AlbumsManagementListResponse, ArtistsManagementListResponse, Audio
 
 export class MusicReleasesChannelsApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -26,10 +26,10 @@ export interface MusicReleasesListParams {
 export class MusicReleasesApi {
   private client: HttpClient;
   public readonly channels: MusicReleasesChannelsApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.channels = new MusicReleasesChannelsApi(client); 
+    this.channels = new MusicReleasesChannelsApi(client);
   }
 
 
@@ -52,9 +52,9 @@ export interface MusicModerationSignalsListParams {
 
 export class MusicModerationSignalsApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -73,19 +73,19 @@ export class MusicModerationSignalsApi {
 export class MusicModerationApi {
   private client: HttpClient;
   public readonly signals: MusicModerationSignalsApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.signals = new MusicModerationSignalsApi(client); 
+    this.signals = new MusicModerationSignalsApi(client);
   }
 
 }
 
 export class MusicRightsPoliciesTerritoriesApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -102,9 +102,9 @@ export interface MusicRightsPoliciesManagementListParams {
 
 export class MusicRightsPoliciesManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -122,11 +122,11 @@ export class MusicRightsPoliciesApi {
   private client: HttpClient;
   public readonly management: MusicRightsPoliciesManagementApi;
   public readonly territories: MusicRightsPoliciesTerritoriesApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
     this.management = new MusicRightsPoliciesManagementApi(client);
-    this.territories = new MusicRightsPoliciesTerritoriesApi(client); 
+    this.territories = new MusicRightsPoliciesTerritoriesApi(client);
   }
 
 
@@ -139,19 +139,19 @@ export class MusicRightsPoliciesApi {
 export class MusicRightsApi {
   private client: HttpClient;
   public readonly policies: MusicRightsPoliciesApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.policies = new MusicRightsPoliciesApi(client); 
+    this.policies = new MusicRightsPoliciesApi(client);
   }
 
 }
 
 export class MusicGenerationsWebhooksApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -170,9 +170,9 @@ export interface MusicGenerationsEventsManagementListParams {
 
 export class MusicGenerationsEventsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -191,10 +191,10 @@ export class MusicGenerationsEventsManagementApi {
 export class MusicGenerationsEventsApi {
   private client: HttpClient;
   public readonly management: MusicGenerationsEventsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicGenerationsEventsManagementApi(client); 
+    this.management = new MusicGenerationsEventsManagementApi(client);
   }
 
 }
@@ -205,9 +205,9 @@ export interface MusicGenerationsAttemptsListParams {
 
 export class MusicGenerationsAttemptsApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -228,9 +228,9 @@ export interface MusicGenerationsProviderModelsManagementListParams {
 
 export class MusicGenerationsProviderModelsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -248,10 +248,10 @@ export class MusicGenerationsProviderModelsManagementApi {
 export class MusicGenerationsProviderModelsApi {
   private client: HttpClient;
   public readonly management: MusicGenerationsProviderModelsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicGenerationsProviderModelsManagementApi(client); 
+    this.management = new MusicGenerationsProviderModelsManagementApi(client);
   }
 
 
@@ -268,9 +268,9 @@ export interface MusicGenerationsProvidersManagementListParams {
 
 export class MusicGenerationsProvidersManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -287,10 +287,10 @@ export class MusicGenerationsProvidersManagementApi {
 export class MusicGenerationsProvidersApi {
   private client: HttpClient;
   public readonly management: MusicGenerationsProvidersManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicGenerationsProvidersManagementApi(client); 
+    this.management = new MusicGenerationsProvidersManagementApi(client);
   }
 
 
@@ -314,9 +314,9 @@ export interface MusicGenerationsManagementListParams {
 
 export class MusicGenerationsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -340,9 +340,9 @@ export interface MusicGenerationsCreditLedgerListParams {
 
 export class MusicGenerationsCreditLedgerApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -364,9 +364,9 @@ export interface MusicGenerationsPromptTemplatesManagementListParams {
 
 export class MusicGenerationsPromptTemplatesManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -383,10 +383,10 @@ export class MusicGenerationsPromptTemplatesManagementApi {
 export class MusicGenerationsPromptTemplatesApi {
   private client: HttpClient;
   public readonly management: MusicGenerationsPromptTemplatesManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicGenerationsPromptTemplatesManagementApi(client); 
+    this.management = new MusicGenerationsPromptTemplatesManagementApi(client);
   }
 
 
@@ -408,9 +408,9 @@ export interface MusicGenerationsStylePresetsManagementListParams {
 
 export class MusicGenerationsStylePresetsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -427,10 +427,10 @@ export class MusicGenerationsStylePresetsManagementApi {
 export class MusicGenerationsStylePresetsApi {
   private client: HttpClient;
   public readonly management: MusicGenerationsStylePresetsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicGenerationsStylePresetsManagementApi(client); 
+    this.management = new MusicGenerationsStylePresetsManagementApi(client);
   }
 
 
@@ -456,8 +456,8 @@ export class MusicGenerationsApi {
   public readonly attempts: MusicGenerationsAttemptsApi;
   public readonly events: MusicGenerationsEventsApi;
   public readonly webhooks: MusicGenerationsWebhooksApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
     this.stylePresets = new MusicGenerationsStylePresetsApi(client);
     this.promptTemplates = new MusicGenerationsPromptTemplatesApi(client);
@@ -467,7 +467,7 @@ export class MusicGenerationsApi {
     this.providerModels = new MusicGenerationsProviderModelsApi(client);
     this.attempts = new MusicGenerationsAttemptsApi(client);
     this.events = new MusicGenerationsEventsApi(client);
-    this.webhooks = new MusicGenerationsWebhooksApi(client); 
+    this.webhooks = new MusicGenerationsWebhooksApi(client);
   }
 
 
@@ -496,9 +496,9 @@ export interface MusicContentReportsManagementListParams {
 
 export class MusicContentReportsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -517,10 +517,10 @@ export class MusicContentReportsManagementApi {
 export class MusicContentReportsApi {
   private client: HttpClient;
   public readonly management: MusicContentReportsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicContentReportsManagementApi(client); 
+    this.management = new MusicContentReportsManagementApi(client);
   }
 
 
@@ -539,9 +539,9 @@ export interface MusicRecommendationFeedbackManagementListParams {
 
 export class MusicRecommendationFeedbackManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -560,10 +560,10 @@ export class MusicRecommendationFeedbackManagementApi {
 export class MusicRecommendationFeedbackApi {
   private client: HttpClient;
   public readonly management: MusicRecommendationFeedbackManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicRecommendationFeedbackManagementApi(client); 
+    this.management = new MusicRecommendationFeedbackManagementApi(client);
   }
 
 }
@@ -575,9 +575,9 @@ export interface MusicRecommendationShelvesManagementListParams {
 
 export class MusicRecommendationShelvesManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -594,10 +594,10 @@ export class MusicRecommendationShelvesManagementApi {
 export class MusicRecommendationShelvesApi {
   private client: HttpClient;
   public readonly management: MusicRecommendationShelvesManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicRecommendationShelvesManagementApi(client); 
+    this.management = new MusicRecommendationShelvesManagementApi(client);
   }
 
 
@@ -611,20 +611,20 @@ export class MusicRecommendationApi {
   private client: HttpClient;
   public readonly shelves: MusicRecommendationShelvesApi;
   public readonly feedback: MusicRecommendationFeedbackApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
     this.shelves = new MusicRecommendationShelvesApi(client);
-    this.feedback = new MusicRecommendationFeedbackApi(client); 
+    this.feedback = new MusicRecommendationFeedbackApi(client);
   }
 
 }
 
 export class MusicChartsEntriesApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -641,9 +641,9 @@ export interface MusicChartsManagementListParams {
 
 export class MusicChartsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -661,11 +661,11 @@ export class MusicChartsApi {
   private client: HttpClient;
   public readonly management: MusicChartsManagementApi;
   public readonly entries: MusicChartsEntriesApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
     this.management = new MusicChartsManagementApi(client);
-    this.entries = new MusicChartsEntriesApi(client); 
+    this.entries = new MusicChartsEntriesApi(client);
   }
 
 
@@ -687,9 +687,9 @@ export interface MusicAudioAssetsManagementListParams {
 
 export class MusicAudioAssetsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -706,10 +706,10 @@ export class MusicAudioAssetsManagementApi {
 export class MusicAudioAssetsApi {
   private client: HttpClient;
   public readonly management: MusicAudioAssetsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicAudioAssetsManagementApi(client); 
+    this.management = new MusicAudioAssetsManagementApi(client);
   }
 
 
@@ -722,10 +722,10 @@ export class MusicAudioAssetsApi {
 export class MusicAudioApi {
   private client: HttpClient;
   public readonly assets: MusicAudioAssetsApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.assets = new MusicAudioAssetsApi(client); 
+    this.assets = new MusicAudioAssetsApi(client);
   }
 
 }
@@ -737,9 +737,9 @@ export interface MusicPlaylistsManagementListParams {
 
 export class MusicPlaylistsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -756,10 +756,10 @@ export class MusicPlaylistsManagementApi {
 export class MusicPlaylistsApi {
   private client: HttpClient;
   public readonly management: MusicPlaylistsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicPlaylistsManagementApi(client); 
+    this.management = new MusicPlaylistsManagementApi(client);
   }
 
 }
@@ -773,9 +773,9 @@ export interface MusicTracksManagementListParams {
 
 export class MusicTracksManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -794,10 +794,10 @@ export class MusicTracksManagementApi {
 export class MusicTracksApi {
   private client: HttpClient;
   public readonly management: MusicTracksManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicTracksManagementApi(client); 
+    this.management = new MusicTracksManagementApi(client);
   }
 
 
@@ -825,9 +825,9 @@ export interface MusicAlbumsManagementListParams {
 
 export class MusicAlbumsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -845,10 +845,10 @@ export class MusicAlbumsManagementApi {
 export class MusicAlbumsApi {
   private client: HttpClient;
   public readonly management: MusicAlbumsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicAlbumsManagementApi(client); 
+    this.management = new MusicAlbumsManagementApi(client);
   }
 
 
@@ -865,9 +865,9 @@ export interface MusicArtistsManagementListParams {
 
 export class MusicArtistsManagementApi {
   private client: HttpClient;
-  
-  constructor(client: HttpClient) { 
-    this.client = client; 
+
+  constructor(client: HttpClient) {
+    this.client = client;
   }
 
 
@@ -884,10 +884,10 @@ export class MusicArtistsManagementApi {
 export class MusicArtistsApi {
   private client: HttpClient;
   public readonly management: MusicArtistsManagementApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
-    this.management = new MusicArtistsManagementApi(client); 
+    this.management = new MusicArtistsManagementApi(client);
   }
 
 
@@ -911,8 +911,8 @@ export class MusicApi {
   public readonly rights: MusicRightsApi;
   public readonly moderation: MusicModerationApi;
   public readonly releases: MusicReleasesApi;
-  
-  constructor(client: HttpClient) { 
+
+  constructor(client: HttpClient) {
     this.client = client;
     this.artists = new MusicArtistsApi(client);
     this.albums = new MusicAlbumsApi(client);
@@ -925,7 +925,7 @@ export class MusicApi {
     this.generations = new MusicGenerationsApi(client);
     this.rights = new MusicRightsApi(client);
     this.moderation = new MusicModerationApi(client);
-    this.releases = new MusicReleasesApi(client); 
+    this.releases = new MusicReleasesApi(client);
   }
 
 }

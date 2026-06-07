@@ -23,6 +23,30 @@ function parameterNames(operation) {
   return (operation.parameters ?? []).map((parameter) => parameter.name);
 }
 
+function assertClawRouterOperationBinding(document, schemaName) {
+  const schema = document.components.schemas[schemaName];
+  assert.ok(schema, `${schemaName} should exist`);
+  const properties = schema.properties ?? {};
+  for (const propertyName of [
+    "clawRouterSdkFamily",
+    "clawRouterApiAuthority",
+    "clawRouterApiPrefix",
+    "clawRouterCreateOperationId",
+    "clawRouterRetrieveOperationId",
+    "clawRouterRetrieveStandardPath",
+  ]) {
+    assert.ok(properties[propertyName], `${schemaName}.${propertyName} should exist`);
+    assert.ok(schema.required.includes(propertyName), `${schemaName}.${propertyName} should be required`);
+  }
+  assert.deepEqual(properties.clawRouterSdkFamily.enum, ["clawrouter-open-sdk"]);
+  assert.deepEqual(properties.clawRouterApiAuthority.enum, ["sdkwork-claw-router.ai"]);
+  assert.deepEqual(properties.clawRouterApiPrefix.enum, ["/v1"]);
+  assert.deepEqual(properties.clawRouterCreateOperationId.enum, ["sunoCreateMusicGeneration"]);
+  assert.deepEqual(properties.clawRouterRetrieveOperationId.enum, ["sunoRetrieveMusicGeneration"]);
+  assert.deepEqual(properties.clawRouterStandardPath.enum, ["/suno/v1/music/generations"]);
+  assert.deepEqual(properties.clawRouterRetrieveStandardPath.enum, ["/suno/v1/music/generations/{task_id}"]);
+}
+
 test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () => {
   for (const [surface, document, prefix, authority] of [
     ["app", app, "/app/v3/api", "sdkwork-music-app-api"],
@@ -309,4 +333,18 @@ test("music OpenAPI documents are owner-only sdkwork-v3 compatible inputs", () =
     operation(backend, "/backend/v3/api/music/releases/{releaseId}/channels", "post").operationId,
     "releases.channels.create",
   );
+});
+
+test("music provider schemas expose a complete claw-router Suno operation binding", () => {
+  for (const document of [app, backend]) {
+    assertClawRouterOperationBinding(document, "MusicAiGenerationProvider");
+    assertClawRouterOperationBinding(document, "MusicAiGenerationProviderCommand");
+  }
+
+  for (const document of [app, backend]) {
+    const attempt = document.components.schemas.MusicAiGenerationProviderAttempt;
+    assert.ok(attempt.properties.clawRouterOperationId, "attempt should record the invoked claw-router operation");
+    assert.ok(attempt.required.includes("clawRouterOperationId"));
+    assert.deepEqual(attempt.properties.clawRouterOperationId.enum, ["sunoCreateMusicGeneration"]);
+  }
 });

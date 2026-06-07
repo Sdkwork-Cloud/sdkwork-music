@@ -21,11 +21,33 @@ const OFFICIAL_LANGUAGE_ORDER = [
 const DEFAULT_LANGUAGE = "typescript";
 const FIXED_SDK_VERSION = "0.1.0";
 const STANDARD_PROFILE = "sdkwork-v3";
-const STANDARD_SDK_GENERATOR_ROOT = "D:\\javasource\\spring-ai-plus\\sdk\\sdkwork-sdk-generator";
-const STANDARD_SDK_GENERATOR_BIN = path.join(STANDARD_SDK_GENERATOR_ROOT, "bin", "sdkgen.js");
+const MUSIC_CLAW_ROUTER_OPEN_SDK_DEPENDENCY = {
+  workspace: "clawrouter-open-sdk",
+  role: "ai-music-generation-provider-capability",
+  required: true,
+  dependencyMode: "consumer-sdk",
+  apiPrefix: "/v1",
+  apiAuthority: "sdkwork-claw-router.ai",
+  generatedTransportImportPolicy: "forbidden",
+  operations: ["sunoCreateMusicGeneration", "sunoRetrieveMusicGeneration"],
+  paths: ["/suno/v1/music/generations", "/suno/v1/music/generations/{task_id}"],
+  packageByLanguage: {
+    typescript: "@sdkwork/clawrouter-open-sdk",
+    flutter: "clawrouter_open_sdk",
+    rust: "clawrouter-open-sdk",
+    java: "com.sdkwork.clawrouter:clawrouter-open-sdk",
+    csharp: "Sdkwork.ClawRouter.Open.Sdk",
+    swift: "ClawRouterOpenSdk",
+    kotlin: "com.sdkwork.clawrouter:clawrouter-open-sdk",
+    go: "github.com/sdkwork/clawrouter-open-sdk",
+    python: "sdkwork-clawrouter-open-sdk",
+  },
+};
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(scriptDir, "..");
+const STANDARD_SDK_GENERATOR_ROOT = path.resolve(workspaceRoot, "../sdkwork-sdk-generator");
+const STANDARD_SDK_GENERATOR_BIN = path.join(STANDARD_SDK_GENERATOR_ROOT, "bin", "sdkgen.js");
 
 function fail(sdkName, message) {
   process.stderr.write(`[${sdkName}] ${message}\n`);
@@ -127,6 +149,10 @@ function standardProfileFor(family) {
   return family.standardProfile ?? STANDARD_PROFILE;
 }
 
+function sdkDependenciesFor(family) {
+  return JSON.parse(JSON.stringify(family.sdkDependencies ?? [MUSIC_CLAW_ROUTER_OPEN_SDK_DEPENDENCY]));
+}
+
 function writeSdkManifest({ family, inputPath, baseUrl, languages }) {
   const document = JSON.parse(readFileSync(inputPath, "utf8"));
   const standardProfile = standardProfileFor(family);
@@ -153,6 +179,7 @@ function writeSdkManifest({ family, inputPath, baseUrl, languages }) {
     standardProfile,
     fixedSdkVersion: FIXED_SDK_VERSION,
     ownerOnlyOperationCount: operations(document).length,
+    sdkDependencies: sdkDependenciesFor(family),
     operations: operations(document),
     managedBy: "tools/music_sdk_generator_runner.mjs",
   };
@@ -172,7 +199,7 @@ function syncAssembly(family, inputPath) {
     apiAuthority: family.apiAuthority,
     authoritySpec: relativeInput,
     generationInputSpec: relativeInput,
-    sdkDependencies: [],
+    sdkDependencies: sdkDependenciesFor(family),
     derivedSpecs: {
       default: relativeInput,
     },

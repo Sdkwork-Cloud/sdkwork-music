@@ -20,7 +20,7 @@ Generated output:
 
 Canonical generator:
 
-`D:\javasource\spring-ai-plus\sdk\sdkwork-sdk-generator\bin\sdkgen.js`
+`..\sdkwork-sdk-generator\bin\sdkgen.js`
 
 Generation:
 

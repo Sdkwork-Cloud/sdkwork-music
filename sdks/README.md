@@ -16,7 +16,7 @@ Generation flow:
 
 Canonical generator:
 
-`D:\javasource\spring-ai-plus\sdk\sdkwork-sdk-generator\bin\sdkgen.js`
+`..\sdkwork-sdk-generator\bin\sdkgen.js`
 
 Generated SDK transport output belongs under each family language workspace at `generated/server-openapi`.
 Do not edit generated transport files by hand; change the route/OpenAPI/generator input and regenerate.
