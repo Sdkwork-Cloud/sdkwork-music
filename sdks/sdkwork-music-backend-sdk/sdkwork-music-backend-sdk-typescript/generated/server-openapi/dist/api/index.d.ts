@@ -1,4 +1,0 @@
-export { BaseApi } from './base';
-export { backendApiPath } from './paths';
-export { MusicApi, createMusicApi } from './music';
-//# sourceMappingURL=index.d.ts.map

@@ -1,1 +1,0 @@
-{"version":3,"file":"music-rights-territory-command.d.ts","sourceRoot":"","sources":["../../src/types/music-rights-territory-command.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,2BAA2B;IAC1C,UAAU,EAAE,MAAM,CAAC;IACnB,YAAY,EAAE,SAAS,GAAG,SAAS,GAAG,UAAU,CAAC;IACjD,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;CACjB"}

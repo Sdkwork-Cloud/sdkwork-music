@@ -1,1 +1,0 @@
-{"version":3,"file":"music-play-event-command.d.ts","sourceRoot":"","sources":["../../src/types/music-play-event-command.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,OAAO,EAAE,MAAM,CAAC;IAChB,eAAe,CAAC,EAAE,MAAM,CAAC;IACzB,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,cAAc,CAAC,EAAE,MAAM,CAAC;IACxB,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE,MAAM,CAAC;CACpB"}

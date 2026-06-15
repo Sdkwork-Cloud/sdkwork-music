@@ -1,1 +1,0 @@
-{"version":3,"file":"music-search-suggestion.d.ts","sourceRoot":"","sources":["../../src/types/music-search-suggestion.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,EAAE,EAAE,MAAM,CAAC;IACX,QAAQ,EAAE,MAAM,CAAC;IACjB,cAAc,EAAE,KAAK,GAAG,cAAc,GAAG,SAAS,GAAG,OAAO,GAAG,UAAU,CAAC;IAC1E,WAAW,EAAE,MAAM,CAAC;IACpB,SAAS,EAAE,MAAM,CAAC;IAClB,MAAM,EAAE,MAAM,CAAC;CAChB"}

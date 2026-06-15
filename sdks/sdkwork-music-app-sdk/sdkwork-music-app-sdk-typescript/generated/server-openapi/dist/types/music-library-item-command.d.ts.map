@@ -1,1 +1,0 @@
-{"version":3,"file":"music-library-item-command.d.ts","sourceRoot":"","sources":["../../src/types/music-library-item-command.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,uBAAuB;IACtC,QAAQ,EAAE,OAAO,GAAG,OAAO,GAAG,QAAQ,GAAG,UAAU,GAAG,OAAO,GAAG,oBAAoB,CAAC;IACrF,MAAM,EAAE,MAAM,CAAC;IACf,MAAM,EAAE,UAAU,GAAG,WAAW,GAAG,YAAY,GAAG,SAAS,GAAG,UAAU,GAAG,QAAQ,CAAC;CACrF"}
