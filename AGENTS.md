@@ -28,12 +28,15 @@ No `sdkwork.app.config.json` is present at this root. If the task changes applic
 - `CLAUDE.md`: Claude Code compatibility shim that points to `AGENTS.md` and must not duplicate rules.
 - `GEMINI.md`: Gemini CLI compatibility shim that points to `AGENTS.md` and must not duplicate rules.
 - `CODEX.md`: Codex compatibility shim that points to `AGENTS.md` and must not duplicate rules.
-- `sdkwork.app.config.json`: not present here; required for application roots.
+- `sdkwork.app.config.json`: not present at root; each application root has its own manifest.
 - `.sdkwork/`: local skills, plugins, manifests, and agent workspace metadata.
-- `specs/`: not present here; use when local contracts need to narrow root standards.
+- `specs/`: component specifications and local contracts.
 - `sdks/`: SDK families, OpenAPI authorities, route manifests, and generated SDK artifacts.
+- `crates/`: Rust crates for domain, storage, routes, and services.
+- `apps/`: application surfaces (PC, H5, Flutter mobile).
+- `apis/`: API contracts and API source inputs.
 - `package.json`, `pnpm-workspace.yaml`, `Cargo.toml`: language/build manifests.
-- Local directories to inspect first when relevant: `.sdkwork/`, `crates/`, `generated/`, `packages/`, `sdks/`, `tests/`, `tools/`.
+- Local directories to inspect first when relevant: `.sdkwork/`, `apis/`, `apps/`, `crates/`, `sdks/`, `tests/`, `tools/`.
 
 ## Spec Resolution Order
 

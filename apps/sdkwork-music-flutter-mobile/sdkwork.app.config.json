@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 2,
+  "appId": "sdkwork-music-flutter-mobile",
+  "appName": "SDKWork Music Flutter Mobile",
+  "appDescription": "SDKWork Music Flutter mobile application for iOS and Android",
+  "owner": "sdkwork-music",
+  "domain": "music",
+  "capability": "music-flutter-mobile",
+  "runtime": {
+    "family": "mobile",
+    "framework": "flutter",
+    "platforms": ["APP_IOS", "APP_ANDROID"]
+  },
+  "publish": {
+    "platforms": ["APP_IOS", "APP_ANDROID"],
+    "artifactPrefix": "sdkwork-music-flutter-mobile"
+  },
+  "backend": {
+    "appId": "sdkwork-music",
+    "apiAuthority": "sdkwork-music-backend-api"
+  },
+  "appApi": {
+    "apiAuthority": "sdkwork-music-app-api",
+    "sdkFamily": "sdkwork-music-app-sdk"
+  },
+  "envBindings": {
+    "development": {
+      "SDKWORK_API_BASE_URL": "http://127.0.0.1:18080",
+      "SDKWORK_APP_API_PREFIX": "/app/v3/api",
+      "SDKWORK_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "test": {
+      "SDKWORK_API_BASE_URL": "https://test-api.sdkwork-music.com",
+      "SDKWORK_APP_API_PREFIX": "/app/v3/api",
+      "SDKWORK_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "staging": {
+      "SDKWORK_API_BASE_URL": "https://staging-api.sdkwork-music.com",
+      "SDKWORK_APP_API_PREFIX": "/app/v3/api",
+      "SDKWORK_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "production": {
+      "SDKWORK_API_BASE_URL": "https://api.sdkwork-music.com",
+      "SDKWORK_APP_API_PREFIX": "/app/v3/api",
+      "SDKWORK_BACKEND_API_PREFIX": "/backend/v3/api"
+    }
+  },
+  "sdkDependencies": [
+    {
+      "workspace": "sdkwork-music-app-sdk",
+      "role": "music-app-capability",
+      "required": true,
+      "dependencyMode": "consumer-sdk"
+    }
+  ],
+  "devApp": {
+    "build": {
+      "targets": {
+        "ios": {
+          "command": "flutter build ios",
+          "output": "build/ios/iphoneos/Runner.app"
+        },
+        "android": {
+          "command": "flutter build apk",
+          "output": "build/app/outputs/flutter-apk/app-release.apk"
+        }
+      }
+    }
+  }
+}

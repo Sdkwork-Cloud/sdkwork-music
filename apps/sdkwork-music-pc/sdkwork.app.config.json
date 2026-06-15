@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 2,
+  "appId": "sdkwork-music-pc",
+  "appName": "SDKWork Music PC",
+  "appDescription": "SDKWork Music PC application for desktop and browser",
+  "owner": "sdkwork-music",
+  "domain": "music",
+  "capability": "music-pc",
+  "runtime": {
+    "family": "pc",
+    "framework": "react",
+    "renderer": "browser",
+    "platforms": ["WEB", "WINDOWS", "MACOS", "LINUX"]
+  },
+  "publish": {
+    "platforms": ["WEB", "WINDOWS", "MACOS", "LINUX"],
+    "artifactPrefix": "sdkwork-music-pc"
+  },
+  "backend": {
+    "appId": "sdkwork-music",
+    "apiAuthority": "sdkwork-music-backend-api"
+  },
+  "appApi": {
+    "apiAuthority": "sdkwork-music-app-api",
+    "sdkFamily": "sdkwork-music-app-sdk"
+  },
+  "envBindings": {
+    "development": {
+      "VITE_API_BASE_URL": "http://127.0.0.1:18080",
+      "VITE_APP_API_PREFIX": "/app/v3/api",
+      "VITE_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "test": {
+      "VITE_API_BASE_URL": "https://test-api.sdkwork-music.com",
+      "VITE_APP_API_PREFIX": "/app/v3/api",
+      "VITE_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "staging": {
+      "VITE_API_BASE_URL": "https://staging-api.sdkwork-music.com",
+      "VITE_APP_API_PREFIX": "/app/v3/api",
+      "VITE_BACKEND_API_PREFIX": "/backend/v3/api"
+    },
+    "production": {
+      "VITE_API_BASE_URL": "https://api.sdkwork-music.com",
+      "VITE_APP_API_PREFIX": "/app/v3/api",
+      "VITE_BACKEND_API_PREFIX": "/backend/v3/api"
+    }
+  },
+  "sdkDependencies": [
+    {
+      "workspace": "sdkwork-music-app-sdk",
+      "role": "music-app-capability",
+      "required": true,
+      "dependencyMode": "consumer-sdk"
+    }
+  ],
+  "devApp": {
+    "build": {
+      "targets": {
+        "web": {
+          "command": "pnpm build",
+          "output": "dist"
+        },
+        "windows": {
+          "command": "pnpm build:windows",
+          "output": "src-tauri/target/release/bundle"
+        },
+        "macos": {
+          "command": "pnpm build:macos",
+          "output": "src-tauri/target/release/bundle"
+        },
+        "linux": {
+          "command": "pnpm build:linux",
+          "output": "src-tauri/target/release/bundle"
+        }
+      }
+    }
+  }
+}

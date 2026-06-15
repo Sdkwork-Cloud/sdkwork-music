@@ -4,27 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  default:
-    '@types/react':
-      specifier: ^19.2.14
-      version: 19.2.14
-    '@types/react-dom':
-      specifier: ^19.2.3
-      version: 19.2.3
-    react:
-      specifier: ^19.2.4
-      version: 19.2.4
-    react-dom:
-      specifier: ^19.2.4
-      version: 19.2.4
-    typescript:
-      specifier: ~6.0.2
-      version: 6.0.3
-    vite-plugin-dts:
-      specifier: ^4.5.4
-      version: 4.5.4
-
 importers:
 
   .:
@@ -218,9 +197,6 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.9(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@sdkwork/drive-app-sdk':
-        specifier: workspace:*
-        version: link:../../sdkwork-drive/sdks/sdkwork-drive-app-sdk/sdkwork-drive-app-sdk-typescript
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -304,40 +280,36 @@ importers:
         specifier: ^3.5.32
         version: 3.5.35(typescript@6.0.2)
 
-  packages/pc-react/content/sdkwork-audio-pc-react:
-    dependencies:
-      '@sdkwork/media-pc-react':
-        specifier: workspace:*
-        version: link:../sdkwork-media-pc-react
-      react:
-        specifier: '>=18.2.0 <20.0.0'
-        version: 19.2.4
-      react-dom:
-        specifier: '>=18.2.0 <20.0.0'
-        version: 19.2.4(react@19.2.4)
-    devDependencies:
-      '@sdkwork/core-pc-react':
-        specifier: workspace:*
-        version: link:../../../../../sdkwork-core/sdkwork-core-pc-react
-      '@sdkwork/ui-pc-react':
-        specifier: workspace:*
-        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
-
-  packages/pc-react/content/sdkwork-media-pc-react:
+  apps/sdkwork-music-pc:
     dependencies:
       react:
-        specifier: '>=18.2.0 <20.0.0'
+        specifier: ^19.2.4
         version: 19.2.4
       react-dom:
-        specifier: '>=18.2.0 <20.0.0'
+        specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
+      react-router-dom:
+        specifier: ^6.30.4
+        version: 6.30.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     devDependencies:
-      '@sdkwork/core-pc-react':
-        specifier: workspace:*
-        version: link:../../../../../sdkwork-core/sdkwork-core-pc-react
-      '@sdkwork/ui-pc-react':
-        specifier: workspace:*
-        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@8.0.16(@types/node@25.9.2)(jiti@2.7.0))
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.3
+        version: 8.0.16(@types/node@25.9.2)(jiti@2.7.0)
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2)(jiti@2.7.0))
 
   sdks/sdkwork-music-app-sdk: {}
 
@@ -1337,6 +1309,10 @@ packages:
 
   '@radix-ui/rect@1.1.2':
     resolution: {integrity: sha512-xnXE7wG13PI+cxieVssYXlQJuYVRhH9NBoxt3KNwzghDIA69GMm7d4wXRouHIYjE+KvS6U/MsMO73NdS2MH9ZA==}
+
+  '@remix-run/router@1.23.3':
+    resolution: {integrity: sha512-4An71tdz9X8+3sI4Qqqd2LWd9vS39J7sqd9EU4Scw7TJE/qB10Flv/UuqbPVgfQV9XoK8Np6jNquZitnZq5i+Q==}
+    engines: {node: '>=14.0.0'}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.12':
     resolution: {integrity: sha512-pv1y2Fv0JybcykuiiD3qBOBdz6RteYojRFY1d+b95WVuzx211CRh+ytI/+9iVyWQ6koTh5dawe4S/yRfOFjgaA==}
@@ -2900,6 +2876,19 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
+  react-router-dom@6.30.4:
+    resolution: {integrity: sha512-q4HvNl+mmDdkS0g+MqiBZNteQJCuimWoOyHMy4T/RQLAn9Z29+E91QXRaxOujeMl2HTzRSS0KFPd7lxX3PjV0Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  react-router@6.30.4:
+    resolution: {integrity: sha512-SVUsDe+DybHM/WmYKIVYhZh1o5Dcuf16yM6WjG02Q9XVFMZIJyHYhwrr6bFBXZkVP6z69kNkMyBCujt8FaFLJA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
     engines: {node: '>=10'}
@@ -4385,6 +4374,8 @@ snapshots:
 
   '@radix-ui/rect@1.1.2': {}
 
+  '@remix-run/router@1.23.3': {}
+
   '@rolldown/binding-android-arm64@1.0.0-rc.12':
     optional: true
 
@@ -5846,6 +5837,18 @@ snapshots:
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
+
+  react-router-dom@6.30.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      '@remix-run/router': 1.23.3
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      react-router: 6.30.4(react@19.2.4)
+
+  react-router@6.30.4(react@19.2.4):
+    dependencies:
+      '@remix-run/router': 1.23.3
+      react: 19.2.4
 
   react-style-singleton@2.2.3(@types/react@19.2.14)(react@19.2.4):
     dependencies:

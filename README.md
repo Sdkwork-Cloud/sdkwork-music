@@ -6,12 +6,19 @@ This repository contains the Rust music domain implementation, generated OpenAPI
 
 ## Workspace
 
+- `apis/` - API contracts and API source inputs for all API kinds.
+- `apps/` - Application surfaces (PC, H5, Flutter mobile).
 - `crates/` - Rust music domain, storage, and route crates.
-- `generated/openapi/` - generated OpenAPI specifications for music app and backend APIs.
-- `packages/` - workspace TypeScript packages.
 - `sdks/` - generated music SDK packages and SDK verification tests.
-- `tests/` - migration and SDK contract tests.
+- `jobs/` - job definitions, schedules, and maintenance runbooks.
 - `tools/` - OpenAPI export and SDK generation tools.
+- `plugins/` - application/runtime plugin source packages.
+- `examples/` - runnable examples and SDK/API usage examples.
+- `configs/` - source-controlled config templates and profile examples.
+- `deployments/` - deployment descriptors and environment topology.
+- `scripts/` - thin command entrypoints for build and verification workflows.
+- `docs/` - repository/application documentation and architecture decisions.
+- `tests/` - migration and SDK contract tests.
 
 ## Common Commands
 

@@ -1,6 +1,7 @@
 packages:
   - "."
-  - "packages/pc-react/content/*"
+  - "apps/sdkwork-music-pc/packages/*"
+  - "apps/sdkwork-music-h5/packages/*"
   - "sdks/*"
   - "sdks/sdkwork-music-app-sdk/*/generated/server-openapi"
   - "sdks/sdkwork-music-backend-sdk/*/generated/server-openapi"
