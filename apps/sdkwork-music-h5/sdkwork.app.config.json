@@ -10,10 +10,23 @@
     "family": "mobile",
     "framework": "react",
     "renderer": "browser",
-    "platforms": ["WEB", "IOS", "ANDROID"]
+    "platforms": [
+      "WEB",
+      "IOS",
+      "ANDROID"
+    ],
+    "supportedDeploymentProfiles": [
+      "cloud",
+      "standalone"
+    ],
+    "defaultDeploymentProfile": "cloud"
   },
   "publish": {
-    "platforms": ["WEB", "IOS", "ANDROID"],
+    "platforms": [
+      "WEB",
+      "IOS",
+      "ANDROID"
+    ],
     "artifactPrefix": "sdkwork-music-h5"
   },
   "backend": {

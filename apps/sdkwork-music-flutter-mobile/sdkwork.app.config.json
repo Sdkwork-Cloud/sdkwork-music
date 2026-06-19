@@ -9,10 +9,20 @@
   "runtime": {
     "family": "mobile",
     "framework": "flutter",
-    "platforms": ["APP_IOS", "APP_ANDROID"]
+    "platforms": [
+      "APP_IOS",
+      "APP_ANDROID"
+    ],
+    "supportedDeploymentProfiles": [
+      "standalone"
+    ],
+    "defaultDeploymentProfile": "standalone"
   },
   "publish": {
-    "platforms": ["APP_IOS", "APP_ANDROID"],
+    "platforms": [
+      "APP_IOS",
+      "APP_ANDROID"
+    ],
     "artifactPrefix": "sdkwork-music-flutter-mobile"
   },
   "backend": {

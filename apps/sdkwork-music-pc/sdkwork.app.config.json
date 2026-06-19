@@ -10,10 +10,24 @@
     "family": "pc",
     "framework": "react",
     "renderer": "browser",
-    "platforms": ["WEB", "WINDOWS", "MACOS", "LINUX"]
+    "platforms": [
+      "WEB",
+      "WINDOWS",
+      "MACOS",
+      "LINUX"
+    ],
+    "supportedDeploymentProfiles": [
+      "cloud"
+    ],
+    "defaultDeploymentProfile": "cloud"
   },
   "publish": {
-    "platforms": ["WEB", "WINDOWS", "MACOS", "LINUX"],
+    "platforms": [
+      "WEB",
+      "WINDOWS",
+      "MACOS",
+      "LINUX"
+    ],
     "artifactPrefix": "sdkwork-music-pc"
   },
   "backend": {
