@@ -1,11 +1,11 @@
 use async_trait::async_trait;
-use sdkwork_drive_product::{
-    domain::uploader::{DriveUploadItem, DriveUploadPart},
+use sdkwork_drive_workspace_service::{
     ports::uploader_store::{
         CompleteDriveStoredUpload, DriveUploaderNodeRecord, DriveUploaderSpaceRecord, DriveUploaderStore,
         NewDriveUploadItem, NewDriveUploadPart,
     },
-    DriveProductError,
+    uploader::{DriveUploadItem, DriveUploadPart},
+    DriveServiceError,
 };
 use sdkwork_drive_storage_contract::{
     AbortMultipartUploadRequest, CompleteMultipartUploadRequest, CompleteMultipartUploadResponse,
@@ -1390,7 +1390,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         owner_subject_type: &str,
         owner_subject_id: &str,
         space_type: &str,
-    ) -> Result<Option<String>, DriveProductError> {
+    ) -> Result<Option<String>, DriveServiceError> {
         let state = self.state.lock().expect("drive state");
         Ok(state
             .spaces
@@ -1412,7 +1412,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         space_type: &str,
         _display_name: &str,
         _operator_id: &str,
-    ) -> Result<String, DriveProductError> {
+    ) -> Result<String, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         state.spaces.insert(
             (
@@ -1430,7 +1430,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         &self,
         tenant_id: &str,
         space_id: &str,
-    ) -> Result<Option<DriveUploaderSpaceRecord>, DriveProductError> {
+    ) -> Result<Option<DriveUploaderSpaceRecord>, DriveServiceError> {
         let state = self.state.lock().expect("drive state");
         Ok(state
             .spaces
@@ -1455,7 +1455,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         &self,
         tenant_id: &str,
         node_id: &str,
-    ) -> Result<Option<DriveUploaderNodeRecord>, DriveProductError> {
+    ) -> Result<Option<DriveUploaderNodeRecord>, DriveServiceError> {
         let state = self.state.lock().expect("drive state");
         Ok(state
             .items
@@ -1476,7 +1476,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         _node_id: &str,
         _subject_type: &str,
         _subject_id: &str,
-    ) -> Result<bool, DriveProductError> {
+    ) -> Result<bool, DriveServiceError> {
         Ok(false)
     }
 
@@ -1486,7 +1486,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         _node_id: &str,
         _token_hash: &str,
         _now_epoch_ms: i64,
-    ) -> Result<bool, DriveProductError> {
+    ) -> Result<bool, DriveServiceError> {
         Ok(false)
     }
 
@@ -1500,7 +1500,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         _scene: Option<&str>,
         _source: Option<&str>,
         _operator_id: &str,
-    ) -> Result<String, DriveProductError> {
+    ) -> Result<String, DriveServiceError> {
         Ok(node_id.to_owned())
     }
 
@@ -1515,7 +1515,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         object_key: &str,
         _operator_id: &str,
         _expires_at_epoch_ms: i64,
-    ) -> Result<String, DriveProductError> {
+    ) -> Result<String, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         state.upload_sessions.insert(
             format!("{tenant_id}:{session_id}"),
@@ -1527,7 +1527,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
     async fn find_default_storage_provider(
         &self,
         _tenant_id: &str,
-    ) -> Result<Option<(String, String)>, DriveProductError> {
+    ) -> Result<Option<(String, String)>, DriveServiceError> {
         Ok(Some((
             "provider-drive-generated".to_owned(),
             "bucket-drive-generated".to_owned(),
@@ -1537,7 +1537,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
     async fn insert_upload_item(
         &self,
         item: &NewDriveUploadItem,
-    ) -> Result<DriveUploadItem, DriveProductError> {
+    ) -> Result<DriveUploadItem, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         let upload_item = DriveUploadItem {
             id: item.id.clone(),
@@ -1607,7 +1607,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         &self,
         tenant_id: &str,
         task_id: &str,
-    ) -> Result<Option<DriveUploadItem>, DriveProductError> {
+    ) -> Result<Option<DriveUploadItem>, DriveServiceError> {
         let state = self.state.lock().expect("drive state");
         Ok(state
             .items
@@ -1618,7 +1618,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
     async fn record_uploaded_part(
         &self,
         part: &NewDriveUploadPart,
-    ) -> Result<DriveUploadPart, DriveProductError> {
+    ) -> Result<DriveUploadPart, DriveServiceError> {
         Ok(DriveUploadPart {
             id: part.id.clone(),
             tenant_id: part.tenant_id.clone(),
@@ -1638,7 +1638,7 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
     async fn complete_stored_upload(
         &self,
         completion: &CompleteDriveStoredUpload,
-    ) -> Result<DriveUploadItem, DriveProductError> {
+    ) -> Result<DriveUploadItem, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         let Some(item) = state
             .items
@@ -1649,12 +1649,12 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
                     && item.upload_session_id.as_deref() == Some(completion.upload_session_id.as_str())
             })
         else {
-            return Err(DriveProductError::NotFound(
+            return Err(DriveServiceError::NotFound(
                 "upload item not found".to_owned(),
             ));
         };
         if item.content_type != completion.content_type || item.content_length != completion.content_length {
-            return Err(DriveProductError::Conflict(
+            return Err(DriveServiceError::Conflict(
                 "completion does not match prepared upload item".to_owned(),
             ));
         }

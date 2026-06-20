@@ -1,11 +1,148 @@
 schema_version: 1
 kind: sdkwork.database.schema
 module_id: music
-contract_version: 0.1.0
+contract_version: 1.0.0
 owner_team: music-platform
 compliance_level: L2
 engines:
   - postgres
-  - sqlite
 table_prefix: music_
-tables: []
+tables:
+  - name: music_artist
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_album
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_audio_asset
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_track
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_track_tag
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_lyric
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_lyric_line
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_rights_policy
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_playlist
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_playlist_track
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_playlist_follow
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_playlist_collaborator
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_comment
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_content_report
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_chart
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_chart_entry
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_recommendation_shelf
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_recommendation_item
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_recommendation_feedback
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_user_library_item
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_like
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_follow
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_listening_history
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_download_entitlement
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_playback_session
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_search_index
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_search_suggestion
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_project
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_style_preset
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_prompt_template
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_provider
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_provider_model
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_task
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_provider_attempt
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_provider_event
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_variant
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_credit_ledger
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_ai_generation_notification
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_moderation_signal
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_release
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_release_channel
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_rights_territory
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_play_event
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_editorial_audit
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_schema_version
+    lifecycle_status: active
+    owner: music-platform
+  - name: music_migration_lock
+    lifecycle_status: active
+    owner: music-platform

@@ -9,17 +9,10 @@ Canonical lifecycle assets for `sdkwork-music` per `DATABASE_FRAMEWORK_SPEC.md`.
 ## Commands
 
 ```bash
+pnpm run db:materialize:contract
 pnpm run db:validate
-pnpm run db:plan
-pnpm run db:init
-pnpm run db:migrate
-pnpm run db:seed
-pnpm run db:status
-pnpm run db:drift:check
 ```
 
-## Migration status
+Legacy SQL: `crates/sdkwork-music-storage-sqlx-rust/migrations/0001_music_foundation.sql` → `database/ddl/baseline/postgres/0001_music_legacy_baseline.sql`
 
-No legacy SQL was auto-imported. Author `contract/schema.yaml` before adding migrations.
-
-Runtime services MUST create pools through `sdkwork-database-sqlx` and register `DefaultDatabaseModule` at bootstrap.
+Runtime bootstrap: `sdkwork-music-database-host` / `connect_and_bootstrap_music_database_from_env()`. SQLite tests continue to use `SqliteMusicStore::migrate()`.

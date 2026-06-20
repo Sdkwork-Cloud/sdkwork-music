@@ -1,10 +1,18 @@
-use sdkwork_drive_product::{
+mod bootstrap;
+
+pub use bootstrap::{
+    bootstrap_music_database, bootstrap_music_database_from_env,
+    connect_and_bootstrap_music_database_from_env, connect_music_database_pool_from_env,
+    MusicDatabaseHost, MusicDatabasePool,
+};
+
+use sdkwork_drive_workspace_service::{
     ports::uploader_store::DriveUploaderStore,
     uploader::{
         CompleteStoredUploaderUploadCommand, DriveUploaderService, PrepareUploaderUploadCommand,
         UploaderActor, UploaderRetention, UploaderTarget,
     },
-    DriveProductError,
+    DriveServiceError,
 };
 use sdkwork_drive_storage_contract::{
     DriveObjectLocator, DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind,
@@ -498,19 +506,19 @@ where
     pub async fn archive_generated_artifacts(
         &self,
         command: ArchiveMusicGeneratedArtifactsCommand,
-    ) -> Result<ArchivedMusicGeneratedArtifacts, DriveProductError> {
+    ) -> Result<ArchivedMusicGeneratedArtifacts, DriveServiceError> {
         let tenant_id = require_archive_identifier(&command.tenant_id, "tenant_id")?;
         let task_id = require_archive_identifier(&command.task_id, "task_id")?;
         let provider_code = require_archive_identifier(&command.provider_code, "provider_code")?;
         let provider_model = require_archive_identifier(&command.provider_model, "provider_model")?;
         let now = require_archive_text(&command.now, "now")?;
         if command.now_epoch_ms <= 0 {
-            return Err(DriveProductError::Validation(
+            return Err(DriveServiceError::Validation(
                 "now_epoch_ms must be greater than zero".to_string(),
             ));
         }
         if command.artifacts.is_empty() {
-            return Err(DriveProductError::Validation(
+            return Err(DriveServiceError::Validation(
                 "artifacts are required".to_string(),
             ));
         }
@@ -561,7 +569,7 @@ where
                 .await?;
             if let Some(stored_object) = stored_object.as_ref() {
                 let upload_session_id = upload_item.upload_session_id.clone().ok_or_else(|| {
-                    DriveProductError::Internal(
+                    DriveServiceError::Internal(
                         "drive upload item is missing upload session id".to_string(),
                     )
                 })?;
@@ -631,24 +639,24 @@ where
         task_id: &str,
         ordinal: usize,
         artifact: &MusicGeneratedProviderArtifact,
-        upload_item: &sdkwork_drive_product::uploader::DriveUploadItem,
-    ) -> Result<Option<StoredMusicGeneratedArtifactObject>, DriveProductError> {
+        upload_item: &sdkwork_drive_workspace_service::uploader::DriveUploadItem,
+    ) -> Result<Option<StoredMusicGeneratedArtifactObject>, DriveServiceError> {
         let Some(content) = artifact.content.as_ref() else {
             return Ok(None);
         };
         let Some(object_store) = self.object_store.as_ref() else {
-            return Err(DriveProductError::Validation(
+            return Err(DriveServiceError::Validation(
                 "generated artifact content requires a drive object store".to_string(),
             ));
         };
         let bucket = upload_item.object_bucket.as_deref().ok_or_else(|| {
-            DriveProductError::Internal("drive upload item is missing object bucket".to_string())
+            DriveServiceError::Internal("drive upload item is missing object bucket".to_string())
         })?;
         let object_key = upload_item.object_key.as_deref().ok_or_else(|| {
-            DriveProductError::Internal("drive upload item is missing object key".to_string())
+            DriveServiceError::Internal("drive upload item is missing object key".to_string())
         })?;
         if artifact.content_length >= 0 && artifact.content_length != content.len() as i64 {
-            return Err(DriveProductError::Validation(
+            return Err(DriveServiceError::Validation(
                 "content_length must match generated artifact content bytes".to_string(),
             ));
         }
@@ -2852,10 +2860,10 @@ fn bool_int(value: bool) -> i64 {
     if value { 1 } else { 0 }
 }
 
-fn require_archive_text(value: &str, field_name: &str) -> Result<String, DriveProductError> {
+fn require_archive_text(value: &str, field_name: &str) -> Result<String, DriveServiceError> {
     let value = value.trim();
     if value.is_empty() {
-        return Err(DriveProductError::Validation(format!(
+        return Err(DriveServiceError::Validation(format!(
             "{field_name} is required"
         )));
     }
@@ -2869,14 +2877,14 @@ fn optional_archive_text(value: Option<&str>) -> Option<String> {
         .map(str::to_string)
 }
 
-fn require_archive_identifier(value: &str, field_name: &str) -> Result<String, DriveProductError> {
+fn require_archive_identifier(value: &str, field_name: &str) -> Result<String, DriveServiceError> {
     let value = require_archive_text(value, field_name)?;
     if value.len() > 255
         || !value
             .chars()
             .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | ':' | '@' | '-'))
     {
-        return Err(DriveProductError::Validation(format!(
+        return Err(DriveServiceError::Validation(format!(
             "{field_name} contains invalid characters"
         )));
     }
@@ -2886,7 +2894,7 @@ fn require_archive_identifier(value: &str, field_name: &str) -> Result<String, D
 fn archive_actor(
     user_id: Option<&str>,
     anonymous_id: Option<&str>,
-) -> Result<UploaderActor, DriveProductError> {
+) -> Result<UploaderActor, DriveServiceError> {
     if let Some(user_id) = user_id.map(str::trim).filter(|value| !value.is_empty()) {
         return Ok(UploaderActor::User {
             user_id: require_archive_identifier(user_id, "user_id")?,
@@ -2946,7 +2954,7 @@ fn upload_profile_for_kind(kind: &str, content_type: &str) -> String {
 fn artifact_fingerprint(
     artifact: &MusicGeneratedProviderArtifact,
     fallback_id: &str,
-) -> Result<String, DriveProductError> {
+) -> Result<String, DriveServiceError> {
     if let Some(checksum) = artifact
         .checksum_sha256_hex
         .as_deref()
@@ -2962,7 +2970,7 @@ fn artifact_fingerprint(
 fn generated_artifact_checksum(
     artifact: &MusicGeneratedProviderArtifact,
     content: &[u8],
-) -> Result<String, DriveProductError> {
+) -> Result<String, DriveServiceError> {
     if let Some(checksum) = artifact
         .checksum_sha256_hex
         .as_deref()
@@ -2991,14 +2999,14 @@ fn push_hex_byte(output: &mut String, byte: u8) {
     output.push(char::from(HEX[usize::from(byte & 0x0f)]));
 }
 
-fn validate_archive_sha256_checksum(value: &str) -> Result<(), DriveProductError> {
+fn validate_archive_sha256_checksum(value: &str) -> Result<(), DriveServiceError> {
     let Some(hex) = value.strip_prefix("sha256:") else {
-        return Err(DriveProductError::Validation(
+        return Err(DriveServiceError::Validation(
             "checksum_sha256_hex must use sha256:<64 lowercase hex>".to_string(),
         ));
     };
     if hex.len() != 64 || !hex.bytes().all(|byte| byte.is_ascii_hexdigit()) {
-        return Err(DriveProductError::Validation(
+        return Err(DriveServiceError::Validation(
             "checksum_sha256_hex must use sha256:<64 lowercase hex>".to_string(),
         ));
     }
@@ -3008,7 +3016,7 @@ fn validate_archive_sha256_checksum(value: &str) -> Result<(), DriveProductError
 #[allow(clippy::too_many_arguments)]
 fn generated_artifact_snapshot(
     artifact: &MusicGeneratedProviderArtifact,
-    upload_item: &sdkwork_drive_product::uploader::DriveUploadItem,
+    upload_item: &sdkwork_drive_workspace_service::uploader::DriveUploadItem,
     drive_uri: &str,
     provider_code: &str,
     provider_model: &str,
@@ -3016,7 +3024,7 @@ fn generated_artifact_snapshot(
     ordinal: usize,
     task_id: &str,
     stored_object: Option<&StoredMusicGeneratedArtifactObject>,
-) -> Result<String, DriveProductError> {
+) -> Result<String, DriveServiceError> {
     let kind = media_kind_for_artifact(artifact);
     let mut root = Map::new();
     root.insert("kind".to_string(), Value::String(kind));
@@ -3153,16 +3161,16 @@ fn generated_artifact_snapshot(
     }
 
     serde_json::to_string(&Value::Object(root)).map_err(|error| {
-        DriveProductError::Internal(format!("serialize generated artifact snapshot failed: {error}"))
+        DriveServiceError::Internal(format!("serialize generated artifact snapshot failed: {error}"))
     })
 }
 
-fn parse_artifact_metadata(raw: Option<&str>) -> Result<Option<Value>, DriveProductError> {
+fn parse_artifact_metadata(raw: Option<&str>) -> Result<Option<Value>, DriveServiceError> {
     let Some(raw) = raw.map(str::trim).filter(|value| !value.is_empty()) else {
         return Ok(None);
     };
     let parsed: Value = serde_json::from_str(raw).map_err(|error| {
-        DriveProductError::Validation(format!("metadata_json must be valid JSON: {error}"))
+        DriveServiceError::Validation(format!("metadata_json must be valid JSON: {error}"))
     })?;
     if parsed.is_object() {
         Ok(Some(parsed))
@@ -3173,22 +3181,22 @@ fn parse_artifact_metadata(raw: Option<&str>) -> Result<Option<Value>, DriveProd
     }
 }
 
-fn drive_object_store_error(error: DriveObjectStoreError) -> DriveProductError {
+fn drive_object_store_error(error: DriveObjectStoreError) -> DriveServiceError {
     match error.kind {
-        DriveObjectStoreErrorKind::NotFound => DriveProductError::NotFound(error.message),
-        DriveObjectStoreErrorKind::Conflict => DriveProductError::Conflict(error.message),
+        DriveObjectStoreErrorKind::NotFound => DriveServiceError::NotFound(error.message),
+        DriveObjectStoreErrorKind::Conflict => DriveServiceError::Conflict(error.message),
         DriveObjectStoreErrorKind::PermissionDenied => {
-            DriveProductError::PermissionDenied(error.message)
+            DriveServiceError::PermissionDenied(error.message)
         }
         DriveObjectStoreErrorKind::InvalidRequest | DriveObjectStoreErrorKind::IntegrityFailed => {
-            DriveProductError::Validation(error.message)
+            DriveServiceError::Validation(error.message)
         }
         DriveObjectStoreErrorKind::RateLimited
         | DriveObjectStoreErrorKind::Timeout
         | DriveObjectStoreErrorKind::Unavailable
         | DriveObjectStoreErrorKind::UpstreamError
         | DriveObjectStoreErrorKind::NotSupported
-        | DriveObjectStoreErrorKind::Internal => DriveProductError::Internal(error.message),
+        | DriveObjectStoreErrorKind::Internal => DriveServiceError::Internal(error.message),
     }
 }
 

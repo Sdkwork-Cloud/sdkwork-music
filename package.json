@@ -14,6 +14,7 @@
     "sdk:check": "node tools/music_sdk_generate.mjs --check",
     "sdk:generate": "node tools/music_sdk_generate.mjs",
     "verify": "pnpm sdk:check && pnpm test:node && pnpm test:vitest && cargo test --workspace",
+    "db:materialize:contract": "node tools/materialize_music_database_contract.mjs",
     "db:validate": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
     "db:plan": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . plan",
     "db:init": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . init",
