@@ -27,7 +27,9 @@
   },
   "backend": {
     "appId": "sdkwork-music",
-    "apiAuthority": "sdkwork-music-backend-api"
+    "apiAuthority": "sdkwork-music-backend-api",
+    "tenantId": "100001",
+    "organizationId": "0"
   },
   "appApi": {
     "apiAuthority": "sdkwork-music-app-api",
