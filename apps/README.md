@@ -1,31 +1,41 @@
-# Applications
+# apps/
 
-This directory contains independently runnable application roots for SDKWork Music.
+Application: music
+Status: active
+Owner: SDKWork maintainers
+Specs: APPLICATION_SPEC.md, SDKWORK_WORKSPACE_SPEC.md
 
-## Application Surfaces
+## Primary App Surface
 
-- `sdkwork-music-pc/`: PC browser/desktop application (React + Tauri)
-- `sdkwork-music-h5/`: H5 mobile web application (React + Capacitor)
-- `sdkwork-music-flutter-mobile/`: Flutter mobile application (Dart/Flutter)
+The repository root is not the primary runnable app surface.
+Runnable application roots live under `apps/<application-root>/`.
 
-## Architecture Standards
+## Directory Index
 
-Each application root follows its corresponding SDKWork architecture standard:
+| Directory | Surface role | Runnable | Purpose | Entry |
+| --- | --- | --- | --- | --- |
+| sdkwork-music-flutter-mobile | flutter-mobile | yes | SDKWork Music Flutter Mobile Application | [README](sdkwork-music-flutter-mobile/README.md) |
+| sdkwork-music-h5 | h5 | yes | SDKWork Music H5 Application | [README](sdkwork-music-h5/README.md) |
+| sdkwork-music-pc | pc | yes | SDKWork Music PC Application | [README](sdkwork-music-pc/README.md) |
 
-- PC: `APP_PC_ARCHITECTURE_SPEC.md`
-- H5: `APP_H5_ARCHITECTURE_SPEC.md`
-- Flutter: `FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md`
+## Allowed Content
 
-## SDK Composition
+- Selected language/architecture application roots with `README.md`, `AGENTS.md`, `.sdkwork/`, and `specs/` when authored packages exist.
+- Architecture-local `packages/`, `config/`, `src/`, `lib/`, `App/`, or `entry/` directories required by the owning architecture standard.
 
-All application surfaces share the same music domain API contracts and generated SDK families:
+## Forbidden Content
 
-- App API: `sdkwork-music-app-api`
-- Backend API: `sdkwork-music-backend-api`
-- App SDK: `sdkwork-music-app-sdk`
-- Backend SDK: `sdkwork-music-backend-sdk`
+- Repository-root API contracts, generated SDK workspaces, Rust crates, or deployment descriptors moved under `apps/`.
+- Runtime secrets, user-private state, generated SDK transport output, or cross-application copied business logic.
 
 ## Related Specs
 
 - `../sdkwork-specs/APPLICATION_SPEC.md`
 - `../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md`
+- `../sdkwork-specs/APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md`
+
+## Verification
+
+```bash
+node ../sdkwork-specs/tools/check-apps-directory-index.mjs --root .
+```

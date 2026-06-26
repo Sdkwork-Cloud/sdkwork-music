@@ -259,3 +259,11 @@ fn route_manifest(
             .collect(),
     }
 }
+
+pub fn gateway_route_manifest() -> MusicRouteManifest {
+    app_route_manifest()
+}
+
+pub fn gateway_mount() -> axum::Router {
+    axum::Router::new()
+}

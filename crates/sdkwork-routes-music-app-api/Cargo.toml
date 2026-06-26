@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+axum = { version = "0.8", features = ["macros"] }
 sdkwork-music-core-rust.workspace = true
 
 [lib]

@@ -1,0 +1,30 @@
+{
+  "kind": "sdkwork.gateway.assembly",
+  "schemaVersion": 1,
+  "applicationCode": "music",
+  "packageName": "sdkwork-music-gateway-assembly",
+  "crateDir": "crates/sdkwork-music-gateway-assembly",
+  "generatedAt": "2026-06-25T13:08:05.577Z",
+  "routeCrates": [
+    {
+      "packageName": "sdkwork-routes-music-app-api",
+      "memberDir": "crates/sdkwork-routes-music-app-api",
+      "libName": "sdkwork_routes_music_app_api",
+      "surface": "app-api",
+      "pathPrefix": "/app/v3/api",
+      "mountOrder": 0,
+      "hasGatewayMount": true,
+      "hasGatewayRouteManifest": true
+    },
+    {
+      "packageName": "sdkwork-routes-music-backend-api",
+      "memberDir": "crates/sdkwork-routes-music-backend-api",
+      "libName": "sdkwork_routes_music_backend_api",
+      "surface": "backend-api",
+      "pathPrefix": "/backend/v3/api",
+      "mountOrder": 1,
+      "hasGatewayMount": true,
+      "hasGatewayRouteManifest": true
+    }
+  ]
+}
