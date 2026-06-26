@@ -45,7 +45,7 @@ class MusicService {
     return [
       {
         id: 'shelf-1',
-        tenantId: 'tenant-1',
+        tenantId: '100001',
         slug: 'personalized-for-you',
         title: 'Made for You',
         shelfType: 'personalized',
@@ -58,7 +58,7 @@ class MusicService {
             reasonCode: 'based_on_listening',
             track: {
               id: 'track-1',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-1',
               artistName: 'The SDK Workers',
               albumId: 'album-1',
@@ -78,7 +78,7 @@ class MusicService {
             reasonCode: 'based_on_listening',
             track: {
               id: 'track-2',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-2',
               artistName: 'Code Beats',
               albumId: 'album-2',
@@ -98,7 +98,7 @@ class MusicService {
             reasonCode: 'based_on_listening',
             track: {
               id: 'track-3',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-3',
               artistName: 'Binary Band',
               albumId: 'album-3',
@@ -114,7 +114,7 @@ class MusicService {
       },
       {
         id: 'shelf-2',
-        tenantId: 'tenant-1',
+        tenantId: '100001',
         slug: 'new-releases',
         title: 'New Releases',
         shelfType: 'new_release',
@@ -126,7 +126,7 @@ class MusicService {
             position: 0,
             playlist: {
               id: 'playlist-1',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               slug: 'summer-vibes',
               title: 'Summer Vibes 2026',
               description: 'The hottest tracks for summer',
@@ -140,7 +140,7 @@ class MusicService {
             position: 1,
             playlist: {
               id: 'playlist-2',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               slug: 'chill-coding',
               title: 'Chill Coding Sessions',
               description: 'Perfect background music for coding',
@@ -151,7 +151,7 @@ class MusicService {
       },
       {
         id: 'shelf-3',
-        tenantId: 'tenant-1',
+        tenantId: '100001',
         slug: 'ai-generated',
         title: 'AI Generated Hits',
         shelfType: 'ai_generation',
@@ -164,7 +164,7 @@ class MusicService {
             reasonCode: 'trending_ai',
             track: {
               id: 'track-11',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'ai-artist-1',
               artistName: 'AI Composer',
               slug: 'neural-symphony',
@@ -182,7 +182,7 @@ class MusicService {
             reasonCode: 'trending_ai',
             track: {
               id: 'track-12',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'ai-artist-2',
               artistName: 'Deep Learning Beats',
               slug: 'gradient-descent-groove',
@@ -196,7 +196,7 @@ class MusicService {
       },
       {
         id: 'shelf-4',
-        tenantId: 'tenant-1',
+        tenantId: '100001',
         slug: 'top-charts',
         title: 'Top Charts',
         shelfType: 'chart',
@@ -208,7 +208,7 @@ class MusicService {
             position: 0,
             track: {
               id: 'track-13',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-4',
               artistName: 'Cloud Nine',
               albumId: 'album-6',
@@ -227,7 +227,7 @@ class MusicService {
             position: 1,
             track: {
               id: 'track-14',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-5',
               artistName: 'Midnight Coder',
               slug: 'debugging-dreams',
@@ -244,7 +244,7 @@ class MusicService {
             position: 2,
             track: {
               id: 'track-15',
-              tenantId: 'tenant-1',
+              tenantId: '100001',
               artistId: 'artist-6',
               artistName: 'Stack Overflow',
               slug: 'recursive-melody',

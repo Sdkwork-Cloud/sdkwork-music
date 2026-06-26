@@ -12,7 +12,7 @@ export interface MusicAiGenerationProvider {
   clawRouterEndpointKey: 'suno.music.generations.create';
   clawRouterStandardPath: '/suno/v1/music/generations';
   clawRouterSdkFamily: 'clawrouter-open-sdk';
-  clawRouterApiAuthority: 'sdkwork-claw-router.ai';
+  clawRouterApiAuthority: 'sdkwork-clawrouter.ai';
   clawRouterApiPrefix: '/v1';
   clawRouterCreateOperationId: 'sunoCreateMusicGeneration';
   clawRouterRetrieveOperationId: 'sunoRetrieveMusicGeneration';

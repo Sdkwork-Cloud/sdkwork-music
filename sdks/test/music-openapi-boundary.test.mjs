@@ -39,7 +39,7 @@ function assertClawRouterOperationBinding(document, schemaName) {
     assert.ok(schema.required.includes(propertyName), `${schemaName}.${propertyName} should be required`);
   }
   assert.deepEqual(properties.clawRouterSdkFamily.enum, ["clawrouter-open-sdk"]);
-  assert.deepEqual(properties.clawRouterApiAuthority.enum, ["sdkwork-claw-router.ai"]);
+  assert.deepEqual(properties.clawRouterApiAuthority.enum, ["sdkwork-clawrouter.ai"]);
   assert.deepEqual(properties.clawRouterApiPrefix.enum, ["/v1"]);
   assert.deepEqual(properties.clawRouterCreateOperationId.enum, ["sunoCreateMusicGeneration"]);
   assert.deepEqual(properties.clawRouterRetrieveOperationId.enum, ["sunoRetrieveMusicGeneration"]);

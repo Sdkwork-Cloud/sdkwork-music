@@ -4799,7 +4799,7 @@
           "clawRouterApiAuthority": {
             "type": "string",
             "enum": [
-              "sdkwork-claw-router.ai"
+              "sdkwork-clawrouter.ai"
             ]
           },
           "clawRouterApiPrefix": {
@@ -6595,7 +6595,7 @@
           "clawRouterApiAuthority": {
             "type": "string",
             "enum": [
-              "sdkwork-claw-router.ai"
+              "sdkwork-clawrouter.ai"
             ]
           },
           "clawRouterApiPrefix": {

@@ -12,7 +12,7 @@ const expectedClawRouterDependency = {
   required: true,
   dependencyMode: "consumer-sdk",
   apiPrefix: "/v1",
-  apiAuthority: "sdkwork-claw-router.ai",
+  apiAuthority: "sdkwork-clawrouter.ai",
   generatedTransportImportPolicy: "forbidden",
   operations: ["sunoCreateMusicGeneration", "sunoRetrieveMusicGeneration"],
   paths: ["/suno/v1/music/generations", "/suno/v1/music/generations/{task_id}"],
@@ -97,7 +97,7 @@ test("music generated transports do not import dependency SDK packages directly"
 test("music claw-router provider contract matches the current clawrouter-open-sdk Suno music operations", () => {
   const clawRouterOpenapi = readJson(
     workspaceRoot,
-    path.join("sdkwork-claw-router", "sdks", "clawrouter-open-sdk", "openapi", "clawrouter-open-sdk.openapi.json"),
+    path.join("sdkwork-clawrouter", "sdks", "clawrouter-open-sdk", "openapi", "clawrouter-open-sdk.openapi.json"),
   );
 
   assert.equal(
@@ -118,7 +118,7 @@ test("music Suno facade consumes the current clawrouter TypeScript SDK resource 
   const clawRouterSdk = readFileSync(
     path.join(
       workspaceRoot,
-      "sdkwork-claw-router",
+      "sdkwork-clawrouter",
       "sdks",
       "clawrouter-open-sdk",
       "clawrouter-open-sdk-typescript",
@@ -130,7 +130,7 @@ test("music Suno facade consumes the current clawrouter TypeScript SDK resource 
   const clawRouterAudioSunoApi = readFileSync(
     path.join(
       workspaceRoot,
-      "sdkwork-claw-router",
+      "sdkwork-clawrouter",
       "sdks",
       "clawrouter-open-sdk",
       "clawrouter-open-sdk-typescript",

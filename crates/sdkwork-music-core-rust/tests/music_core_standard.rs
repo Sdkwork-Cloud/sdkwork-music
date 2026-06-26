@@ -121,7 +121,7 @@ fn music_core_normalizes_provider_task_and_webhook_statuses_without_terminal_reg
 fn music_core_evaluates_track_publish_readiness() {
     let track = MusicTrack {
         id: "track_1",
-        tenant_id: "tenant_1",
+        tenant_id: "100001",
         album_id: Some("album_1"),
         artist_id: "artist_1",
         title: "Launch Theme",
@@ -149,7 +149,7 @@ fn music_core_evaluates_track_publish_readiness() {
 fn music_core_evaluates_ai_generation_publish_readiness() {
     let task = MusicAiGenerationTask {
         id: "task_1",
-        tenant_id: "tenant_1",
+        tenant_id: "100001",
         user_id: "user_1",
         prompt: "city pop song for a late subway ride",
         model_provider: "sdkwork-ai",

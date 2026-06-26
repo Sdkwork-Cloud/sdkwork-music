@@ -175,7 +175,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     store
         .upsert_ai_generation_provider(NewMusicAiGenerationProvider {
             id: "provider_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             provider_code: "suno".to_owned(),
             display_name: "Suno Music".to_owned(),
             provider_family: "claw-router".to_owned(),
@@ -188,7 +188,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             supports_webhook: true,
             status: "active".to_owned(),
             config_snapshot: Some(
-                r#"{"sdkFamily":"clawrouter-open-sdk","apiAuthority":"sdkwork-claw-router.ai","apiPrefix":"/v1","createOperationId":"sunoCreateMusicGeneration","retrieveOperationId":"sunoRetrieveMusicGeneration","resource":"music_generation_task"}"#.to_owned(),
+                r#"{"sdkFamily":"clawrouter-open-sdk","apiAuthority":"sdkwork-clawrouter.ai","apiPrefix":"/v1","createOperationId":"sunoCreateMusicGeneration","retrieveOperationId":"sunoRetrieveMusicGeneration","resource":"music_generation_task"}"#.to_owned(),
             ),
             now: "2026-06-06T03:00:00Z".to_owned(),
         })
@@ -197,7 +197,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     store
         .upsert_ai_generation_provider_model(NewMusicAiGenerationProviderModel {
             id: "provider_model_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             provider_id: "provider_1".to_owned(),
             provider_code: "suno".to_owned(),
             model_name: "suno-v1".to_owned(),
@@ -217,7 +217,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     store
         .create_ai_generation_project(NewMusicAiGenerationProject {
             id: "project_provider".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             title: "Provider Campaign".to_owned(),
             visibility: "private".to_owned(),
@@ -228,7 +228,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     store
         .create_ai_generation_task(NewMusicAiGenerationTask {
             id: "task_provider".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             project_id: Some("project_provider".to_owned()),
             user_id: "user_1".to_owned(),
             prompt: "professional synth pop hook with a clean vocal lead".to_owned(),
@@ -244,7 +244,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     store
         .create_ai_generation_provider_attempt(NewMusicAiGenerationProviderAttempt {
             id: "attempt_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_provider".to_owned(),
             provider_id: "provider_1".to_owned(),
             provider_code: "suno".to_owned(),
@@ -287,7 +287,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     let first_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
             id: "event_running".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
             provider_code: "suno".to_owned(),
@@ -306,7 +306,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     let duplicate_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
             id: "event_running_duplicate".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
             provider_code: "suno".to_owned(),
@@ -328,7 +328,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     let success_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
             id: "event_success".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
             provider_code: "suno".to_owned(),
@@ -349,7 +349,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     let stale_running_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
             id: "event_stale".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_provider".to_owned(),
             attempt_id: Some("attempt_1".to_owned()),
             provider_code: "suno".to_owned(),
@@ -368,7 +368,7 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     assert!(stale_running_insert);
 
     let tasks = store
-        .list_ai_generation_tasks("tenant_1", Some("user_1"))
+        .list_ai_generation_tasks("100001", Some("user_1"))
         .await
         .expect("AI tasks");
     assert_eq!(tasks[0].status, "succeeded");
@@ -377,14 +377,14 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
     assert_eq!(tasks[0].provider_output_count, 1);
 
     let events = store
-        .list_ai_generation_provider_events("tenant_1", "task_provider")
+        .list_ai_generation_provider_events("100001", "task_provider")
         .await
         .expect("provider events");
     assert_eq!(events.len(), 3);
     assert_eq!(events[0].status_after, "succeeded");
 
     let notifications = store
-        .list_ai_generation_notifications("tenant_1", "user_1")
+        .list_ai_generation_notifications("100001", "user_1")
         .await
         .expect("notifications");
     assert_eq!(notifications.len(), 1);
@@ -405,7 +405,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     store
         .create_artist(NewMusicArtist {
             id: "artist_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "studio-band".to_owned(),
             name: "Studio Band".to_owned(),
             bio: Some("Internal music production team".to_owned()),
@@ -416,7 +416,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     store
         .create_album(NewMusicAlbum {
             id: "album_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             artist_id: "artist_1".to_owned(),
             slug: "launch-pack".to_owned(),
             title: "Launch Pack".to_owned(),
@@ -428,7 +428,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     store
         .create_audio_asset(NewMusicAudioAsset {
             id: "asset_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             title: "Launch Theme WAV".to_owned(),
             drive_space_id: "space_music".to_owned(),
             drive_node_id: "node_asset_1".to_owned(),
@@ -447,7 +447,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     store
         .create_track(NewMusicTrack {
             id: "track_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             artist_id: "artist_1".to_owned(),
             album_id: Some("album_1".to_owned()),
             audio_asset_id: Some("asset_1".to_owned()),
@@ -462,7 +462,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     store
         .create_playlist(NewMusicPlaylist {
             id: "playlist_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "release-music".to_owned(),
             title: "Release Music".to_owned(),
             description: Some("Launch ready tracks".to_owned()),
@@ -473,18 +473,18 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
         .expect("create playlist");
 
     assert!(store
-        .list_published_tracks("tenant_1", None)
+        .list_published_tracks("100001", None)
         .await
         .expect("draft list")
         .is_empty());
 
     store
-        .publish_track("tenant_1", "track_1", "user_editor", "2026-06-06T00:05:00Z")
+        .publish_track("100001", "track_1", "user_editor", "2026-06-06T00:05:00Z")
         .await
         .expect("publish track");
 
     let tracks = store
-        .list_published_tracks("tenant_1", Some("theme"))
+        .list_published_tracks("100001", Some("theme"))
         .await
         .expect("published tracks");
     assert_eq!(tracks.len(), 1);
@@ -494,7 +494,7 @@ async fn sqlite_music_store_migrates_creates_publishes_and_reads_music() {
     assert_eq!(tracks[0].tags, vec!["launch", "theme"]);
 
     let playlist = store
-        .retrieve_playlist("tenant_1", "release-music")
+        .retrieve_playlist("100001", "release-music")
         .await
         .expect("retrieve playlist")
         .expect("playlist");
@@ -514,7 +514,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_artist(NewMusicArtist {
             id: "artist_ai".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "ai-studio".to_owned(),
             name: "AI Studio".to_owned(),
             bio: None,
@@ -525,7 +525,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_audio_asset(NewMusicAudioAsset {
             id: "asset_ai".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             title: "City Pop Master".to_owned(),
             drive_space_id: "space_ai".to_owned(),
             drive_node_id: "node_ai".to_owned(),
@@ -544,7 +544,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_track(NewMusicTrack {
             id: "track_ai".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             artist_id: "artist_ai".to_owned(),
             album_id: None,
             audio_asset_id: Some("asset_ai".to_owned()),
@@ -557,14 +557,14 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
         .await
         .expect("create track");
     store
-        .publish_track("tenant_1", "track_ai", "editor_1", "2026-06-06T01:03:00Z")
+        .publish_track("100001", "track_ai", "editor_1", "2026-06-06T01:03:00Z")
         .await
         .expect("publish track");
 
     store
         .create_chart(NewMusicChart {
             id: "chart_daily".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "daily-hot".to_owned(),
             title: "Daily Hot".to_owned(),
             chart_type: "daily".to_owned(),
@@ -576,7 +576,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .add_chart_entry(NewMusicChartEntry {
             id: "chart_entry_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             chart_id: "chart_daily".to_owned(),
             track_id: "track_ai".to_owned(),
             rank: 1,
@@ -589,7 +589,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_recommendation_shelf(NewMusicRecommendationShelf {
             id: "shelf_home".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "for-you".to_owned(),
             title: "For You".to_owned(),
             shelf_type: "personalized".to_owned(),
@@ -601,7 +601,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .add_recommendation_item(NewMusicRecommendationItem {
             id: "shelf_item_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             shelf_id: "shelf_home".to_owned(),
             item_type: "track".to_owned(),
             item_id: "track_ai".to_owned(),
@@ -615,7 +615,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .save_library_item(NewMusicLibraryItem {
             id: "library_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             item_type: "track".to_owned(),
             item_id: "track_ai".to_owned(),
@@ -627,7 +627,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .record_listening_event(NewMusicListeningEvent {
             id: "play_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: Some("user_1".to_owned()),
             track_id: "track_ai".to_owned(),
             duration_seconds: 188,
@@ -640,7 +640,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
         .expect("record listening event");
 
     let chart_entries = store
-        .list_chart_entries("tenant_1", "chart_daily")
+        .list_chart_entries("100001", "chart_daily")
         .await
         .expect("chart entries");
     assert_eq!(chart_entries.len(), 1);
@@ -648,7 +648,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     assert_eq!(chart_entries[0].track_title, "Neon Commute");
 
     let shelves = store
-        .list_home_shelves("tenant_1")
+        .list_home_shelves("100001")
         .await
         .expect("home shelves");
     assert_eq!(shelves.len(), 1);
@@ -656,14 +656,14 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     assert_eq!(shelves[0].items[0].reason_code.as_deref(), Some("fresh_ai_music"));
 
     let library = store
-        .list_library_items("tenant_1", "user_1")
+        .list_library_items("100001", "user_1")
         .await
         .expect("library items");
     assert_eq!(library.len(), 1);
     assert_eq!(library[0].item_id, "track_ai");
 
     let history = store
-        .list_listening_history("tenant_1", "user_1")
+        .list_listening_history("100001", "user_1")
         .await
         .expect("listening history");
     assert_eq!(history.len(), 1);
@@ -672,7 +672,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_ai_generation_project(NewMusicAiGenerationProject {
             id: "project_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             title: "City Pop Campaign".to_owned(),
             visibility: "private".to_owned(),
@@ -683,7 +683,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .create_ai_generation_task(NewMusicAiGenerationTask {
             id: "task_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             project_id: Some("project_1".to_owned()),
             user_id: "user_1".to_owned(),
             prompt: "city pop song for a late subway ride".to_owned(),
@@ -699,7 +699,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
     store
         .complete_ai_generation_task(NewMusicAiGenerationVariant {
             id: "variant_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             task_id: "task_1".to_owned(),
             audio_asset_id: Some("asset_ai".to_owned()),
             title: "Neon Commute v1".to_owned(),
@@ -713,7 +713,7 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
         .expect("complete AI task");
 
     let tasks = store
-        .list_ai_generation_tasks("tenant_1", Some("user_1"))
+        .list_ai_generation_tasks("100001", Some("user_1"))
         .await
         .expect("AI tasks");
     assert_eq!(tasks.len(), 1);
@@ -734,7 +734,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_artist(NewMusicArtist {
             id: "artist_social".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "social-band".to_owned(),
             name: "Social Band".to_owned(),
             bio: None,
@@ -745,7 +745,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_audio_asset(NewMusicAudioAsset {
             id: "asset_social".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             title: "Social Master".to_owned(),
             drive_space_id: "space_social".to_owned(),
             drive_node_id: "node_social".to_owned(),
@@ -764,7 +764,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_track(NewMusicTrack {
             id: "track_social".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             artist_id: "artist_social".to_owned(),
             album_id: None,
             audio_asset_id: Some("asset_social".to_owned()),
@@ -777,13 +777,13 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
         .await
         .expect("create track");
     store
-        .publish_track("tenant_1", "track_social", "editor_1", "2026-06-06T02:03:00Z")
+        .publish_track("100001", "track_social", "editor_1", "2026-06-06T02:03:00Z")
         .await
         .expect("publish track");
     store
         .create_playlist(NewMusicPlaylist {
             id: "playlist_social".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "social-mix".to_owned(),
             title: "Social Mix".to_owned(),
             description: Some("Community playlist".to_owned()),
@@ -796,7 +796,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_comment(NewMusicComment {
             id: "comment_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             resource_type: "track".to_owned(),
             resource_id: "track_social".to_owned(),
@@ -810,7 +810,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_content_report(NewMusicContentReport {
             id: "report_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             reporter_user_id: "user_2".to_owned(),
             resource_type: "comment".to_owned(),
             resource_id: "comment_1".to_owned(),
@@ -823,7 +823,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_recommendation_feedback(NewMusicRecommendationFeedback {
             id: "feedback_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             item_type: "track".to_owned(),
             item_id: "track_social".to_owned(),
@@ -836,7 +836,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_search_suggestion(NewMusicSearchSuggestion {
             id: "suggestion_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             suggestion_type: "hot".to_owned(),
             display_text: "city pop commute".to_owned(),
             query_text: "city pop commute".to_owned(),
@@ -848,7 +848,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_ai_style_preset(NewMusicAiStylePreset {
             id: "style_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "city-pop".to_owned(),
             title: "City Pop".to_owned(),
             style_tags: vec!["city-pop".to_owned(), "synth".to_owned()],
@@ -861,7 +861,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_ai_prompt_template(NewMusicAiPromptTemplate {
             id: "template_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             slug: "ad-jingle".to_owned(),
             title: "Ad Jingle".to_owned(),
             template_text: "Create a short brand-safe jingle about {{topic}}".to_owned(),
@@ -874,7 +874,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_download_entitlement(NewMusicDownloadEntitlement {
             id: "download_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             track_id: "track_social".to_owned(),
             audio_asset_id: "asset_social".to_owned(),
@@ -888,7 +888,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .upsert_playback_session(NewMusicPlaybackSession {
             id: "session_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             user_id: "user_1".to_owned(),
             device_id: "device_phone".to_owned(),
             current_track_id: Some("track_social".to_owned()),
@@ -902,7 +902,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_rights_territory(NewMusicRightsTerritory {
             id: "territory_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             rights_policy_id: "rights_1".to_owned(),
             region_code: "CN".to_owned(),
             availability: "allowed".to_owned(),
@@ -915,7 +915,7 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
     store
         .create_release_channel(NewMusicReleaseChannel {
             id: "release_channel_1".to_owned(),
-            tenant_id: "tenant_1".to_owned(),
+            tenant_id: "100001".to_owned(),
             release_id: "release_1".to_owned(),
             channel_code: "app".to_owned(),
             distribution_status: "scheduled".to_owned(),
@@ -926,46 +926,46 @@ async fn sqlite_music_store_supports_social_playback_search_and_rights_workflows
         .expect("create release channel");
 
     let comments = store
-        .list_comments("tenant_1", "track", "track_social")
+        .list_comments("100001", "track", "track_social")
         .await
         .expect("comments");
     assert_eq!(comments.len(), 1);
     assert_eq!(comments[0].body, "hook is strong");
 
     let reports = store
-        .list_content_reports("tenant_1", Some("open"))
+        .list_content_reports("100001", Some("open"))
         .await
         .expect("reports");
     assert_eq!(reports.len(), 1);
     assert_eq!(reports[0].reason_code, "spam");
 
     let suggestions = store
-        .list_search_suggestions("tenant_1", "hot")
+        .list_search_suggestions("100001", "hot")
         .await
         .expect("search suggestions");
     assert_eq!(suggestions[0].query_text, "city pop commute");
 
     let style_presets = store
-        .list_ai_style_presets("tenant_1")
+        .list_ai_style_presets("100001")
         .await
         .expect("style presets");
     assert_eq!(style_presets[0].style_tags, vec!["city-pop", "synth"]);
 
     let prompt_templates = store
-        .list_ai_prompt_templates("tenant_1")
+        .list_ai_prompt_templates("100001")
         .await
         .expect("prompt templates");
     assert_eq!(prompt_templates[0].slug, "ad-jingle");
 
     let sessions = store
-        .list_playback_sessions("tenant_1", "user_1")
+        .list_playback_sessions("100001", "user_1")
         .await
         .expect("playback sessions");
     assert_eq!(sessions[0].device_id, "device_phone");
     assert_eq!(sessions[0].playback_state, "playing");
 
     let entitlements = store
-        .list_download_entitlements("tenant_1", "user_1")
+        .list_download_entitlements("100001", "user_1")
         .await
         .expect("download entitlements");
     assert_eq!(entitlements[0].quality, "lossless");
@@ -1001,7 +1001,7 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
             prompt: "generate cover image and preview music for summer campaign".to_owned(),
             lyrics_prompt: None,
             style_tags: vec!["pop".to_owned(), "bright".to_owned()],
-            model_provider: "sdkwork-claw-router".to_owned(),
+            model_provider: "sdkwork-clawrouter".to_owned(),
             model_name: "multi-modal-music-v1".to_owned(),
             reference_drive_uri: None,
             now: "2026-06-06T03:01:00Z".to_owned(),

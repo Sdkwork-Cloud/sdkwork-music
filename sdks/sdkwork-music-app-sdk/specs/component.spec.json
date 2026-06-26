@@ -30,7 +30,7 @@
         "required": true,
         "dependencyMode": "consumer-sdk",
         "apiPrefix": "/v1",
-        "apiAuthority": "sdkwork-claw-router.ai",
+        "apiAuthority": "sdkwork-clawrouter.ai",
         "generatedTransportImportPolicy": "forbidden",
         "operations": [
           "sunoCreateMusicGeneration",

@@ -27,7 +27,7 @@ const MUSIC_CLAW_ROUTER_OPEN_SDK_DEPENDENCY = {
   required: true,
   dependencyMode: "consumer-sdk",
   apiPrefix: "/v1",
-  apiAuthority: "sdkwork-claw-router.ai",
+  apiAuthority: "sdkwork-clawrouter.ai",
   generatedTransportImportPolicy: "forbidden",
   operations: ["sunoCreateMusicGeneration", "sunoRetrieveMusicGeneration"],
   paths: ["/suno/v1/music/generations", "/suno/v1/music/generations/{task_id}"],
