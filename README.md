@@ -1,4 +1,5 @@
 # sdkwork-music
+repository-kind: application
 
 Music application, API, and SDK workspace for the sdkwork ecosystem.
 

@@ -1,7 +1,11 @@
 packages:
-  - "."
+  - "apps/sdkwork-music-pc"
   - "apps/sdkwork-music-pc/packages/*"
+  - "apps/sdkwork-music-h5"
   - "apps/sdkwork-music-h5/packages/*"
+  - "apps/sdkwork-music-flutter-mobile"
+  - "apps/sdkwork-music-flutter-mobile/packages/*"
+  - "."
   - "sdks/*"
   - "sdks/sdkwork-music-app-sdk/*/generated/server-openapi"
   - "sdks/sdkwork-music-backend-sdk/*/generated/server-openapi"

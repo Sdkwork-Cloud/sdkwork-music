@@ -41,3 +41,19 @@ config/*.local.toml
 # SDKWork local runtime state
 .runtime/
 **/.runtime/
+/target/
+**/target/
+!.env.*.example
+!.env.postgres.example
+dist/
+**/dist/
+**/.pnpm-store/
+.idea/
+.vscode/
+*.log
+**/.sdkwork/local/
+**/.sdkwork/secrets/
+**/.sdkwork/cache/
+**/.sdkwork/tmp/
+**/.sdkwork/dart/pub-cache/
+**/.sdkwork/sdkwork-generator-manifest.json
