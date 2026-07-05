@@ -1,7 +1,7 @@
 {
   "name": "sdkwork-music-app-sdk-generated-typescript",
   "version": "0.1.0",
-  "description": "sdkwork-music-app-sdk",
+  "description": "Generator-owned TypeScript transport SDK for sdkwork-music-app-sdk.",
   "author": "SDKWork Team",
   "license": "MIT",
   "type": "module",
@@ -36,5 +36,7 @@
     "api",
     "app",
     "sdkwork"
-  ]
+  ],
+  "private": true,
+  "sdkworkRole": "transport"
 }
