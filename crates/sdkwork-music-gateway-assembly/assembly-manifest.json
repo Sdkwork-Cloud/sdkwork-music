@@ -4,7 +4,7 @@
   "applicationCode": "music",
   "packageName": "sdkwork-music-gateway-assembly",
   "crateDir": "crates/sdkwork-music-gateway-assembly",
-  "generatedAt": "2026-06-25T13:08:05.577Z",
+  "generatedAt": "2026-07-08T01:34:15.917Z",
   "routeCrates": [
     {
       "packageName": "sdkwork-routes-music-app-api",

@@ -21,7 +21,7 @@ export class MusicGenerationsNotificationsApi {
   async list(params?: MusicGenerationsNotificationsListParams): Promise<GenerationsNotificationsListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsNotificationsListResponse>(appendQueryString(appApiPath(`/music/generations/notifications`), query));
   }
@@ -47,7 +47,7 @@ export class MusicGenerationsEventsApi {
 /** Music generations.events.list */
   async list(generationId: string, params?: MusicGenerationsEventsListParams): Promise<GenerationsEventsListResponse> {
     const query = buildQueryString([
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsEventsListResponse>(appendQueryString(appApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/events`), query));
   }
@@ -95,7 +95,7 @@ export class MusicGenerationsProvidersApi {
   async list(params?: MusicGenerationsProvidersListParams): Promise<GenerationsProvidersListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsProvidersListResponse>(appendQueryString(appApiPath(`/music/generations/providers`), query));
   }
@@ -118,7 +118,7 @@ export class MusicGenerationsPromptTemplatesApi {
   async list(params?: MusicGenerationsPromptTemplatesListParams): Promise<GenerationsPromptTemplatesListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsPromptTemplatesListResponse>(appendQueryString(appApiPath(`/music/generations/prompt_templates`), query));
   }
@@ -141,7 +141,7 @@ export class MusicGenerationsStylePresetsApi {
   async list(params?: MusicGenerationsStylePresetsListParams): Promise<GenerationsStylePresetsListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsStylePresetsListResponse>(appendQueryString(appApiPath(`/music/generations/style_presets`), query));
   }
@@ -176,7 +176,7 @@ export class MusicGenerationsApi {
   async list(params?: MusicGenerationsListParams): Promise<GenerationsListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsListResponse>(appendQueryString(appApiPath(`/music/generations`), query));
   }
@@ -221,7 +221,7 @@ export class MusicListeningHistoryApi {
 /** Music listeningHistory.list */
   async list(params?: MusicListeningHistoryListParams): Promise<ListeningHistoryListResponse> {
     const query = buildQueryString([
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<ListeningHistoryListResponse>(appendQueryString(appApiPath(`/music/listening_history`), query));
   }
@@ -244,7 +244,7 @@ export class MusicPlaybackSessionsApi {
   async list(params?: MusicPlaybackSessionsListParams): Promise<PlaybackSessionsListResponse> {
     const query = buildQueryString([
       { name: 'device_id', value: params?.deviceId, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<PlaybackSessionsListResponse>(appendQueryString(appApiPath(`/music/playback/sessions`), query));
   }
@@ -288,7 +288,7 @@ export class MusicDownloadsEntitlementsApi {
   async list(params?: MusicDownloadsEntitlementsListParams): Promise<DownloadsEntitlementsListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<DownloadsEntitlementsListResponse>(appendQueryString(appApiPath(`/music/downloads/entitlements`), query));
   }
@@ -391,7 +391,7 @@ export class MusicLibraryItemsApi {
   async list(params?: MusicLibraryItemsListParams): Promise<LibraryItemsListResponse> {
     const query = buildQueryString([
       { name: 'item_type', value: params?.itemType, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<LibraryItemsListResponse>(appendQueryString(appApiPath(`/music/library/items`), query));
   }
@@ -433,7 +433,7 @@ export class MusicChartsEntriesApi {
 /** Music charts.entries.list */
   async list(chartId: string, params?: MusicChartsEntriesListParams): Promise<ChartsEntriesListResponse> {
     const query = buildQueryString([
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<ChartsEntriesListResponse>(appendQueryString(appApiPath(`/music/charts/${serializePathParameter(chartId, { name: 'chartId', style: 'simple', explode: false })}`), query));
   }
@@ -655,7 +655,7 @@ export class MusicSearchSuggestionsApi {
   async list(params?: MusicSearchSuggestionsListParams): Promise<SearchSuggestionsListResponse> {
     const query = buildQueryString([
       { name: 'type', value: params?.type_, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<SearchSuggestionsListResponse>(appendQueryString(appApiPath(`/music/search/suggestions`), query));
   }
@@ -705,7 +705,7 @@ export class MusicHomeShelvesApi {
   async list(params?: MusicHomeShelvesListParams): Promise<HomeShelvesListResponse> {
     const query = buildQueryString([
       { name: 'cursor', value: params?.cursor, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<HomeShelvesListResponse>(appendQueryString(appApiPath(`/music/home/shelves`), query));
   }

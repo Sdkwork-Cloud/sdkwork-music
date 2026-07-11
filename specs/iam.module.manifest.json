@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.iam.module",
+  "moduleId": "music",
+  "domain": "music",
+  "permissions": {
+    "catalog": [
+      {
+        "code": "music.albums",
+        "description": "Permission music.albums",
+        "source": "openapi"
+      },
+      {
+        "code": "music.albums.management",
+        "description": "Permission music.albums.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.artists",
+        "description": "Permission music.artists",
+        "source": "openapi"
+      },
+      {
+        "code": "music.artists.management",
+        "description": "Permission music.artists.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.audio.assets",
+        "description": "Permission music.audio.assets",
+        "source": "openapi"
+      },
+      {
+        "code": "music.audio.assets.management",
+        "description": "Permission music.audio.assets.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.charts",
+        "description": "Permission music.charts",
+        "source": "openapi"
+      },
+      {
+        "code": "music.charts.entries",
+        "description": "Permission music.charts.entries",
+        "source": "openapi"
+      },
+      {
+        "code": "music.charts.management",
+        "description": "Permission music.charts.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.comments.read",
+        "description": "Permission music.comments.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.comments.write",
+        "description": "Permission music.comments.write",
+        "source": "openapi"
+      },
+      {
+        "code": "music.contentReports",
+        "description": "Permission music.contentReports",
+        "source": "openapi"
+      },
+      {
+        "code": "music.contentReports.create",
+        "description": "Permission music.contentReports.create",
+        "source": "openapi"
+      },
+      {
+        "code": "music.contentReports.management",
+        "description": "Permission music.contentReports.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.downloads.read",
+        "description": "Permission music.downloads.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations",
+        "description": "Permission music.generations",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.attempts",
+        "description": "Permission music.generations.attempts",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.create",
+        "description": "Permission music.generations.create",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.creditLedger",
+        "description": "Permission music.generations.creditLedger",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.events.management",
+        "description": "Permission music.generations.events.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.management",
+        "description": "Permission music.generations.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.notifications.read",
+        "description": "Permission music.generations.notifications.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.notifications.write",
+        "description": "Permission music.generations.notifications.write",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.promptTemplates",
+        "description": "Permission music.generations.promptTemplates",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.promptTemplates.management",
+        "description": "Permission music.generations.promptTemplates.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.providerModels",
+        "description": "Permission music.generations.providerModels",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.providerModels.management",
+        "description": "Permission music.generations.providerModels.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.providers",
+        "description": "Permission music.generations.providers",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.providers.management",
+        "description": "Permission music.generations.providers.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.read",
+        "description": "Permission music.generations.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.stylePresets",
+        "description": "Permission music.generations.stylePresets",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.stylePresets.management",
+        "description": "Permission music.generations.stylePresets.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.generations.webhook",
+        "description": "Permission music.generations.webhook",
+        "source": "openapi"
+      },
+      {
+        "code": "music.history.read",
+        "description": "Permission music.history.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.home.read",
+        "description": "Permission music.home.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.library.read",
+        "description": "Permission music.library.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.library.write",
+        "description": "Permission music.library.write",
+        "source": "openapi"
+      },
+      {
+        "code": "music.moderation.signals",
+        "description": "Permission music.moderation.signals",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playback.read",
+        "description": "Permission music.playback.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playback.write",
+        "description": "Permission music.playback.write",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playlists",
+        "description": "Permission music.playlists",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playlists.follow",
+        "description": "Permission music.playlists.follow",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playlists.management",
+        "description": "Permission music.playlists.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.playlists.write",
+        "description": "Permission music.playlists.write",
+        "source": "openapi"
+      },
+      {
+        "code": "music.recommendation.feedback.management",
+        "description": "Permission music.recommendation.feedback.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.recommendation.shelves",
+        "description": "Permission music.recommendation.shelves",
+        "source": "openapi"
+      },
+      {
+        "code": "music.recommendation.shelves.management",
+        "description": "Permission music.recommendation.shelves.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.recommendationFeedback.create",
+        "description": "Permission music.recommendationFeedback.create",
+        "source": "openapi"
+      },
+      {
+        "code": "music.releases",
+        "description": "Permission music.releases",
+        "source": "openapi"
+      },
+      {
+        "code": "music.releases.channels",
+        "description": "Permission music.releases.channels",
+        "source": "openapi"
+      },
+      {
+        "code": "music.rights.policies",
+        "description": "Permission music.rights.policies",
+        "source": "openapi"
+      },
+      {
+        "code": "music.rights.policies.management",
+        "description": "Permission music.rights.policies.management",
+        "source": "openapi"
+      },
+      {
+        "code": "music.rights.policies.territories",
+        "description": "Permission music.rights.policies.territories",
+        "source": "openapi"
+      },
+      {
+        "code": "music.search.read",
+        "description": "Permission music.search.read",
+        "source": "openapi"
+      },
+      {
+        "code": "music.tracks",
+        "description": "Permission music.tracks",
+        "source": "openapi"
+      },
+      {
+        "code": "music.tracks.management",
+        "description": "Permission music.tracks.management",
+        "source": "openapi"
+      }
+    ]
+  }
+}

@@ -37,7 +37,7 @@ export class MusicReleasesApi {
   async list(params?: MusicReleasesListParams): Promise<ReleasesListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<ReleasesListResponse>(appendQueryString(backendApiPath(`/music/releases`), query));
   }
@@ -112,7 +112,7 @@ export class MusicRightsPoliciesManagementApi {
   async list(params?: MusicRightsPoliciesManagementListParams): Promise<RightsPoliciesManagementListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<RightsPoliciesManagementListResponse>(appendQueryString(backendApiPath(`/music/rights/policies`), query));
   }
@@ -214,7 +214,7 @@ export class MusicGenerationsAttemptsApi {
 /** Music generations.attempts.list */
   async list(generationId: string, params?: MusicGenerationsAttemptsListParams): Promise<GenerationsAttemptsListResponse> {
     const query = buildQueryString([
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsAttemptsListResponse>(appendQueryString(backendApiPath(`/music/generations/${serializePathParameter(generationId, { name: 'generationId', style: 'simple', explode: false })}/attempts`), query));
   }
@@ -278,7 +278,7 @@ export class MusicGenerationsProvidersManagementApi {
   async list(params?: MusicGenerationsProvidersManagementListParams): Promise<GenerationsProvidersManagementListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsProvidersManagementListResponse>(appendQueryString(backendApiPath(`/music/generations/providers`), query));
   }
@@ -374,7 +374,7 @@ export class MusicGenerationsPromptTemplatesManagementApi {
   async list(params?: MusicGenerationsPromptTemplatesManagementListParams): Promise<GenerationsPromptTemplatesManagementListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsPromptTemplatesManagementListResponse>(appendQueryString(backendApiPath(`/music/generations/prompt_templates`), query));
   }
@@ -418,7 +418,7 @@ export class MusicGenerationsStylePresetsManagementApi {
   async list(params?: MusicGenerationsStylePresetsManagementListParams): Promise<GenerationsStylePresetsManagementListResponse> {
     const query = buildQueryString([
       { name: 'status', value: params?.status, style: 'form', explode: true, allowReserved: false },
-      { name: 'limit', value: params?.limit, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params?.limit, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<GenerationsStylePresetsManagementListResponse>(appendQueryString(backendApiPath(`/music/generations/style_presets`), query));
   }
