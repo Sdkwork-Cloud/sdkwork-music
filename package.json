@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "test": "pnpm test:node && pnpm test:vitest && cargo test --workspace",
+    "stop": "node ../sdkwork-specs/tools/stop-sdkwork-workspace-processes.mjs --workspace .",    "test": "pnpm test:node && pnpm test:vitest && cargo test --workspace",
     "test:migration": "node --test tests/music-migration-contract.test.mjs",
     "test:node": "node --test tests/*.test.mjs sdks/test/*.test.mjs sdks/sdkwork-music-app-sdk/tests/*.test.mjs sdks/sdkwork-music-backend-sdk/tests/*.test.mjs",
     "test:vitest": "vitest run --config vitest.config.ts --configLoader native --pool vmThreads",

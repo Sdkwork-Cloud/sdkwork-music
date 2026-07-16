@@ -590,7 +590,7 @@
       "method": "POST",
       "path": "/backend/v3/api/music/generations/webhooks/{providerCode}/events",
       "tag": "music",
-      "operationId": "generations.webhooks.receive",
+      "operationId": "generations.webhooks.create",
       "authMode": "dual-token",
       "ownership": {
         "owner": "sdkwork-music",

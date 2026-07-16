@@ -56,7 +56,7 @@ function listFiles(root) {
 test("music SDK families declare clawrouter-open-sdk as the provider dependency contract", () => {
   for (const family of ["sdkwork-music-app-sdk", "sdkwork-music-backend-sdk"]) {
     const familyRoot = path.join("sdks", family);
-    const assembly = readJson(musicRoot, path.join(familyRoot, ".sdkwork-assembly.json"));
+    const assembly = readJson(musicRoot, path.join(familyRoot, "sdk-manifest.json"));
     const manifest = readJson(musicRoot, path.join(familyRoot, "sdk-manifest.json"));
     const componentSpec = readJson(musicRoot, path.join(familyRoot, "specs", "component.spec.json"));
 

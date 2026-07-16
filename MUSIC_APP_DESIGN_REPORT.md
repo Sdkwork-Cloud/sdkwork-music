@@ -305,7 +305,7 @@ await adminClient.tracks.publish(trackId);
 
 ### 4.4 SDK Metadata
 
-**Assembly File** (`.sdkwork-assembly.json`):
+**Assembly File** (`sdk-manifest.json`):
 - `sdkOwner`: "sdkwork-music"
 - `apiAuthority`: "sdkwork-music-app-api"
 - `sdkFamily`: "sdkwork-music-app-sdk"

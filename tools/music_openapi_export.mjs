@@ -2,6 +2,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { alignOpenApiOperationPatterns } from "../../sdkwork-specs/tools/lib/align-api-operation-patterns.mjs";
+import { bootstrapOpenApiEnvelope } from "../../sdkwork-specs/tools/lib/migrate-openapi-legacy-envelope.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(scriptDir, "..");
@@ -1018,7 +1020,9 @@ function queryParam(name, options = {}) {
 }
 
 function limitParam() {
-  return queryParam("limit", { schema: int32Schema({ minimum: 1, maximum: 100 }) });
+  return queryParam("page_size", {
+    schema: { ...int32Schema({ minimum: 1, maximum: 200 }), default: 20 },
+  });
 }
 
 function listParams(kind) {
@@ -1101,7 +1105,7 @@ function documentFor({ authority, routes, serverUrl, title }) {
     item.operation["x-sdkwork-api-authority"] = authority;
     paths[item.path][item.method] = item.operation;
   }
-  return {
+  const document = bootstrapOpenApiEnvelope({
     openapi: "3.1.2",
     info: {
       title,
@@ -1131,7 +1135,12 @@ function documentFor({ authority, routes, serverUrl, title }) {
     "x-sdkwork-api-authority": authority,
     "x-sdkwork-domain": DOMAIN,
     "x-sdkwork-standard-profile": "sdkwork-v3",
-  };
+  }, { legacyEnvelope: "MusicApiResult" });
+  const aligned = alignOpenApiOperationPatterns(document).document;
+  for (const item of routes) {
+    item.operation.operationId = aligned.paths[item.path][item.method].operationId;
+  }
+  return aligned;
 }
 
 function manifestFor({

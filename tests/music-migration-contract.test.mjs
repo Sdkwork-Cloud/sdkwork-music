@@ -127,8 +127,8 @@ test("sdkwork-music has SDKWork v3 OpenAPI authorities and SDK families", () => 
   assertExists("generated/openapi/music-backend-api.openapi.json");
   assertExists("sdks/sdkwork-music-app-sdk/openapi/sdkwork-music-app-api.openapi.json");
   assertExists("sdks/sdkwork-music-backend-sdk/openapi/sdkwork-music-backend-api.openapi.json");
-  assertExists("sdks/sdkwork-music-app-sdk/.sdkwork-assembly.json");
-  assertExists("sdks/sdkwork-music-backend-sdk/.sdkwork-assembly.json");
+  assertExists("sdks/sdkwork-music-app-sdk/sdk-manifest.json");
+  assertExists("sdks/sdkwork-music-backend-sdk/sdk-manifest.json");
   assertExists("sdks/_route-manifests/app-api/sdkwork-routes-music-app-api.route-manifest.json");
   assertExists("sdks/_route-manifests/backend-api/sdkwork-routes-music-backend-api.route-manifest.json");
   assertExists("sdks/sdkwork-music-app-sdk/bin/generate-sdk.mjs");
@@ -262,7 +262,7 @@ test("sdkwork-music documents SDK workspace and family generation contracts", ()
   const workspaceReadme = readText(musicRoot, "sdks/README.md");
   assert.match(workspaceReadme, /sdkwork-music-app-sdk/);
   assert.match(workspaceReadme, /sdkwork-music-backend-sdk/);
-  assert.match(workspaceReadme, /../sdkwork-sdk-generator\\bin\\sdkgen\.js/);
+  assert.match(workspaceReadme, /\.\.\/sdkwork-sdk-generator\\bin\\sdkgen\.js/);
 
   const appReadme = readText(musicRoot, "sdks/sdkwork-music-app-sdk/README.md");
   assert.match(appReadme, /SDK family: `sdkwork-music-app-sdk`/);

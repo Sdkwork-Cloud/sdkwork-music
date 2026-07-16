@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 test("music app SDK family owns app authority and generated TypeScript output", () => {
-  const assembly = JSON.parse(readFileSync("sdks/sdkwork-music-app-sdk/.sdkwork-assembly.json", "utf8"));
+  const assembly = JSON.parse(readFileSync("sdks/sdkwork-music-app-sdk/sdk-manifest.json", "utf8"));
   assert.equal(assembly.sdkOwner, "sdkwork-music");
   assert.equal(assembly.apiAuthority, "sdkwork-music-app-api");
   assert.equal(assembly.discoverySurface.apiPrefix, "/app/v3/api");
