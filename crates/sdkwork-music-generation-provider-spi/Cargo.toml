@@ -1,0 +1,14 @@
+[package]
+name = "sdkwork-music-generation-provider-spi"
+version.workspace = true
+edition.workspace = true
+description = "Transport-neutral provider SPI for SDKWork music generation."
+
+[dependencies]
+async-trait.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

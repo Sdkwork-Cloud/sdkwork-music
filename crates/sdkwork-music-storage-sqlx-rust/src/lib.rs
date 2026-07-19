@@ -6,6 +6,10 @@ pub use bootstrap::{
     MusicDatabaseHost, MusicDatabasePool,
 };
 
+use sdkwork_drive_storage_contract::{
+    DriveObjectLocator, DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind,
+    PutObjectRequest,
+};
 use sdkwork_drive_workspace_service::{
     ports::uploader_store::DriveUploaderStore,
     uploader::{
@@ -13,10 +17,6 @@ use sdkwork_drive_workspace_service::{
         UploaderActor, UploaderRetention, UploaderTarget,
     },
     DriveServiceError,
-};
-use sdkwork_drive_storage_contract::{
-    DriveObjectLocator, DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind,
-    PutObjectRequest,
 };
 use serde_json::{Map, Value};
 use sha2::{Digest, Sha256};
@@ -300,12 +300,9 @@ pub struct NewMusicAiGenerationProvider {
     pub tenant_id: String,
     pub provider_code: String,
     pub display_name: String,
-    pub provider_family: String,
+    pub adapter_id: String,
     pub capability: String,
     pub invocation_mode: String,
-    pub claw_router_provider_code: String,
-    pub claw_router_endpoint_key: String,
-    pub claw_router_standard_path: String,
     pub supports_polling: bool,
     pub supports_webhook: bool,
     pub status: String,
@@ -356,10 +353,8 @@ pub struct NewMusicAiGenerationProviderAttempt {
     pub provider_code: String,
     pub model_name: String,
     pub invocation_mode: String,
-    pub claw_router_endpoint_key: String,
-    pub claw_router_standard_path: String,
-    pub claw_router_operation_id: String,
-    pub claw_router_request_id: Option<String>,
+    pub adapter_id: String,
+    pub provider_request_id: Option<String>,
     pub external_task_id: Option<String>,
     pub status: String,
     pub provider_status: Option<String>,
@@ -1544,20 +1539,16 @@ impl SqliteMusicStore {
         sqlx::query(
             r#"
             INSERT INTO music_ai_generation_provider
-                (id, tenant_id, provider_code, display_name, provider_family, capability,
-                 invocation_mode, claw_router_provider_code, claw_router_endpoint_key,
-                 claw_router_standard_path, supports_polling, supports_webhook, status,
+                (id, tenant_id, provider_code, display_name, adapter_id, capability,
+                 invocation_mode, supports_polling, supports_webhook, status,
                  config_snapshot, created_at, updated_at)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(tenant_id, provider_code) DO UPDATE SET
                 display_name = excluded.display_name,
-                provider_family = excluded.provider_family,
+                adapter_id = excluded.adapter_id,
                 capability = excluded.capability,
                 invocation_mode = excluded.invocation_mode,
-                claw_router_provider_code = excluded.claw_router_provider_code,
-                claw_router_endpoint_key = excluded.claw_router_endpoint_key,
-                claw_router_standard_path = excluded.claw_router_standard_path,
                 supports_polling = excluded.supports_polling,
                 supports_webhook = excluded.supports_webhook,
                 status = excluded.status,
@@ -1569,12 +1560,9 @@ impl SqliteMusicStore {
         .bind(input.tenant_id)
         .bind(input.provider_code)
         .bind(input.display_name)
-        .bind(input.provider_family)
+        .bind(input.adapter_id)
         .bind(input.capability)
         .bind(input.invocation_mode)
-        .bind(input.claw_router_provider_code)
-        .bind(input.claw_router_endpoint_key)
-        .bind(input.claw_router_standard_path)
         .bind(bool_int(input.supports_polling))
         .bind(bool_int(input.supports_webhook))
         .bind(input.status)
@@ -1676,11 +1664,10 @@ impl SqliteMusicStore {
             r#"
             INSERT INTO music_ai_generation_provider_attempt
                 (id, tenant_id, task_id, provider_id, provider_code, model_name,
-                 invocation_mode, claw_router_endpoint_key, claw_router_standard_path,
-                 claw_router_operation_id, claw_router_request_id, external_task_id, status, provider_status,
+                 invocation_mode, adapter_id, provider_request_id, external_task_id, status, provider_status,
                  request_snapshot, response_snapshot, submitted_at, created_at, updated_at)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&input.id)
@@ -1690,10 +1677,8 @@ impl SqliteMusicStore {
         .bind(&input.provider_code)
         .bind(&input.model_name)
         .bind(&input.invocation_mode)
-        .bind(&input.claw_router_endpoint_key)
-        .bind(&input.claw_router_standard_path)
-        .bind(&input.claw_router_operation_id)
-        .bind(&input.claw_router_request_id)
+        .bind(&input.adapter_id)
+        .bind(&input.provider_request_id)
         .bind(&input.external_task_id)
         .bind(&input.status)
         .bind(&input.provider_status)
@@ -1719,7 +1704,12 @@ impl SqliteMusicStore {
             WHERE tenant_id = ? AND id = ?
             "#,
         )
-        .bind(normalize_task_status("queued", input.provider_status.as_deref().unwrap_or(&input.status), false, &input.invocation_mode))
+        .bind(normalize_task_status(
+            "queued",
+            input.provider_status.as_deref().unwrap_or(&input.status),
+            false,
+            &input.invocation_mode,
+        ))
         .bind(&input.provider_code)
         .bind(&input.model_name)
         .bind(&input.invocation_mode)
@@ -1812,7 +1802,10 @@ impl SqliteMusicStore {
             .execute(&mut *tx)
             .await?;
 
-            if matches!(status_after.as_str(), "succeeded" | "failed" | "cancelled" | "expired") {
+            if matches!(
+                status_after.as_str(),
+                "succeeded" | "failed" | "cancelled" | "expired"
+            ) {
                 let user_id = task_user_id_in_tx(&mut tx, &input.tenant_id, &input.task_id).await?;
                 let notification_type = format!("ai_generation_{status_after}");
                 sqlx::query(
@@ -1910,7 +1903,8 @@ impl SqliteMusicStore {
         &self,
         input: NewMusicAiGenerationVariant,
     ) -> Result<(), sqlx::Error> {
-        self.complete_ai_generation_task_with_variants(vec![input]).await
+        self.complete_ai_generation_task_with_variants(vec![input])
+            .await
     }
 
     pub async fn complete_ai_generation_task_with_variants(
@@ -2795,7 +2789,11 @@ pub fn music_repository_bindings() -> Vec<MusicRepositoryBinding> {
                 "music_rights_territory",
             ],
         ),
-        binding("music", "music.audit.repository", vec!["music_editorial_audit"]),
+        binding(
+            "music",
+            "music.audit.repository",
+            vec!["music_editorial_audit"],
+        ),
     ]
 }
 
@@ -2857,7 +2855,11 @@ fn normalize_tag_slug(value: &str) -> String {
 }
 
 fn bool_int(value: bool) -> i64 {
-    if value { 1 } else { 0 }
+    if value {
+        1
+    } else {
+        0
+    }
 }
 
 fn require_archive_text(value: &str, field_name: &str) -> Result<String, DriveServiceError> {
@@ -3061,11 +3063,23 @@ fn generated_artifact_snapshot(
     }
 
     let mut drive = Map::new();
-    drive.insert("spaceType".to_string(), Value::String("ai_generated".to_string()));
-    drive.insert("spaceId".to_string(), Value::String(upload_item.space_id.clone()));
-    drive.insert("nodeId".to_string(), Value::String(upload_item.node_id.clone()));
+    drive.insert(
+        "spaceType".to_string(),
+        Value::String("ai_generated".to_string()),
+    );
+    drive.insert(
+        "spaceId".to_string(),
+        Value::String(upload_item.space_id.clone()),
+    );
+    drive.insert(
+        "nodeId".to_string(),
+        Value::String(upload_item.node_id.clone()),
+    );
     drive.insert("uri".to_string(), Value::String(drive_uri.to_string()));
-    drive.insert("uploadItemId".to_string(), Value::String(upload_item.id.clone()));
+    drive.insert(
+        "uploadItemId".to_string(),
+        Value::String(upload_item.id.clone()),
+    );
     if let Some(upload_session_id) = &upload_item.upload_session_id {
         drive.insert(
             "uploadSessionId".to_string(),
@@ -3098,7 +3112,10 @@ fn generated_artifact_snapshot(
             "objectKey".to_string(),
             Value::String(stored_object.object_key.clone()),
         );
-        object.insert("uploadStatus".to_string(), Value::String(upload_item.status.clone()));
+        object.insert(
+            "uploadStatus".to_string(),
+            Value::String(upload_item.status.clone()),
+        );
         if let Some(etag) = &stored_object.etag {
             object.insert("etag".to_string(), Value::String(etag.clone()));
         }
@@ -3106,21 +3123,34 @@ fn generated_artifact_snapshot(
             object.insert("versionId".to_string(), Value::String(version_id.clone()));
         }
         drive.insert("object".to_string(), Value::Object(object));
-    } else if let (Some(bucket), Some(object_key)) =
-        (upload_item.object_bucket.as_ref(), upload_item.object_key.as_ref())
-    {
+    } else if let (Some(bucket), Some(object_key)) = (
+        upload_item.object_bucket.as_ref(),
+        upload_item.object_key.as_ref(),
+    ) {
         let mut object = Map::new();
         object.insert("bucket".to_string(), Value::String(bucket.clone()));
         object.insert("objectKey".to_string(), Value::String(object_key.clone()));
-        object.insert("uploadStatus".to_string(), Value::String("prepared".to_string()));
+        object.insert(
+            "uploadStatus".to_string(),
+            Value::String("prepared".to_string()),
+        );
         drive.insert("object".to_string(), Value::Object(object));
     }
     root.insert("drive".to_string(), Value::Object(drive));
 
     let mut ai = Map::new();
-    ai.insert("provenance".to_string(), Value::String("generated".to_string()));
-    ai.insert("provider".to_string(), Value::String(provider_code.to_string()));
-    ai.insert("model".to_string(), Value::String(provider_model.to_string()));
+    ai.insert(
+        "provenance".to_string(),
+        Value::String("generated".to_string()),
+    );
+    ai.insert(
+        "provider".to_string(),
+        Value::String(provider_code.to_string()),
+    );
+    ai.insert(
+        "model".to_string(),
+        Value::String(provider_model.to_string()),
+    );
     ai.insert("taskId".to_string(), Value::String(task_id.to_string()));
     ai.insert(
         "artifactIndex".to_string(),
@@ -3161,7 +3191,9 @@ fn generated_artifact_snapshot(
     }
 
     serde_json::to_string(&Value::Object(root)).map_err(|error| {
-        DriveServiceError::Internal(format!("serialize generated artifact snapshot failed: {error}"))
+        DriveServiceError::Internal(format!(
+            "serialize generated artifact snapshot failed: {error}"
+        ))
     })
 }
 
@@ -3228,7 +3260,9 @@ fn normalize_task_status(
                 "running".to_string()
             }
         }
-        "waiting_webhook" | "callback_pending" | "awaiting_callback" => "waiting_webhook".to_string(),
+        "waiting_webhook" | "callback_pending" | "awaiting_callback" => {
+            "waiting_webhook".to_string()
+        }
         "failed" | "failure" | "error" | "rejected" | "blocked" => "failed".to_string(),
         "cancelled" | "canceled" | "aborted" => "cancelled".to_string(),
         "expired" | "timeout" | "timed_out" | "data_removed" => "expired".to_string(),

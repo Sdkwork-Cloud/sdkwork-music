@@ -2,6 +2,10 @@
 members = [
     "crates/sdkwork-music-gateway-assembly",
     "crates/sdkwork-music-core-rust",
+    "crates/sdkwork-music-generation-provider-spi",
+    "crates/sdkwork-music-generation-service",
+    "crates/sdkwork-music-generation-mcp-service",
+    "crates/sdkwork-music-generation-provider-adapter",
     "crates/sdkwork-music-database-host",
     "crates/sdkwork-music-storage-sqlx-rust",
     "crates/sdkwork-routes-music-app-api",
@@ -14,7 +18,15 @@ edition = "2021"
 version = "0.1.0"
 
 [workspace.dependencies]
+rmcp = { version = "2.2.0", default-features = false, features = ["server", "macros", "schemars", "transport-io", "transport-streamable-http-server"] }
+schemars = "1"
 axum = "0.8"
+async-trait = "0.1"
+clawrouter-open-sdk = { path = "../sdkwork-clawrouter/sdks/clawrouter-open-sdk/clawrouter-open-sdk-rust/generated/server-openapi" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }
 sdkwork-music-database-host = { path = "crates/sdkwork-music-database-host" }
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config", package = "sdkwork-database-config" }
 sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle", package = "sdkwork-database-lifecycle" }
@@ -22,6 +34,10 @@ sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi
 sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx", package = "sdkwork-database-sqlx" }
 # Internal SDKWork workspace members - declared once at workspace root
 sdkwork-music-core-rust = { path = "crates/sdkwork-music-core-rust" }
+sdkwork-music-generation-provider-spi = { path = "crates/sdkwork-music-generation-provider-spi" }
+sdkwork-music-generation-service = { path = "crates/sdkwork-music-generation-service" }
+sdkwork-music-generation-mcp-service = { path = "crates/sdkwork-music-generation-mcp-service" }
+sdkwork-music-generation-provider-adapter = { path = "crates/sdkwork-music-generation-provider-adapter" }
 sdkwork-music-storage-sqlx-rust = { path = "crates/sdkwork-music-storage-sqlx-rust" }
 sdkwork-routes-music-app-api = { path = "crates/sdkwork-routes-music-app-api" }
 sdkwork-routes-music-backend-api = { path = "crates/sdkwork-routes-music-backend-api" }

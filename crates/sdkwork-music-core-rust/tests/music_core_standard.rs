@@ -36,24 +36,40 @@ fn music_core_manifest_owns_music_domain_contracts() {
     assert!(manifest.operations.contains(&"comments.list"));
     assert!(manifest.operations.contains(&"comments.create"));
     assert!(manifest.operations.contains(&"contentReports.create"));
-    assert!(manifest.operations.contains(&"recommendation.feedback.create"));
+    assert!(manifest
+        .operations
+        .contains(&"recommendation.feedback.create"));
     assert!(manifest.operations.contains(&"search.suggestions.list"));
     assert!(manifest.operations.contains(&"downloads.entitlements.list"));
     assert!(manifest.operations.contains(&"playback.sessions.create"));
     assert!(manifest.operations.contains(&"playback.sessions.update"));
-    assert!(manifest.operations.contains(&"generations.stylePresets.list"));
-    assert!(manifest.operations.contains(&"generations.promptTemplates.list"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.stylePresets.list"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.promptTemplates.list"));
     assert!(manifest.operations.contains(&"generations.providers.list"));
-    assert!(manifest.operations.contains(&"generations.providerModels.list"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.providerModels.list"));
     assert!(manifest.operations.contains(&"generations.create"));
     assert!(manifest.operations.contains(&"generations.events.list"));
-    assert!(manifest.operations.contains(&"generations.notifications.list"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.notifications.list"));
     assert!(manifest.operations.contains(&"generations.publish"));
-    assert!(manifest.operations.contains(&"generations.providers.create"));
-    assert!(manifest.operations.contains(&"generations.providerModels.create"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.providers.create"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.providerModels.create"));
     assert!(manifest.operations.contains(&"generations.attempts.list"));
     assert!(manifest.operations.contains(&"generations.sync"));
-    assert!(manifest.operations.contains(&"generations.webhooks.receive"));
+    assert!(manifest
+        .operations
+        .contains(&"generations.webhooks.receive"));
     assert!(manifest.operations.contains(&"contentReports.resolve"));
     assert!(manifest.operations.contains(&"rights.policies.create"));
     assert!(manifest.operations.contains(&"releases.channels.create"));
@@ -155,7 +171,7 @@ fn music_core_evaluates_ai_generation_publish_readiness() {
         model_provider: "sdkwork-ai",
         model_name: "music-v1",
         generation_mode: "text_to_music",
-        provider_code: "claw-router",
+        provider_code: "suno",
         provider_model: "stable-audio-3",
         provider_invocation_mode: MusicAiProviderInvocationMode::Hybrid,
         provider_task_id: Some("provider_task_1"),
@@ -178,7 +194,10 @@ fn music_core_evaluates_ai_generation_publish_readiness() {
     };
     let missing_rights_readiness = evaluate_ai_generation_publish_readiness(&missing_rights);
     assert!(!missing_rights_readiness.ready);
-    assert_eq!(missing_rights_readiness.issues, vec!["missing-rights-policy"]);
+    assert_eq!(
+        missing_rights_readiness.issues,
+        vec!["missing-rights-policy"]
+    );
 
     let running_task = MusicAiGenerationTask {
         status: MusicAiGenerationTaskStatus::Running,
@@ -186,7 +205,9 @@ fn music_core_evaluates_ai_generation_publish_readiness() {
     };
     let running_readiness = evaluate_ai_generation_publish_readiness(&running_task);
     assert!(!running_readiness.can_publish);
-    assert!(running_readiness.issues.contains(&"generation-not-succeeded"));
+    assert!(running_readiness
+        .issues
+        .contains(&"generation-not-succeeded"));
 
     let missing_provider_output = MusicAiGenerationTask {
         provider_output_count: 0,

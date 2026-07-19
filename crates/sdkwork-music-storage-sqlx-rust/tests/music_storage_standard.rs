@@ -1,23 +1,24 @@
 use async_trait::async_trait;
-use sdkwork_drive_workspace_service::{
-    ports::uploader_store::{
-        CompleteDriveStoredUpload, DriveUploaderNodeRecord, DriveUploaderSpaceRecord, DriveUploaderStore,
-        NewDriveUploadItem, NewDriveUploadPart,
-    },
-    uploader::{DriveUploadItem, DriveUploadPart},
-    DriveServiceError,
-};
 use sdkwork_drive_storage_contract::{
     AbortMultipartUploadRequest, CompleteMultipartUploadRequest, CompleteMultipartUploadResponse,
     CopyObjectRequest, CopyObjectResponse, CreateBucketRequest, CreateBucketResponse,
     CreateMultipartUploadRequest, CreateMultipartUploadResponse, DeleteBucketRequest,
     DeleteBucketResponse, DeleteObjectRequest, DeleteObjectResponse, DriveObjectChunkStream,
-    DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind, DriveStorageProviderCapabilities,
-    DriveStorageProviderKind, HeadBucketRequest, HeadBucketResponse, HeadObjectRequest,
-    HeadObjectResponse, ListBucketsRequest, ListBucketsResponse, ListObjectsRequest,
-    ListObjectsResponse, PresignDownloadRequest, PresignUploadPartRequest,
-    PresignedDownloadResponse, PresignedUploadPartResponse, PutObjectRequest, PutObjectResponse,
-    ReadObjectRangeRequest, ReadObjectRangeResponse,
+    DriveObjectStore, DriveObjectStoreError, DriveObjectStoreErrorKind,
+    DriveStorageProviderCapabilities, DriveStorageProviderKind, HeadBucketRequest,
+    HeadBucketResponse, HeadObjectRequest, HeadObjectResponse, ListBucketsRequest,
+    ListBucketsResponse, ListObjectsRequest, ListObjectsResponse, PresignDownloadRequest,
+    PresignUploadPartRequest, PresignedDownloadResponse, PresignedUploadPartResponse,
+    PutObjectRequest, PutObjectResponse, ReadObjectRangeRequest, ReadObjectRangeResponse,
+};
+use sdkwork_drive_workspace_service::{
+    ports::uploader_store::{
+        CompleteDriveStoredUpload, DriveUploaderNodeRecord, DriveUploaderSpaceRecord,
+        DriveUploaderStore, NewDriveUploadItem, NewDriveUploadPart, NewDriveUploaderNode,
+        NewDriveUploaderSession, NewDriveUploaderSpace,
+    },
+    uploader::{DriveUploadItem, DriveUploadPart},
+    DriveServiceError,
 };
 use sdkwork_music_storage_sqlx::{
     music_database_tables, music_migration_names, music_storage_capability_manifest,
@@ -26,12 +27,11 @@ use sdkwork_music_storage_sqlx::{
     NewMusicAiGenerationProviderAttempt, NewMusicAiGenerationProviderEvent,
     NewMusicAiGenerationProviderModel, NewMusicAiGenerationTask, NewMusicAiGenerationVariant,
     NewMusicAiPromptTemplate, NewMusicAiStylePreset, NewMusicAlbum, NewMusicArtist,
-    NewMusicAudioAsset, NewMusicChart, NewMusicChartEntry, NewMusicComment,
-    NewMusicContentReport, NewMusicDownloadEntitlement, NewMusicLibraryItem,
-    NewMusicListeningEvent, NewMusicPlaybackSession, NewMusicPlaylist,
-    NewMusicRecommendationFeedback, NewMusicRecommendationItem, NewMusicRecommendationShelf,
-    NewMusicReleaseChannel, NewMusicRightsTerritory, NewMusicSearchSuggestion, NewMusicTrack,
-    SqliteMusicStore,
+    NewMusicAudioAsset, NewMusicChart, NewMusicChartEntry, NewMusicComment, NewMusicContentReport,
+    NewMusicDownloadEntitlement, NewMusicLibraryItem, NewMusicListeningEvent,
+    NewMusicPlaybackSession, NewMusicPlaylist, NewMusicRecommendationFeedback,
+    NewMusicRecommendationItem, NewMusicRecommendationShelf, NewMusicReleaseChannel,
+    NewMusicRightsTerritory, NewMusicSearchSuggestion, NewMusicTrack, SqliteMusicStore,
 };
 use sqlx::sqlite::SqlitePoolOptions;
 use std::collections::BTreeMap;
@@ -95,41 +95,98 @@ fn music_storage_manifest_declares_complete_music_tables_and_migrations() {
             "music_migration_lock",
         ],
     );
-    assert!(manifest.indexes.contains(&"idx_music_track_tenant_status_updated"));
-    assert!(manifest.indexes.contains(&"idx_music_audio_asset_tenant_status"));
-    assert!(manifest.indexes.contains(&"idx_music_chart_entry_chart_rank"));
-    assert!(manifest.indexes.contains(&"idx_music_recommendation_item_shelf_position"));
-    assert!(manifest.indexes.contains(&"idx_music_comment_resource_created"));
-    assert!(manifest.indexes.contains(&"idx_music_content_report_status_created"));
-    assert!(manifest.indexes.contains(&"idx_music_recommendation_feedback_user_created"));
-    assert!(manifest.indexes.contains(&"idx_music_download_entitlement_user_status"));
-    assert!(manifest.indexes.contains(&"idx_music_playback_session_user_status"));
-    assert!(manifest.indexes.contains(&"idx_music_search_suggestion_tenant_type"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_style_preset_tenant_status"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_prompt_template_tenant_status"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_tenant_status"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_model_tenant_status"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_credit_ledger_user_created"));
-    assert!(manifest.indexes.contains(&"idx_music_release_channel_release_status"));
-    assert!(manifest.indexes.contains(&"idx_music_rights_territory_policy_region"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_task_tenant_status_updated"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_task_provider_external"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_attempt_task"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_provider_event_task_created"));
-    assert!(manifest.indexes.contains(&"idx_music_ai_generation_notification_user_status"));
-    assert!(manifest.indexes.contains(&"idx_music_user_library_user_updated"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_track_tenant_status_updated"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_audio_asset_tenant_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_chart_entry_chart_rank"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_recommendation_item_shelf_position"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_comment_resource_created"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_content_report_status_created"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_recommendation_feedback_user_created"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_download_entitlement_user_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_playback_session_user_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_search_suggestion_tenant_type"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_style_preset_tenant_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_prompt_template_tenant_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_provider_tenant_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_provider_model_tenant_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_credit_ledger_user_created"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_release_channel_release_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_rights_territory_policy_region"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_task_tenant_status_updated"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_task_provider_external"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_provider_attempt_task"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_provider_event_task_created"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_ai_generation_notification_user_status"));
+    assert!(manifest
+        .indexes
+        .contains(&"idx_music_user_library_user_updated"));
     assert_eq!(manifest.migration_plan[0].name, "0001_music_foundation.sql");
-    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_track"));
-    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider"));
-    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_attempt"));
     assert!(manifest.migration_plan[0]
         .sql
-        .contains("claw_router_operation_id TEXT NOT NULL"));
-    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_provider_event"));
+        .contains("CREATE TABLE music_track"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("CREATE TABLE music_ai_generation_provider"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("CREATE TABLE music_ai_generation_provider_attempt"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("adapter_id TEXT NOT NULL"));
+    assert!(!manifest.migration_plan[0].sql.contains("claw_router_"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("CREATE TABLE music_ai_generation_provider_event"));
     assert!(manifest.migration_plan[0]
         .sql
         .contains("UNIQUE (provider_code, external_event_id)"));
-    assert!(manifest.migration_plan[0].sql.contains("CREATE TABLE music_ai_generation_task"));
+    assert!(manifest.migration_plan[0]
+        .sql
+        .contains("CREATE TABLE music_ai_generation_task"));
     assert!(!manifest.migration_plan[0].sql.contains("source_uri"));
 }
 
@@ -178,17 +235,14 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             tenant_id: "100001".to_owned(),
             provider_code: "suno".to_owned(),
             display_name: "Suno Music".to_owned(),
-            provider_family: "claw-router".to_owned(),
+            adapter_id: "sdkwork-music-generation-provider-adapter".to_owned(),
             capability: "text_to_music".to_owned(),
             invocation_mode: "hybrid".to_owned(),
-            claw_router_provider_code: "suno".to_owned(),
-            claw_router_endpoint_key: "suno.music.generations.create".to_owned(),
-            claw_router_standard_path: "/suno/v1/music/generations".to_owned(),
             supports_polling: true,
             supports_webhook: true,
             status: "active".to_owned(),
             config_snapshot: Some(
-                r#"{"sdkFamily":"clawrouter-open-sdk","apiAuthority":"sdkwork-clawrouter.ai","apiPrefix":"/v1","createOperationId":"sunoCreateMusicGeneration","retrieveOperationId":"sunoRetrieveMusicGeneration","resource":"music_generation_task"}"#.to_owned(),
+                r#"{"adapterId":"sdkwork-music-generation-provider-adapter","vendor":"suno","parameterSchema":"suno.music-generation.v1"}"#.to_owned(),
             ),
             now: "2026-06-06T03:00:00Z".to_owned(),
         })
@@ -250,10 +304,8 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
             provider_code: "suno".to_owned(),
             model_name: "suno-v1".to_owned(),
             invocation_mode: "hybrid".to_owned(),
-            claw_router_endpoint_key: "suno.music.generations.create".to_owned(),
-            claw_router_standard_path: "/suno/v1/music/generations".to_owned(),
-            claw_router_operation_id: "sunoCreateMusicGeneration".to_owned(),
-            claw_router_request_id: Some("router_request_1".to_owned()),
+            adapter_id: "sdkwork-music-generation-provider-adapter".to_owned(),
+            provider_request_id: Some("provider_request_1".to_owned()),
             external_task_id: Some("external_task_1".to_owned()),
             status: "submitted".to_owned(),
             provider_status: Some("queued".to_owned()),
@@ -263,26 +315,29 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         })
         .await
         .expect("create attempt");
-    let provider_binding: (String, String) = sqlx::query_as(
-        "SELECT claw_router_endpoint_key, claw_router_standard_path FROM music_ai_generation_provider WHERE id = ?",
-    )
-    .bind("provider_1")
-    .fetch_one(&pool)
-    .await
-    .expect("provider claw-router binding");
-    assert_eq!(provider_binding.0, "suno.music.generations.create");
-    assert_eq!(provider_binding.1, "/suno/v1/music/generations");
+    let provider_adapter_id: String =
+        sqlx::query_scalar("SELECT adapter_id FROM music_ai_generation_provider WHERE id = ?")
+            .bind("provider_1")
+            .fetch_one(&pool)
+            .await
+            .expect("provider adapter binding");
+    assert_eq!(
+        provider_adapter_id,
+        "sdkwork-music-generation-provider-adapter"
+    );
 
-    let attempt_binding: (String, String, String) = sqlx::query_as(
-        "SELECT claw_router_endpoint_key, claw_router_standard_path, claw_router_operation_id FROM music_ai_generation_provider_attempt WHERE id = ?",
+    let attempt_binding: (String, Option<String>) = sqlx::query_as(
+        "SELECT adapter_id, provider_request_id FROM music_ai_generation_provider_attempt WHERE id = ?",
     )
     .bind("attempt_1")
     .fetch_one(&pool)
     .await
-    .expect("attempt claw-router binding");
-    assert_eq!(attempt_binding.0, "suno.music.generations.create");
-    assert_eq!(attempt_binding.1, "/suno/v1/music/generations");
-    assert_eq!(attempt_binding.2, "sunoCreateMusicGeneration");
+    .expect("attempt provider binding");
+    assert_eq!(
+        attempt_binding.0,
+        "sdkwork-music-generation-provider-adapter"
+    );
+    assert_eq!(attempt_binding.1.as_deref(), Some("provider_request_1"));
 
     let first_insert = store
         .record_ai_generation_provider_event(NewMusicAiGenerationProviderEvent {
@@ -373,7 +428,10 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         .expect("AI tasks");
     assert_eq!(tasks[0].status, "succeeded");
     assert_eq!(tasks[0].provider_code.as_deref(), Some("suno"));
-    assert_eq!(tasks[0].external_task_id.as_deref(), Some("external_task_1"));
+    assert_eq!(
+        tasks[0].external_task_id.as_deref(),
+        Some("external_task_1")
+    );
     assert_eq!(tasks[0].provider_output_count, 1);
 
     let events = store
@@ -388,7 +446,10 @@ async fn sqlite_music_store_records_ai_generation_provider_events_idempotently()
         .await
         .expect("notifications");
     assert_eq!(notifications.len(), 1);
-    assert_eq!(notifications[0].notification_type, "ai_generation_succeeded");
+    assert_eq!(
+        notifications[0].notification_type,
+        "ai_generation_succeeded"
+    );
     assert_eq!(notifications[0].status, "unread");
 }
 
@@ -531,7 +592,9 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
             drive_node_id: "node_ai".to_owned(),
             drive_uri: "drive://spaces/space_ai/nodes/node_ai".to_owned(),
             media_resource_id: Some("node_ai".to_owned()),
-            media_resource_snapshot: Some(r#"{"kind":"audio","source":"drive","ai":{"provenance":"generated"}}"#.to_owned()),
+            media_resource_snapshot: Some(
+                r#"{"kind":"audio","source":"drive","ai":{"provenance":"generated"}}"#.to_owned(),
+            ),
             mime_type: "audio/mpeg".to_owned(),
             duration_seconds: 188,
             checksum_algorithm: Some("sha256".to_owned()),
@@ -653,7 +716,10 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
         .expect("home shelves");
     assert_eq!(shelves.len(), 1);
     assert_eq!(shelves[0].items.len(), 1);
-    assert_eq!(shelves[0].items[0].reason_code.as_deref(), Some("fresh_ai_music"));
+    assert_eq!(
+        shelves[0].items[0].reason_code.as_deref(),
+        Some("fresh_ai_music")
+    );
 
     let library = store
         .list_library_items("100001", "user_1")
@@ -704,7 +770,9 @@ async fn sqlite_music_store_supports_app_discovery_library_and_ai_generation_wor
             audio_asset_id: Some("asset_ai".to_owned()),
             title: "Neon Commute v1".to_owned(),
             drive_uri: "drive://spaces/space_ai/nodes/node_ai".to_owned(),
-            media_resource_snapshot: Some(r#"{"kind":"audio","source":"drive","ai":{"provenance":"generated"}}"#.to_owned()),
+            media_resource_snapshot: Some(
+                r#"{"kind":"audio","source":"drive","ai":{"provenance":"generated"}}"#.to_owned(),
+            ),
             duration_seconds: 188,
             moderation_status: "approved".to_owned(),
             now: "2026-06-06T01:12:00Z".to_owned(),
@@ -1037,7 +1105,9 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
                     checksum_sha256_hex: None,
                     duration_seconds: 0,
                     provider_asset_id: Some("provider_cover_1".to_owned()),
-                    provider_asset_url: Some("https://provider.example/assets/cover_1.png".to_owned()),
+                    provider_asset_url: Some(
+                        "https://provider.example/assets/cover_1.png".to_owned(),
+                    ),
                     metadata_json: Some(r#"{"seed":42}"#.to_owned()),
                     content: Some(vec![1, 2, 3, 4]),
                 },
@@ -1051,7 +1121,9 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
                     checksum_sha256_hex: None,
                     duration_seconds: 38,
                     provider_asset_id: Some("provider_preview_1".to_owned()),
-                    provider_asset_url: Some("https://provider.example/assets/preview_1.mp3".to_owned()),
+                    provider_asset_url: Some(
+                        "https://provider.example/assets/preview_1.mp3".to_owned(),
+                    ),
                     metadata_json: None,
                     content: Some(b"preview-audio".to_vec()),
                 },
@@ -1062,30 +1134,41 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
 
     assert_eq!(archived.media_resources.len(), 2);
     assert_eq!(archived.variants.len(), 1);
-    assert!(archived
-        .media_resources
-        .iter()
-        .all(|resource| resource.drive_uri.starts_with("drive://spaces/space-ai-generated-user-user-archive/nodes/node-")));
-    let first_snapshot: serde_json::Value = serde_json::from_str(
-        archived.media_resources[0]
-            .media_resource_snapshot
-            .as_str(),
-    )
-    .expect("valid snapshot json");
+    assert!(archived.media_resources.iter().all(|resource| resource
+        .drive_uri
+        .starts_with("drive://spaces/space-ai-generated-user-user-archive/nodes/node-")));
+    let first_snapshot: serde_json::Value =
+        serde_json::from_str(archived.media_resources[0].media_resource_snapshot.as_str())
+            .expect("valid snapshot json");
     assert_eq!(first_snapshot["source"], "drive");
     assert_eq!(first_snapshot["kind"], "image");
     assert_eq!(first_snapshot["drive"]["spaceType"], "ai_generated");
-    assert_eq!(first_snapshot["drive"]["uploadItemId"], "music-ai-task_archive-0001");
-    assert_eq!(first_snapshot["drive"]["uploadSessionId"], "session-music-ai-task_archive-0001");
-    assert_eq!(first_snapshot["drive"]["object"]["bucket"], "bucket-drive-generated");
+    assert_eq!(
+        first_snapshot["drive"]["uploadItemId"],
+        "music-ai-task_archive-0001"
+    );
+    assert_eq!(
+        first_snapshot["drive"]["uploadSessionId"],
+        "session-music-ai-task_archive-0001"
+    );
+    assert_eq!(
+        first_snapshot["drive"]["object"]["bucket"],
+        "bucket-drive-generated"
+    );
     assert!(first_snapshot["drive"]["object"]["objectKey"]
         .as_str()
         .expect("object key")
         .contains("/source/ai_generated/profile/image/"));
-    assert_eq!(first_snapshot["drive"]["object"]["uploadStatus"], "completed");
+    assert_eq!(
+        first_snapshot["drive"]["object"]["uploadStatus"],
+        "completed"
+    );
     assert_eq!(first_snapshot["ai"]["provenance"], "generated");
     assert_eq!(first_snapshot["ai"]["provider"], "suno");
-    assert_eq!(first_snapshot["ai"]["providerTaskId"], "provider_task_archive");
+    assert_eq!(
+        first_snapshot["ai"]["providerTaskId"],
+        "provider_task_archive"
+    );
     assert_eq!(first_snapshot["metadata"]["seed"], 42);
     let variant_snapshot: serde_json::Value = serde_json::from_str(
         archived.variants[0]
@@ -1120,11 +1203,17 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
         Some("sha256:9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a")
     );
     assert_eq!(
-        writes[0].metadata.get("sdkwork.ai.space_type").map(String::as_str),
+        writes[0]
+            .metadata
+            .get("sdkwork.ai.space_type")
+            .map(String::as_str),
         Some("ai_generated")
     );
     assert_eq!(
-        writes[0].metadata.get("sdkwork.music.task_id").map(String::as_str),
+        writes[0]
+            .metadata
+            .get("sdkwork.music.task_id")
+            .map(String::as_str),
         Some("task_archive")
     );
     assert_eq!(writes[1].content_type.as_deref(), Some("audio/mpeg"));
@@ -1136,14 +1225,20 @@ async fn generated_artifact_archive_uses_drive_ai_space_and_completes_audio_vari
 
     let completed_uploads = drive_store.completions();
     assert_eq!(completed_uploads.len(), 2);
-    assert_eq!(completed_uploads[0].upload_item_id, "music-ai-task_archive-0001");
+    assert_eq!(
+        completed_uploads[0].upload_item_id,
+        "music-ai-task_archive-0001"
+    );
     assert_eq!(completed_uploads[0].content_type, "image/png");
     assert_eq!(completed_uploads[0].content_length, 4);
     assert_eq!(
         completed_uploads[0].checksum_sha256_hex,
         "sha256:9f64a747e1b97f131fabb6b447296c9b6f0201e79fb3c5356e6c77e89b6a806a"
     );
-    assert_eq!(completed_uploads[1].upload_item_id, "music-ai-task_archive-0002");
+    assert_eq!(
+        completed_uploads[1].upload_item_id,
+        "music-ai-task_archive-0002"
+    );
     assert_eq!(completed_uploads[1].content_type, "audio/mpeg");
     assert_eq!(completed_uploads[1].content_length, 13);
     assert_eq!(
@@ -1263,11 +1358,7 @@ impl DriveObjectStore for RecordingDriveObjectStore {
         request: HeadObjectRequest,
     ) -> Result<HeadObjectResponse, DriveObjectStoreError> {
         let state = self.state.lock().expect("object store state");
-        let Some(put) = state
-            .puts
-            .iter()
-            .find(|put| put.locator == request.locator)
-        else {
+        let Some(put) = state.puts.iter().find(|put| put.locator == request.locator) else {
             return Err(DriveObjectStoreError::new(
                 DriveObjectStoreErrorKind::NotFound,
                 "object not found",
@@ -1377,7 +1468,8 @@ impl DriveObjectStore for RecordingDriveObjectStore {
     async fn read_object_range(
         &self,
         _request: ReadObjectRangeRequest,
-    ) -> Result<(ReadObjectRangeResponse, Box<dyn DriveObjectChunkStream>), DriveObjectStoreError> {
+    ) -> Result<(ReadObjectRangeResponse, Box<dyn DriveObjectChunkStream>), DriveObjectStoreError>
+    {
         Err(unsupported_object_store_operation())
     }
 }
@@ -1405,25 +1497,35 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
 
     async fn insert_upload_space(
         &self,
-        space_id: &str,
-        tenant_id: &str,
-        owner_subject_type: &str,
-        owner_subject_id: &str,
-        space_type: &str,
-        _display_name: &str,
-        _operator_id: &str,
+        space: &NewDriveUploaderSpace,
     ) -> Result<String, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         state.spaces.insert(
             (
-                tenant_id.to_owned(),
-                owner_subject_type.to_owned(),
-                owner_subject_id.to_owned(),
-                space_type.to_owned(),
+                space.tenant_id.clone(),
+                space.owner_subject_type.clone(),
+                space.owner_subject_id.clone(),
+                space.space_type.clone(),
             ),
-            space_id.to_owned(),
+            space.id.clone(),
         );
-        Ok(space_id.to_owned())
+        Ok(space.id.clone())
+    }
+
+    async fn live_node_name_exists_in_parent(
+        &self,
+        tenant_id: &str,
+        space_id: &str,
+        parent_node_id: Option<&str>,
+        node_name: &str,
+    ) -> Result<bool, DriveServiceError> {
+        let state = self.state.lock().expect("drive state");
+        Ok(state.items.values().any(|item| {
+            item.tenant_id == tenant_id
+                && item.space_id == space_id
+                && parent_node_id.is_none()
+                && item.original_file_name == node_name
+        }))
     }
 
     async fn find_active_space(
@@ -1439,7 +1541,10 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
                 stored_tenant_id == tenant_id && stored_space_id.as_str() == space_id
             })
             .map(
-                |((stored_tenant_id, owner_subject_type, owner_subject_id, space_type), stored_space_id)| {
+                |(
+                    (stored_tenant_id, owner_subject_type, owner_subject_id, space_type),
+                    stored_space_id,
+                )| {
                     DriveUploaderSpaceRecord {
                         id: stored_space_id.clone(),
                         tenant_id: stored_tenant_id.clone(),
@@ -1492,36 +1597,21 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
 
     async fn insert_upload_node(
         &self,
-        node_id: &str,
-        _tenant_id: &str,
-        _space_id: &str,
-        _parent_node_id: Option<&str>,
-        _node_name: &str,
-        _scene: Option<&str>,
-        _source: Option<&str>,
-        _operator_id: &str,
+        node: &NewDriveUploaderNode,
     ) -> Result<String, DriveServiceError> {
-        Ok(node_id.to_owned())
+        Ok(node.id.clone())
     }
 
     async fn insert_upload_session(
         &self,
-        session_id: &str,
-        tenant_id: &str,
-        _space_id: &str,
-        _node_id: &str,
-        _storage_provider_id: &str,
-        bucket: &str,
-        object_key: &str,
-        _operator_id: &str,
-        _expires_at_epoch_ms: i64,
+        session: &NewDriveUploaderSession,
     ) -> Result<String, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
         state.upload_sessions.insert(
-            format!("{tenant_id}:{session_id}"),
-            (bucket.to_owned(), object_key.to_owned()),
+            format!("{}:{}", session.tenant_id, session.id),
+            (session.bucket.clone(), session.object_key.clone()),
         );
-        Ok(session_id.to_owned())
+        Ok(session.id.clone())
     }
 
     async fn find_default_storage_provider(
@@ -1559,24 +1649,18 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
             upload_session_id: item.upload_session_id.clone(),
             storage_provider_id: item.storage_provider_id.clone(),
             storage_upload_id: item.storage_upload_id.clone(),
-            object_bucket: item
-                .upload_session_id
-                .as_ref()
-                .and_then(|session_id| {
-                    state
-                        .upload_sessions
-                        .get(&format!("{}:{session_id}", item.tenant_id))
-                        .map(|(bucket, _)| bucket.clone())
-                }),
-            object_key: item
-                .upload_session_id
-                .as_ref()
-                .and_then(|session_id| {
-                    state
-                        .upload_sessions
-                        .get(&format!("{}:{session_id}", item.tenant_id))
-                        .map(|(_, object_key)| object_key.clone())
-                }),
+            object_bucket: item.upload_session_id.as_ref().and_then(|session_id| {
+                state
+                    .upload_sessions
+                    .get(&format!("{}:{session_id}", item.tenant_id))
+                    .map(|(bucket, _)| bucket.clone())
+            }),
+            object_key: item.upload_session_id.as_ref().and_then(|session_id| {
+                state
+                    .upload_sessions
+                    .get(&format!("{}:{session_id}", item.tenant_id))
+                    .map(|(_, object_key)| object_key.clone())
+            }),
             original_file_name: item.original_file_name.clone(),
             file_extension: item.file_extension.clone(),
             content_type: item.content_type.clone(),
@@ -1640,20 +1724,18 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         completion: &CompleteDriveStoredUpload,
     ) -> Result<DriveUploadItem, DriveServiceError> {
         let mut state = self.state.lock().expect("drive state");
-        let Some(item) = state
-            .items
-            .values_mut()
-            .find(|item| {
-                item.tenant_id == completion.tenant_id
-                    && item.id == completion.upload_item_id
-                    && item.upload_session_id.as_deref() == Some(completion.upload_session_id.as_str())
-            })
-        else {
+        let Some(item) = state.items.values_mut().find(|item| {
+            item.tenant_id == completion.tenant_id
+                && item.id == completion.upload_item_id
+                && item.upload_session_id.as_deref() == Some(completion.upload_session_id.as_str())
+        }) else {
             return Err(DriveServiceError::NotFound(
                 "upload item not found".to_owned(),
             ));
         };
-        if item.content_type != completion.content_type || item.content_length != completion.content_length {
+        if item.content_type != completion.content_type
+            || item.content_length != completion.content_length
+        {
             return Err(DriveServiceError::Conflict(
                 "completion does not match prepared upload item".to_owned(),
             ));
@@ -1665,5 +1747,14 @@ impl DriveUploaderStore for InMemoryDriveUploaderStore {
         let completed = item.clone();
         state.completions.push(completion.clone());
         Ok(completed)
+    }
+
+    async fn quarantine_blocked_upload_content(
+        &self,
+        _tenant_id: &str,
+        _upload_item_id: &str,
+        _operator_id: &str,
+    ) -> Result<(), DriveServiceError> {
+        Ok(())
     }
 }

@@ -186,10 +186,21 @@ pub fn evaluate_track_publish_readiness(track: &MusicTrack) -> MusicTrackPublish
     if track.duration_seconds <= 0 {
         issues.push("invalid-duration");
     }
-    if track.audio_asset_id.map(str::trim).unwrap_or_default().is_empty() {
+    if track
+        .audio_asset_id
+        .map(str::trim)
+        .unwrap_or_default()
+        .is_empty()
+    {
         issues.push("missing-audio-asset");
     }
-    if track.tags.iter().filter(|tag| !tag.trim().is_empty()).count() == 0 {
+    if track
+        .tags
+        .iter()
+        .filter(|tag| !tag.trim().is_empty())
+        .count()
+        == 0
+    {
         issues.push("missing-tags");
     }
 

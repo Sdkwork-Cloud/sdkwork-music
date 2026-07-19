@@ -1,0 +1,12 @@
+[package]
+name = "sdkwork-music-generation-service"
+version.workspace = true
+edition.workspace = true
+description = "Unified SDKWork music generation service entrypoint."
+
+[dependencies]
+async-trait.workspace = true
+sdkwork-music-generation-provider-spi.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true
