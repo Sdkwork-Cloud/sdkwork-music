@@ -1,6 +1,10 @@
-import type { SdkworkGenerationSerializedAssetConfig } from './generation-asset-config';
+import type {
+  SdkworkGenerationModelBuckets,
+  SdkworkGenerationPricedModel,
+  SdkworkGenerationSerializedAssetConfig,
+} from './generation-asset-config';
 
-export interface MusicGenerationModelOption {
+export interface MusicGenerationModelOption extends SdkworkGenerationPricedModel {
   id: string;
   name?: string;
   displayName?: string;
@@ -8,10 +12,8 @@ export interface MusicGenerationModelOption {
   vendorName?: string;
 }
 
-export interface MusicGenerationModelGroup {
+export interface MusicGenerationModelGroup extends SdkworkGenerationModelBuckets<MusicGenerationModelOption> {
   id: string;
-  llms: MusicGenerationModelOption[];
-  music: MusicGenerationModelOption[];
 }
 
 export interface MusicGenerationSubmitInput {
