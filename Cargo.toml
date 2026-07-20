@@ -9,8 +9,6 @@ members = [
     "crates/sdkwork-music-generation-provider-adapter",
     "crates/sdkwork-music-database-host",
     "crates/sdkwork-music-storage-sqlx-rust",
-    "crates/sdkwork-routes-music-app-api",
-    "crates/sdkwork-routes-music-backend-api",
 ]
 resolver = "2"
 
@@ -40,8 +38,6 @@ sdkwork-music-generation-service = { path = "crates/sdkwork-music-generation-ser
 sdkwork-music-generation-mcp-service = { path = "crates/sdkwork-music-generation-mcp-service" }
 sdkwork-music-generation-provider-adapter = { path = "crates/sdkwork-music-generation-provider-adapter" }
 sdkwork-music-storage-sqlx-rust = { path = "crates/sdkwork-music-storage-sqlx-rust" }
-sdkwork-routes-music-app-api = { path = "crates/sdkwork-routes-music-app-api" }
-sdkwork-routes-music-backend-api = { path = "crates/sdkwork-routes-music-backend-api" }
 # Cross-repository SDKWork dependencies
 sdkwork-drive-workspace-service = { path = "../sdkwork-drive/crates/sdkwork-drive-workspace-service" }
 sdkwork-drive-storage-contract = { path = "../sdkwork-drive/crates/sdkwork-drive-storage-contract" }

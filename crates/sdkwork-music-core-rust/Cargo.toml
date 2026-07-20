@@ -6,4 +6,3 @@ edition.workspace = true
 [lib]
 name = "sdkwork_music_core"
 path = "src/lib.rs"
-
