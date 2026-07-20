@@ -5,12 +5,13 @@
   "type": "module",
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "stop": "node ../sdkwork-specs/tools/stop-sdkwork-workspace-processes.mjs --workspace .",    "test": "pnpm test:node && pnpm test:vitest && cargo test --workspace",
+    "stop": "node ../sdkwork-specs/tools/stop-sdkwork-workspace-processes.mjs --workspace .",
+    "test": "pnpm test:node && pnpm test:vitest && cargo test --workspace",
     "test:migration": "node --test tests/music-migration-contract.test.mjs",
     "test:node": "node --test tests/*.test.mjs sdks/test/*.test.mjs sdks/sdkwork-music-app-sdk/tests/*.test.mjs sdks/sdkwork-music-backend-sdk/tests/*.test.mjs",
     "test:vitest": "vitest run --config vitest.config.ts --configLoader native --pool vmThreads",
     "typecheck": "tsc --noEmit",
-    "openapi:export": "node tools/music_openapi_export.mjs",
+    "api:materialize:openapi": "node tools/music_openapi_export.mjs",
     "sdk:check": "node tools/music_sdk_generate.mjs --check",
     "sdk:generate": "node tools/music_sdk_generate.mjs",
     "verify": "pnpm sdk:check && pnpm test:node && pnpm test:vitest && cargo test --workspace && pnpm run check:app-composition",
@@ -25,8 +26,8 @@
     "db:drift:check": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . drift-check",
     "db:bootstrap": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . bootstrap",
     "test:contract:database": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
-    "gateway:assembly:materialize": "node scripts/gateway/assembly-materialize.mjs",
-    "gateway:assembly:validate": "node scripts/gateway/assembly-validate.mjs",
+    "api:assembly:materialize": "node scripts/gateway/assembly-materialize.mjs",
+    "api:assembly:validate": "node scripts/gateway/assembly-validate.mjs",
     "check:app-composition": "node ../sdkwork-specs/tools/verify-repo.mjs --root ."
   },
   "devDependencies": {
