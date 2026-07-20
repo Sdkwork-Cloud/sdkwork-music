@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "crates/sdkwork-api-music-assembly",
     "crates/sdkwork-music-gateway-assembly",
     "crates/sdkwork-music-core-rust",
     "crates/sdkwork-music-generation-provider-spi",
